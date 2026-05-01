@@ -178,9 +178,13 @@ export function useConfigurator() {
     return { groups, grandTotal, hasAny };
   }, [configs, models, tier, lang]);
 
+  const cnyTotal = useMemo(() => {
+    return Math.round(summary.grandTotal * pricing.fobK);
+  }, [summary.grandTotal, pricing.fobK]);
+
   const usdTotal = useMemo(() => {
-    return Math.round(summary.grandTotal * pricing.fobK / pricing.rate);
-  }, [summary.grandTotal, pricing]);
+    return Math.round(cnyTotal / pricing.rate);
+  }, [cnyTotal, pricing.rate]);
 
   return {
     lang, setLang,
@@ -192,7 +196,7 @@ export function useConfigurator() {
     setModelQty, changeModelQty,
     selectComponent, selectVersion,
     addConfig, removeConfig, resetCurrent,
-    summary, usdTotal,
+    summary, cnyTotal, usdTotal,
     sidebarOpen, setSidebarOpen,
   };
 }

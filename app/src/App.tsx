@@ -63,6 +63,7 @@ export default function App() {
           pricing={c.pricing}
           groups={c.summary.groups}
           grandTotal={c.summary.grandTotal}
+          cnyTotal={c.cnyTotal}
           usdTotal={c.usdTotal}
           hasAny={c.summary.hasAny}
           multipleConfigs={c.configs.length > 1}
@@ -78,7 +79,7 @@ export default function App() {
         >
           <span className="mobile-fab-icon">🛸</span>
           <span className="mobile-fab-label">
-            {c.summary.hasAny ? `¥${c.summary.grandTotal.toLocaleString()}` : ts(c.lang, 'summary')}
+            {c.summary.hasAny ? `¥${c.cnyTotal.toLocaleString()}` : ts(c.lang, 'summary')}
           </span>
         </button>
       </div>

@@ -8,6 +8,7 @@ interface Props {
   pricing: PricingParams;
   groups: SummaryGroup[];
   grandTotal: number;
+  cnyTotal: number;
   usdTotal: number;
   hasAny: boolean;
   multipleConfigs: boolean;
@@ -17,7 +18,7 @@ interface Props {
 }
 
 export function Sidebar({
-  lang, pricing, groups, grandTotal, usdTotal, hasAny,
+  lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny,
   multipleConfigs, sidebarOpen, onClose, onReset,
 }: Props) {
   return (
@@ -76,10 +77,10 @@ export function Sidebar({
       {hasAny && (
         <div className="total-card">
           <div className="total-card-label">{ts(lang, 'totalLbl')}</div>
-          <div className="total-cny">¥{grandTotal.toLocaleString()}</div>
+          <div className="total-cny">¥{cnyTotal.toLocaleString()} FOB</div>
           <div className="total-usd">≈ ${usdTotal.toLocaleString()} FOB</div>
           <div className="total-fob">
-            ¥{grandTotal.toLocaleString()} × {pricing.fobK} ÷ {pricing.rate} = ${usdTotal.toLocaleString()}
+            ¥{grandTotal.toLocaleString()} × {pricing.fobK} = ¥{cnyTotal.toLocaleString()} ÷ {pricing.rate} = ${usdTotal.toLocaleString()}
           </div>
         </div>
       )}
