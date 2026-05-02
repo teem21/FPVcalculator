@@ -235,7 +235,14 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
 .total-usd { font-size: 13px; opacity: 0.7; margin-top: 5px; }
 .total-fob { font-size: 11px; opacity: 0.45; margin-top: 4px; font-family: var(--mono); }
 
-.reset-btn { width: 100%; padding: 9px; border-radius: var(--r-sm); margin-top: 8px;
+.export-btn {
+  width: 100%; padding: 10px; border-radius: var(--r-sm); margin-top: 8px;
+  border: none; background: var(--accent);
+  color: #fff; font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; font-family: var(--mono);
+}
+.export-btn:hover { background: #243f6a; }
+.reset-btn { width: 100%; padding: 9px; border-radius: var(--r-sm); margin-top: 6px;
   border: 1px solid var(--border); background: transparent;
   color: var(--text3); font-size: 12px; cursor: pointer; transition: all 0.15s;
   font-family: var(--mono); }
@@ -350,3 +357,53 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
   }
   .sidebar-close-btn:hover { background: var(--red-lt); color: var(--red); border-color: var(--red); }
 }
+
+/* Ground equipment section */
+.ground-card { margin-top: 16px; }
+.ground-row { display: flex; align-items: center; gap: 12px; }
+.ground-row .comp-item-body { flex: 1; min-width: 0; }
+.ground-qty { margin-left: auto; }
+@media (max-width: 768px) {
+  .ground-row { flex-wrap: wrap; }
+  .ground-row .comp-item-price { display: block; font-size: 13px; color: var(--accent); font-weight: 600; }
+  .ground-qty { margin-left: 0; }
+  .ground-card { margin-top: 12px; }
+  .save-cfg-btn { padding: 16px 16px; font-size: 15px; margin-bottom: 12px; }
+  .add-cfg-btn { padding: 16px 16px; font-size: 14px; }
+}
+
+/* Bottom "Add configuration" button */
+.add-cfg-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 20px;
+  background: transparent;
+  color: var(--accent);
+  border: 2px dashed var(--accent);
+  border-radius: 12px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-style 0.15s;
+}
+.add-cfg-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-style: solid;
+}
+
+/* Save configuration button (after active drone block) */
+.save-cfg-btn {
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  padding: 14px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+}
+.save-cfg-btn:hover { filter: brightness(1.1); }
+.save-cfg-btn:active { transform: translateY(1px); }

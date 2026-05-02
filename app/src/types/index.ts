@@ -57,11 +57,13 @@ export interface UserConfig {
   id: number;
   modelQtys: Record<string, number>;
   selections: Record<string, ConfigSelections>;
+  groundQtys: Record<string, number>;
 }
 
 export interface SummaryItem {
   name: string;
   qty: number;
+  unitPrice: number;
   price: number;
 }
 

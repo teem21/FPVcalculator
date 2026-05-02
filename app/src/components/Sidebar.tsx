@@ -15,11 +15,12 @@ interface Props {
   sidebarOpen: boolean;
   onClose: () => void;
   onReset: () => void;
+  onExport: () => void;
 }
 
 export function Sidebar({
   lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny,
-  multipleConfigs, sidebarOpen, onClose, onReset,
+  multipleConfigs, sidebarOpen, onClose, onReset, onExport,
 }: Props) {
   return (
     <div className={`sidebar${sidebarOpen ? ' open' : ''}`} id="sidebar">
@@ -85,6 +86,11 @@ export function Sidebar({
         </div>
       )}
 
+      {hasAny && (
+        <button className="export-btn" onClick={onExport}>
+          {ts(lang, 'export')}
+        </button>
+      )}
       <button className="reset-btn" onClick={onReset}>
         {ts(lang, 'reset')}
       </button>

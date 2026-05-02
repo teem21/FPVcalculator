@@ -308,19 +308,23 @@ function buildComponents(
     ],
   });
 
-  // Ground equipment
-  sections.push({
-    key: 'ground', titleKey: 'ground', type: 'check', items: [
-      { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(650, 600, 580) },
-      { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(420, 400, 380) },
-      { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
-      { id: 'ant', name: cn.ant, sub: cs.ant, prices: tp(471, 471, 471), tag: 'v2' },
-      { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
-      { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
-    ],
-  });
-
   return sections;
+}
+
+export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentItem[] {
+  const cn = compNames[lang];
+  const cs = getCompSubs(lang, pricing);
+  const { rate: r, fobK: k } = pricing;
+  const cobraPrice = usdToCny(220, r, k);
+
+  return [
+    { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(650, 600, 580) },
+    { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(420, 400, 380) },
+    { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
+    { id: 'ant', name: cn.ant, sub: cs.ant, prices: tp(471, 471, 471), tag: 'v2' },
+    { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
+    { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
+  ];
 }
 
 export function getModels(lang: Lang, pricing: PricingParams): DroneModel[] {

@@ -6,11 +6,10 @@ interface Props {
   configs: UserConfig[];
   activeConfigId: number;
   onSelect: (id: number) => void;
-  onAdd: () => void;
   onRemove: (id: number) => void;
 }
 
-export function ConfigTabs({ lang, configs, activeConfigId, onSelect, onAdd, onRemove }: Props) {
+export function ConfigTabs({ lang, configs, activeConfigId, onSelect, onRemove }: Props) {
   return (
     <div className="configs-bar">
       {configs.map(cfg => {
@@ -36,9 +35,6 @@ export function ConfigTabs({ lang, configs, activeConfigId, onSelect, onAdd, onR
           </div>
         );
       })}
-      <button className="cfg-add" onClick={onAdd}>
-        {ts(lang, 'addCfg')}
-      </button>
     </div>
   );
 }

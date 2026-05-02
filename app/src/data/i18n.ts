@@ -15,7 +15,9 @@ const translations = {
     tx: '📤 TX-модуль', fiber_gnd: '🔌 Наземная станция (оптика)',
     fiber_len: '📏 Длина оптоволокна/шт', ai: '🤖 AI-модуль (опция)',
     ground: '🎮 Наземное оборудование',
-    cfg: 'Конфиг',
+    groundSub: 'Количество указывается отдельно для каждой позиции',
+    cfg: 'Конфиг', export: '⬇ Скачать XLSX',
+    saveCfg: '✓ Сохранить конфигурацию',
   },
   en: {
     title: 'FPV Drone Configurator',
@@ -31,7 +33,9 @@ const translations = {
     tx: '📤 TX module', fiber_gnd: '🔌 Ground station (fiber)',
     fiber_len: '📏 Fiber length/unit', ai: '🤖 AI module (optional)',
     ground: '🎮 Ground equipment',
-    cfg: 'Config',
+    groundSub: 'Quantity is set independently for each item',
+    cfg: 'Config', export: '⬇ Download XLSX',
+    saveCfg: '✓ Save configuration',
   },
   zh: {
     title: 'FPV无人机配置器',
@@ -47,7 +51,9 @@ const translations = {
     tx: '📤 TX模块', fiber_gnd: '🔌 地面站 (光纤)',
     fiber_len: '📏 光纤长度/架', ai: '🤖 AI模块 (选配)',
     ground: '🎮 地面设备',
-    cfg: '配置',
+    groundSub: '每项可单独设置数量',
+    cfg: '配置', export: '⬇ 下载 XLSX',
+    saveCfg: '✓ 保存配置',
   },
 } as const;
 

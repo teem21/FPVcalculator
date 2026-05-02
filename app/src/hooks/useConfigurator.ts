@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { Lang, Tier, UserConfig, SummaryGroup, ConfigSelections } from '@/types';
-import { getModels } from '@/data/models';
+import { getModels, getGroundItems } from '@/data/models';
 import { tierPrice, type PricingParams, DEFAULT_PRICING } from '@/data/pricing';
 import { ts } from '@/data/i18n';
 
@@ -11,6 +11,7 @@ function createEmptyConfig(id: number): UserConfig {
     id,
     modelQtys: Object.fromEntries(MODEL_IDS.map(m => [m, 0])),
     selections: {},
+    groundQtys: {},
   };
 }
 
@@ -24,6 +25,7 @@ export function useConfigurator() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const models = useMemo(() => getModels(lang, pricing), [lang, pricing]);
+  const groundItems = useMemo(() => getGroundItems(lang, pricing), [lang, pricing]);
 
   const activeConfig = configs.find(c => c.id === activeConfigId)!;
 
@@ -57,17 +59,39 @@ export function useConfigurator() {
   }, [activeConfigId, ensureSelections]);
 
   const setModelQty = useCallback((modelId: string, qty: number) => {
+    updateActiveConfig(cfg => {
+      const next = Math.max(0, qty);
+      const modelQtys = { ...cfg.modelQtys, [modelId]: next };
+      if (next > 0) {
+        MODEL_IDS.forEach(m => { if (m !== modelId) modelQtys[m] = 0; });
+      }
+      return { ...cfg, modelQtys };
+    });
+  }, [updateActiveConfig]);
+
+  const setGroundQty = useCallback((itemId: string, qty: number) => {
     updateActiveConfig(cfg => ({
       ...cfg,
-      modelQtys: { ...cfg.modelQtys, [modelId]: Math.max(0, qty) },
+      groundQtys: { ...(cfg.groundQtys || {}), [itemId]: Math.max(0, qty) },
+    }));
+  }, [updateActiveConfig]);
+
+  const changeGroundQty = useCallback((itemId: string, delta: number) => {
+    updateActiveConfig(cfg => ({
+      ...cfg,
+      groundQtys: { ...(cfg.groundQtys || {}), [itemId]: Math.max(0, ((cfg.groundQtys || {})[itemId] || 0) + delta) },
     }));
   }, [updateActiveConfig]);
 
   const changeModelQty = useCallback((modelId: string, delta: number) => {
-    updateActiveConfig(cfg => ({
-      ...cfg,
-      modelQtys: { ...cfg.modelQtys, [modelId]: Math.max(0, (cfg.modelQtys[modelId] || 0) + delta) },
-    }));
+    updateActiveConfig(cfg => {
+      const next = Math.max(0, (cfg.modelQtys[modelId] || 0) + delta);
+      const modelQtys = { ...cfg.modelQtys, [modelId]: next };
+      if (next > 0) {
+        MODEL_IDS.forEach(m => { if (m !== modelId) modelQtys[m] = 0; });
+      }
+      return { ...cfg, modelQtys };
+    });
   }, [updateActiveConfig]);
 
   const selectComponent = useCallback((modelId: string, sectionKey: string, itemId: string, sectionType: 'radio' | 'check') => {
@@ -131,6 +155,7 @@ export function useConfigurator() {
       ...cfg,
       modelQtys: Object.fromEntries(MODEL_IDS.map(m => [m, 0])),
       selections: {},
+      groundQtys: {},
     }));
   }, [updateActiveConfig]);
 
@@ -154,7 +179,7 @@ export function useConfigurator() {
         const dt = bp * qty;
         cfgTotal += dt;
         grandTotal += dt;
-        items.push({ name: `${model.label} ${ver.name}`, qty, price: dt });
+        items.push({ name: `${model.label} ${ver.name}`, qty, unitPrice: bp, price: dt });
 
         model.components.forEach(sec => {
           sec.items.forEach(it => {
@@ -165,9 +190,22 @@ export function useConfigurator() {
             const tot = up * qty;
             cfgTotal += tot;
             grandTotal += tot;
-            items.push({ name: it.name, qty, price: tot });
+            items.push({ name: it.name, qty, unitPrice: up, price: tot });
           });
         });
+      });
+
+      groundItems.forEach(it => {
+        const gq = cfg.groundQtys[it.id] || 0;
+        if (!gq) return;
+        if (it.incl || it.tbd || !it.prices) return;
+        const up = tierPrice(it.prices, tier);
+        if (!up) return;
+        const tot = up * gq;
+        cfgTotal += tot;
+        grandTotal += tot;
+        hasAny = true;
+        items.push({ name: it.name, qty: gq, unitPrice: up, price: tot });
       });
 
       if (items.length) {
@@ -176,7 +214,7 @@ export function useConfigurator() {
     });
 
     return { groups, grandTotal, hasAny };
-  }, [configs, models, tier, lang]);
+  }, [configs, models, groundItems, tier, lang]);
 
   const cnyTotal = useMemo(() => {
     return Math.round(summary.grandTotal * pricing.fobK);
@@ -193,7 +231,9 @@ export function useConfigurator() {
     configs, activeConfigId, setActiveConfigId,
     activeConfig: ensureSelections(activeConfig),
     models,
+    groundItems,
     setModelQty, changeModelQty,
+    setGroundQty, changeGroundQty,
     selectComponent, selectVersion,
     addConfig, removeConfig, resetCurrent,
     summary, cnyTotal, usdTotal,

@@ -5,7 +5,9 @@ import { ControlsBar } from '@/components/ControlsBar';
 import { TierRow } from '@/components/TierRow';
 import { ConfigTabs } from '@/components/ConfigTabs';
 import { ModelCard } from '@/components/ModelCard';
+import { GroundSection } from '@/components/GroundSection';
 import { Sidebar } from '@/components/Sidebar';
+import { downloadOrderXlsx } from '@/data/export';
 import type { ConfigSelections } from '@/types';
 import './App.css';
 
@@ -30,25 +32,47 @@ export default function App() {
             configs={c.configs}
             activeConfigId={c.activeConfigId}
             onSelect={c.setActiveConfigId}
-            onAdd={c.addConfig}
             onRemove={c.removeConfig}
           />
 
           <div id="models-container">
-            {c.models.map(model => (
-              <ModelCard
-                key={model.id}
-                model={model}
-                tier={c.tier}
-                lang={c.lang}
-                qty={c.activeConfig.modelQtys[model.id] || 0}
-                selections={(c.activeConfig.selections[model.id] || { version: model.versions[0].id }) as ConfigSelections}
-                onQtyChange={qty => c.setModelQty(model.id, qty)}
-                onQtyDelta={delta => c.changeModelQty(model.id, delta)}
-                onSelectVersion={vid => c.selectVersion(model.id, vid)}
-                onSelectComponent={(secKey, itemId, type) => c.selectComponent(model.id, secKey, itemId, type)}
-              />
-            ))}
+            {c.models.map(model => {
+              const qty = c.activeConfig.modelQtys[model.id] || 0;
+              return (
+                <div key={model.id}>
+                  <ModelCard
+                    model={model}
+                    tier={c.tier}
+                    lang={c.lang}
+                    qty={qty}
+                    selections={(c.activeConfig.selections[model.id] || { version: model.versions[0].id }) as ConfigSelections}
+                    onQtyChange={q => c.setModelQty(model.id, q)}
+                    onQtyDelta={delta => c.changeModelQty(model.id, delta)}
+                    onSelectVersion={vid => c.selectVersion(model.id, vid)}
+                    onSelectComponent={(secKey, itemId, type) => c.selectComponent(model.id, secKey, itemId, type)}
+                  />
+                  {qty > 0 && (
+                    <>
+                      <GroundSection
+                        lang={c.lang}
+                        tier={c.tier}
+                        items={c.groundItems}
+                        qtys={c.activeConfig.groundQtys || {}}
+                        onQtyChange={c.setGroundQty}
+                        onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
+                      />
+                      <button className="save-cfg-btn" onClick={c.addConfig}>
+                        {ts(c.lang, 'saveCfg')}
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+
+            <button className="add-cfg-btn" onClick={c.addConfig}>
+              {ts(c.lang, 'addCfg')}
+            </button>
           </div>
         </div>
 
@@ -70,6 +94,15 @@ export default function App() {
           sidebarOpen={c.sidebarOpen}
           onClose={() => c.setSidebarOpen(false)}
           onReset={c.resetCurrent}
+          onExport={() => downloadOrderXlsx({
+            groups: c.summary.groups,
+            grandTotal: c.summary.grandTotal,
+            cnyTotal: c.cnyTotal,
+            usdTotal: c.usdTotal,
+            pricing: c.pricing,
+            tier: c.tier,
+            lang: c.lang,
+          })}
         />
 
         {/* Mobile FAB */}
