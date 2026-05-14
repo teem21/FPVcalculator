@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { Lang, Tier, UserConfig, SummaryGroup, ConfigSelections } from '@/types';
-import { getModels, getGroundItems } from '@/data/models';
+import { getModels, getGroundItems, getAntennaItems } from '@/data/models';
 import { tierPrice, type PricingParams, DEFAULT_PRICING } from '@/data/pricing';
 import { ts } from '@/data/i18n';
 
@@ -26,6 +26,7 @@ export function useConfigurator() {
 
   const models = useMemo(() => getModels(lang, pricing), [lang, pricing]);
   const groundItems = useMemo(() => getGroundItems(lang, pricing), [lang, pricing]);
+  const antennaItems = useMemo(() => getAntennaItems(lang, pricing), [lang, pricing]);
 
   const activeConfig = configs.find(c => c.id === activeConfigId)!;
 
@@ -195,7 +196,7 @@ export function useConfigurator() {
         });
       });
 
-      groundItems.forEach(it => {
+      [...groundItems, ...antennaItems].forEach(it => {
         const gq = cfg.groundQtys[it.id] || 0;
         if (!gq) return;
         if (it.incl || it.tbd || !it.prices) return;
@@ -214,7 +215,7 @@ export function useConfigurator() {
     });
 
     return { groups, grandTotal, hasAny };
-  }, [configs, models, groundItems, tier, lang]);
+  }, [configs, models, groundItems, antennaItems, tier, lang]);
 
   const cnyTotal = useMemo(() => {
     return Math.round(summary.grandTotal * pricing.fobK);
@@ -232,6 +233,7 @@ export function useConfigurator() {
     activeConfig: ensureSelections(activeConfig),
     models,
     groundItems,
+    antennaItems,
     setModelQty, changeModelQty,
     setGroundQty, changeGroundQty,
     selectComponent, selectVersion,

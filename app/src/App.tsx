@@ -61,6 +61,16 @@ export default function App() {
                         onQtyChange={c.setGroundQty}
                         onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
                       />
+                      <GroundSection
+                        lang={c.lang}
+                        tier={c.tier}
+                        items={c.antennaItems}
+                        qtys={c.activeConfig.groundQtys || {}}
+                        onQtyChange={c.setGroundQty}
+                        onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
+                        titleKey="antennas"
+                        subKey="antennasSub"
+                      />
                       <button className="save-cfg-btn" onClick={c.addConfig}>
                         {ts(c.lang, 'saveCfg')}
                       </button>

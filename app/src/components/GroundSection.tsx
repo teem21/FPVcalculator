@@ -9,15 +9,17 @@ interface Props {
   qtys: Record<string, number>;
   onQtyChange: (itemId: string, qty: number) => void;
   onQtyDelta: (itemId: string, delta: number) => void;
+  titleKey?: 'ground' | 'antennas';
+  subKey?: 'groundSub' | 'antennasSub';
 }
 
-export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta }: Props) {
+export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta, titleKey = 'ground', subKey = 'groundSub' }: Props) {
   return (
     <div className="model-card ground-card">
       <div className="model-top">
         <div className="model-info">
-          <div className="model-title">{ts(lang, 'ground')}</div>
-          <div className="model-sub">{ts(lang, 'groundSub')}</div>
+          <div className="model-title">{ts(lang, titleKey)}</div>
+          <div className="model-sub">{ts(lang, subKey)}</div>
         </div>
       </div>
 

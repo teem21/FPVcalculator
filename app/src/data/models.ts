@@ -378,6 +378,13 @@ export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentIte
     { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
     { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
     { id: 'nano_jr', name: cn.nano_jr, sub: cs.nano_jr, prices: tp(33, 33, 33) },
+  ];
+}
+
+export function getAntennaItems(lang: Lang, _pricing: PricingParams): ComponentItem[] {
+  const cn = compNames[lang];
+  const cs = getCompSubs(lang, _pricing);
+  return [
     { id: 'ant_mush', name: cn.ant_mush, sub: cs.ant_mush, prices: tp(42, 42, 42) },
     { id: 'ant_patch', name: cn.ant_patch, sub: cs.ant_patch, prices: tp(108, 108, 108) },
     { id: 'ant_moxon9', name: cn.ant_moxon9, sub: cs.ant_moxon9, prices: tp(48, 48, 48) },
