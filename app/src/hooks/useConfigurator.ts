@@ -182,7 +182,7 @@ export function useConfigurator() {
         const dt = bp * qty;
         cfgTotal += dt;
         grandTotal += dt;
-        items.push({ name: `${model.label} ${ver.name}`, qty, unitPrice: bp, price: dt });
+        items.push({ name: `${model.label} ${ver.name}`, sub: ver.sub, qty, unitPrice: bp, price: dt, group: 'drone' });
 
         model.components.forEach(sec => {
           sec.items.forEach(it => {
@@ -193,12 +193,12 @@ export function useConfigurator() {
             const tot = up * qty;
             cfgTotal += tot;
             grandTotal += tot;
-            items.push({ name: it.name, qty, unitPrice: up, price: tot });
+            items.push({ name: it.name, sub: it.sub, qty, unitPrice: up, price: tot, group: 'components' });
           });
         });
       });
 
-      [...groundItems, ...antennaItems].forEach(it => {
+      groundItems.forEach(it => {
         const gq = cfg.groundQtys[it.id] || 0;
         if (!gq) return;
         if (it.incl || it.tbd || !it.prices) return;
@@ -208,7 +208,20 @@ export function useConfigurator() {
         cfgTotal += tot;
         grandTotal += tot;
         hasAny = true;
-        items.push({ name: it.name, qty: gq, unitPrice: up, price: tot });
+        items.push({ name: it.name, sub: it.sub, qty: gq, unitPrice: up, price: tot, group: 'ground' });
+      });
+
+      antennaItems.forEach(it => {
+        const gq = cfg.groundQtys[it.id] || 0;
+        if (!gq) return;
+        if (it.incl || it.tbd || !it.prices) return;
+        const up = tierPrice(it.prices, tier);
+        if (!up) return;
+        const tot = up * gq;
+        cfgTotal += tot;
+        grandTotal += tot;
+        hasAny = true;
+        items.push({ name: it.name, sub: it.sub, qty: gq, unitPrice: up, price: tot, group: 'antennas' });
       });
 
       if (items.length) {

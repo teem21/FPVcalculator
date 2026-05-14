@@ -8,6 +8,7 @@ import { ConfigTabs } from '@/components/ConfigTabs';
 import { ModelCard } from '@/components/ModelCard';
 import { GroundSection } from '@/components/GroundSection';
 import { Sidebar } from '@/components/Sidebar';
+import { OrderView } from '@/components/OrderView';
 import { BottomToolbar, type View } from '@/components/BottomToolbar';
 import { downloadOrderXlsx } from '@/data/export';
 import type { ConfigSelections } from '@/types';
@@ -75,7 +76,7 @@ export default function App() {
                 <div className="logo">FPV CONFIGURATOR</div>
                 <h1>{ts(c.lang, 'summary')}</h1>
               </div>
-              <Sidebar
+              <OrderView
                 lang={c.lang}
                 pricing={c.pricing}
                 groups={c.summary.groups}
@@ -83,12 +84,8 @@ export default function App() {
                 cnyTotal={c.cnyTotal}
                 usdTotal={c.usdTotal}
                 hasAny={c.summary.hasAny}
-                multipleConfigs={c.configs.length > 1}
-                sidebarOpen
-                onClose={() => setView('configs')}
                 onReset={c.resetCurrent}
                 onExport={exportXlsx}
-                inline
               />
             </div>
           )}

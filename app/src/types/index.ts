@@ -60,11 +60,15 @@ export interface UserConfig {
   groundQtys: Record<string, number>;
 }
 
+export type SummaryGroupKey = 'drone' | 'components' | 'ground' | 'antennas';
+
 export interface SummaryItem {
   name: string;
+  sub?: string;
   qty: number;
   unitPrice: number;
   price: number;
+  group: SummaryGroupKey;
 }
 
 export interface SummaryGroup {
