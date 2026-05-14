@@ -499,3 +499,23 @@ body { padding-bottom: 56px; }
 
 /* hide desktop sidebar when in order view (mobile) — order view is full-width */
 .view-order .sidebar:not(.inline) { display: none; }
+
+/* ── COLLAPSIBLE GROUND/ANTENNAS HEADER ── */
+.ground-header {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 18px;
+  background: transparent; border: none; cursor: pointer;
+  text-align: left; font-family: inherit; color: inherit;
+}
+.ground-header:hover { background: var(--bg); }
+.ground-header-info { flex: 1; min-width: 0; }
+.ground-header .model-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 600;
+}
+.ground-header .model-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.ground-preview {
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  color: var(--accent); flex-shrink: 0;
+}
+.ground-card.open .comp-sec-chevron { color: var(--accent); }
