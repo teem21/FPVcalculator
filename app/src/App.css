@@ -270,7 +270,9 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
   .controls-bar { gap: 8px 12px; }
   .model-top { grid-template-columns: auto 1fr; gap: 10px; }
   .model-qty { grid-column: 1/-1; padding: 0 2px 4px; }
-  .comp-item-price { display: none; }
+  .comp-item-price { font-size: 11px; }
+  .model-info .model-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+  .model-info .model-price { margin-left: 0; }
 
   /* ── MOBILE FAB ── */
   .mobile-fab {
