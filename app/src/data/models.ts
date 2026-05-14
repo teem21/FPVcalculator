@@ -45,7 +45,10 @@ type CompNameKey =
   | 'fib_no' | 'gnd40' | 'gnd80'
   | 'fib_0' | 'fib_5' | 'fib_10' | 'fib_20' | 'fib_30'
   | 'ai_no' | 'ai1' | 'ai2' | 'ai3' | 'ai4' | 'ai5'
-  | 'rc' | 'goggb' | 'gogbc' | 'ant' | 'chr6' | 'chr8';
+  | 'rc' | 'goggb' | 'gogbc' | 'chr6' | 'chr8'
+  | 'ant_mush' | 'ant_patch' | 'ant_moxon9' | 'ant_moxon24'
+  | 'ant_maple' | 'ant_helic' | 'ant_clover' | 'ant_feed'
+  | 'nano_jr';
 
 const compNames: Record<Lang, Record<CompNameKey, string>> = {
   ru: {
@@ -65,8 +68,17 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai3: 'Тепловизор 384 — видео + тепло', ai4: 'Предтоп — двойная + тепловизор 384',
     ai5: 'ТОП ★ — двойная + тепловизор 640',
     rc: 'Пульт RadioMaster TX12 Mark II', goggb: 'FPV-очки базовые 5.8G',
-    gogbc: 'SKYZONE Cobra X V4', ant: 'Комплект антенн (6 штук)',
+    gogbc: 'SKYZONE Cobra X V4',
     chr6: 'Зарядник 6S', chr8: 'Зарядник 8S',
+    ant_mush: 'Антенна Mushroom 5.8G LHCP/RHCP 3.7dBi',
+    ant_patch: 'Антенна Foxeer Echo Patch 5.8G 8dBi LHCP',
+    ant_moxon9: 'Антенна Moxon 900/915 МГц LP BETAFPV V2',
+    ant_moxon24: 'Антенна Moxon 2400 МГц LP BETAFPV V2',
+    ant_maple: 'Антенна Maple 5.8G 11dBi LHCP',
+    ant_helic: 'Антенна Helical 5.8G 13.8dBi LHCP/RHCP',
+    ant_clover: 'Антенна Clover 5.8G LHCP/RHCP',
+    ant_feed: 'Фидер RG-402 SMA male-female',
+    nano_jr: 'Адаптер Nano-JR → Micro-JR',
   },
   en: {
     bat6: '6S 8,000 mAh', bat8_12: '8S 12,000 mAh', bat8_16: '8S 16,000 mAh',
@@ -85,8 +97,17 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai3: 'Thermal 384 — video + thermal', ai4: 'Pre-top — dual + thermal 384',
     ai5: 'TOP ★ — dual + thermal 640',
     rc: 'RadioMaster TX12 Mark II', goggb: 'Basic FPV goggles 5.8G',
-    gogbc: 'SKYZONE Cobra X V4', ant: 'Antenna kit (6 antennas)',
+    gogbc: 'SKYZONE Cobra X V4',
     chr6: '6S charger', chr8: '8S charger',
+    ant_mush: 'Mushroom 5.8G LHCP/RHCP 3.7dBi antenna',
+    ant_patch: 'Foxeer Echo Patch 5.8G 8dBi LHCP antenna',
+    ant_moxon9: 'Moxon 900/915 MHz LP BETAFPV V2 antenna',
+    ant_moxon24: 'Moxon 2400 MHz LP BETAFPV V2 antenna',
+    ant_maple: 'Maple 5.8G 11dBi LHCP antenna',
+    ant_helic: 'Helical 5.8G 13.8dBi LHCP/RHCP antenna',
+    ant_clover: 'Clover 5.8G LHCP/RHCP antenna',
+    ant_feed: 'RG-402 SMA male-female feeder',
+    nano_jr: 'Nano-JR → Micro-JR adapter',
   },
   zh: {
     bat6: '6S 8000mAh电池', bat8_12: '8S 12000mAh电池', bat8_16: '8S 16000mAh电池',
@@ -105,8 +126,17 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai3: '热成像384 — 视频+热成像', ai4: '次顶配 — 双光学+热成像384',
     ai5: '顶配★ — 双光学+热成像640',
     rc: 'RadioMaster TX12 Mark II遥控器', goggb: '基础款FPV眼镜 5.8G',
-    gogbc: 'SKYZONE Cobra X V4眼镜', ant: '天线套装（6根）',
+    gogbc: 'SKYZONE Cobra X V4眼镜',
     chr6: '6S充电器', chr8: '8S充电器',
+    ant_mush: 'Mushroom 5.8G LHCP/RHCP 3.7dBi 天线',
+    ant_patch: 'Foxeer Echo Patch 5.8G 8dBi LHCP 天线',
+    ant_moxon9: 'Moxon 900/915MHz LP BETAFPV V2 天线',
+    ant_moxon24: 'Moxon 2400MHz LP BETAFPV V2 天线',
+    ant_maple: 'Maple 5.8G 11dBi LHCP 天线',
+    ant_helic: 'Helical 5.8G 13.8dBi LHCP/RHCP 天线',
+    ant_clover: 'Clover 5.8G LHCP/RHCP 天线',
+    ant_feed: 'RG-402 SMA 公母馈线',
+    nano_jr: 'Nano-JR → Micro-JR 适配器',
   },
 };
 
@@ -138,8 +168,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: 'одна камера + тепловизор 384', ai4: 'двойная + тепловизор 384', ai5: 'двойная + тепловизор 640 · максимум',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G стандартные очки',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
-      ant: 'Mushroom×2 · Patch×2 · Moxon900×1 · Moxon2400×1 · Maple×1 · Helical×1',
       chr6: 'HOTA D6 Pro · для F10', chr8: 'для F13 / F15',
+      ant_mush: 'круговая, бортовая',
+      ant_patch: 'направленная, наземная',
+      ant_moxon9: 'направленная 900 МГц для ELRS',
+      ant_moxon24: 'направленная 2.4 ГГц для ELRS',
+      ant_maple: 'круговая, дальняя',
+      ant_helic: 'спиральная, дальняя',
+      ant_clover: 'круговая 5.8G',
+      ant_feed: 'фидер с SMA-разъёмами',
+      nano_jr: 'для TX NANO GEMINI ELRS',
     },
     en: {
       bat6: '1.2 kg · for F10', bat8_12: '2.1 kg · for F13', bat8_16: '2.6 kg · for F15',
@@ -160,8 +198,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: 'single cam + thermal 384', ai4: 'dual cam + thermal 384', ai5: 'dual cam + thermal 640 · maximum',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G standard goggles',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
-      ant: 'Mushroom×2 · Patch×2 · Moxon900×1 · Moxon2400×1 · Maple×1 · Helical×1',
       chr6: 'HOTA D6 Pro · for F10', chr8: 'for F13 / F15',
+      ant_mush: 'omni, onboard',
+      ant_patch: 'directional, ground',
+      ant_moxon9: 'directional 900 MHz for ELRS',
+      ant_moxon24: 'directional 2.4 GHz for ELRS',
+      ant_maple: 'omni, long range',
+      ant_helic: 'helical, long range',
+      ant_clover: 'omni 5.8G',
+      ant_feed: 'feeder with SMA connectors',
+      nano_jr: 'for TX NANO GEMINI ELRS',
     },
     zh: {
       bat6: '1.2千克 · F10用', bat8_12: '2.1千克 · F13用', bat8_16: '2.6千克 · F15用',
@@ -182,8 +228,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: '单摄像头+热成像384', ai4: '双摄像头+热成像384', ai5: '双摄像头+热成像640 · 顶配',
       rc: 'ELRS FCC EdgeTX', goggb: '基础款5.8G眼镜',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · 分集接收 · Steadyview`,
-      ant: '蘑菇×2 · 贴片×2 · Moxon900×1 · Moxon2400×1 · Maple×1 · 螺旋×1',
       chr6: 'HOTA D6 Pro · F10用', chr8: 'F13/F15用',
+      ant_mush: '全向 · 机载',
+      ant_patch: '定向 · 地面',
+      ant_moxon9: '定向 900MHz · ELRS用',
+      ant_moxon24: '定向 2.4GHz · ELRS用',
+      ant_maple: '全向 · 远距离',
+      ant_helic: '螺旋 · 远距离',
+      ant_clover: '全向 5.8G',
+      ant_feed: '带SMA接头馈线',
+      nano_jr: 'TX NANO GEMINI ELRS适配器',
     },
   };
   return subs[lang];
@@ -321,9 +375,17 @@ export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentIte
     { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(650, 600, 580) },
     { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(420, 400, 380) },
     { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
-    { id: 'ant', name: cn.ant, sub: cs.ant, prices: tp(471, 471, 471), tag: 'v2' },
     { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
     { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
+    { id: 'nano_jr', name: cn.nano_jr, sub: cs.nano_jr, prices: tp(33, 33, 33) },
+    { id: 'ant_mush', name: cn.ant_mush, sub: cs.ant_mush, prices: tp(42, 42, 42) },
+    { id: 'ant_patch', name: cn.ant_patch, sub: cs.ant_patch, prices: tp(108, 108, 108) },
+    { id: 'ant_moxon9', name: cn.ant_moxon9, sub: cs.ant_moxon9, prices: tp(48, 48, 48) },
+    { id: 'ant_moxon24', name: cn.ant_moxon24, sub: cs.ant_moxon24, prices: tp(41, 41, 41) },
+    { id: 'ant_maple', name: cn.ant_maple, sub: cs.ant_maple, prices: tp(170, 170, 170) },
+    { id: 'ant_helic', name: cn.ant_helic, sub: cs.ant_helic, prices: tp(67, 67, 67) },
+    { id: 'ant_clover', name: cn.ant_clover, sub: cs.ant_clover, prices: tp(62, 62, 62) },
+    { id: 'ant_feed', name: cn.ant_feed, sub: cs.ant_feed, prices: tp(46, 46, 46) },
   ];
 }
 
