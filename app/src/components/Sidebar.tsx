@@ -16,14 +16,15 @@ interface Props {
   onClose: () => void;
   onReset: () => void;
   onExport: () => void;
+  inline?: boolean;
 }
 
 export function Sidebar({
   lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny,
-  multipleConfigs, sidebarOpen, onClose, onReset, onExport,
+  multipleConfigs, sidebarOpen, onClose, onReset, onExport, inline = false,
 }: Props) {
   return (
-    <div className={`sidebar${sidebarOpen ? ' open' : ''}`} id="sidebar">
+    <div className={`sidebar${sidebarOpen ? ' open' : ''}${inline ? ' inline' : ''}`} id="sidebar">
       <div className="sidebar-sheet-header">
         <div className="sidebar-handle" />
         <div className="sidebar-head-row">

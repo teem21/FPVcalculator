@@ -37,6 +37,7 @@ type CompNameKey =
   | 'esc60' | 'esc80' | 'esc100'
   | 'fc_std' | 'fc_f722'
   | 'cam_std' | 'cam_n2' | 'cam_n2p'
+  | 'cam_hik_ir'
   | 'cam_dji_o4'
   | 'q4max_opt_d' | 'q4max_opt_dg' | 'q4max_ir_d' | 'q4max_ir_dg'
   | 'vtx_rf3' | 'vtx_rf4'
@@ -56,6 +57,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     esc60: '60A 4-в-1 (6S)', esc80: '80A 4-в-1 (6S)', esc100: '100A 4-в-1 (8S)',
     fc_std: 'F405 (штатный)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (штатная)', cam_n2: 'N2 Pro (ночная)', cam_n2p: 'N2 Pro+ (ночная+)',
+    cam_hik_ir: 'HIK инфракрасная камера',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max (оптика) · модуль дрона', q4max_opt_dg: 'Q4Max (оптика) · дрон + земля',
     q4max_ir_d: 'Q4Max (ИК) · модуль дрона', q4max_ir_dg: 'Q4Max (ИК) · дрон + земля',
@@ -85,6 +87,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     esc60: '60A 4-in-1 (6S)', esc80: '80A 4-in-1 (6S)', esc100: '100A 4-in-1 (8S)',
     fc_std: 'F405 (standard)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (standard)', cam_n2: 'N2 Pro (night)', cam_n2p: 'N2 Pro+ (night+)',
+    cam_hik_ir: 'HIK infrared camera',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max (optical) · drone module', q4max_opt_dg: 'Q4Max (optical) · drone + ground',
     q4max_ir_d: 'Q4Max (IR) · drone module', q4max_ir_dg: 'Q4Max (IR) · drone + ground',
@@ -114,6 +117,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     esc60: '60A四合一电调(6S)', esc80: '80A四合一电调(6S)', esc100: '100A四合一电调(8S)',
     fc_std: 'F405飞控（标准）', fc_f722: 'F722 PRO V2飞控',
     cam_std: '1200TVL F1.0摄像头（标准）', cam_n2: 'N2 Pro夜视摄像头', cam_n2p: 'N2 Pro+夜视摄像头',
+    cam_hik_ir: 'HIK 红外摄像头',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max（光学）· 机载模块', q4max_opt_dg: 'Q4Max（光学）· 机载+地面',
     q4max_ir_d: 'Q4Max（红外）· 机载模块', q4max_ir_dg: 'Q4Max（红外）· 机载+地面',
@@ -146,6 +150,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
   const gemini = usdToCny(26.5, r, k);
   const cobra = usdToCny(220, r, k);
   const dji_o4 = usdToCny(208, r, k);
+  const hik_ir = usdToCny(60, r, k);
   const fib = (km: number) => `¥${fiberPrice(km, xkm, 0)}/¥${fiberPrice(km, xkm, 1)}/¥${fiberPrice(km, xkm, 2)}`;
 
   const subs: Record<Lang, Record<CompNameKey, string>> = {
@@ -154,6 +159,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       esc60: 'штатный', esc80: 'штатный / апгрейд', esc100: 'штатный',
       fc_std: 'включён в стоимость дрона', fc_f722: `$26(обр)/$23(1к+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · ночное зрение · включена', cam_n2: 'превосходит Ratel 2', cam_n2p: 'превосходит Ratel Pro',
+      cam_hik_ir: `HIK инфракрасная · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `камера + TX · несовм. с AI · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: 'антиджаммер · оптическая камера · только модуль дрона',
       q4max_opt_dg: 'антиджаммер · оптическая камера · модуль дрона + наземная станция',
@@ -184,6 +190,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       esc60: 'standard', esc80: 'standard / upgrade', esc100: 'standard',
       fc_std: 'included in drone price', fc_f722: `$26(sample)/$23(1k+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · night vision · included', cam_n2: 'better than Ratel 2', cam_n2p: 'better than Ratel Pro',
+      cam_hik_ir: `HIK infrared · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `camera + TX · AI incompatible · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: 'anti-jam · optical camera · drone module only',
       q4max_opt_dg: 'anti-jam · optical camera · drone module + ground station',
@@ -214,6 +221,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       esc60: '标准款', esc80: '标准款/升级款', esc100: '标准款',
       fc_std: '含在无人机价格中', fc_f722: `$26(样品)/$23(1000+架) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: '超级HDR · 夜视 · 已含', cam_n2: '优于Ratel 2', cam_n2p: '优于Ratel Pro',
+      cam_hik_ir: `HIK 红外 · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `摄像头+图传 · 与AI不兼容 · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: '抗干扰 · 光学摄像头 · 仅机载模块',
       q4max_opt_dg: '抗干扰 · 光学摄像头 · 机载模块+地面站',
@@ -257,6 +265,7 @@ function buildComponents(
   const geminiPrice = usdToCny(26.5, r, k);
   const cobraPrice = usdToCny(220, r, k);
   const djiPrice = usdToCny(208, r, k);
+  const hikIrPrice = usdToCny(60, r, k);
 
   const is10 = modelId === 'F10';
   const is13 = modelId === 'F13';
@@ -298,6 +307,7 @@ function buildComponents(
       { id: 'cam_std', name: cn.cam_std, sub: cs.cam_std, prices: null, incl: true, default: true },
       { id: 'cam_n2', name: cn.cam_n2, sub: cs.cam_n2, prices: tp(160, 135, 120) },
       { id: 'cam_n2p', name: cn.cam_n2p, sub: cs.cam_n2p, prices: tp(180, 150, 135) },
+      { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
       // camera+TX combos — VTX section hidden when selected; DJI also blocks AI
       { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },

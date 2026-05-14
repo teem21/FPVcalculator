@@ -440,3 +440,62 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
 }
 .save-cfg-btn:hover { filter: brightness(1.1); }
 .save-cfg-btn:active { transform: translateY(1px); }
+
+/* ── BOTTOM TOOLBAR ── */
+.bottom-toolbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+  display: flex; align-items: stretch; justify-content: space-around;
+  background: #fff; border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 14px rgba(0,0,0,0.05);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.bt-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 9px 4px 8px; background: transparent; border: none;
+  font-family: inherit; color: var(--text3); cursor: pointer;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bt-tab .bt-icon { font-size: 18px; line-height: 1; }
+.bt-tab .bt-label { font-size: 10px; font-family: var(--mono); font-weight: 600; letter-spacing: 0.02em; }
+.bt-tab.active { color: var(--accent); }
+.bt-tab.active .bt-icon { transform: scale(1.05); }
+.bt-tab:hover:not(.active) { color: var(--text); }
+
+/* hide order tab on desktop — order list lives in sidebar */
+@media (min-width: 769px) { .bt-tab.mobile-only { display: none; } }
+
+/* push content above toolbar */
+body { padding-bottom: 56px; }
+@supports (padding: env(safe-area-inset-bottom)) {
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)); }
+}
+
+/* ── STATIC VIEWS (overview / contact / order) ── */
+.static-view { max-width: 720px; margin: 0 auto; padding: 1.5rem 0; }
+.static-body { color: var(--text2); font-size: 14px; line-height: 1.7; margin: 0 0 24px; }
+.contact-links { display: flex; flex-direction: column; gap: 10px; }
+.contact-links a {
+  display: block; padding: 14px 18px; border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text); text-decoration: none;
+  font-family: var(--mono); font-size: 13px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.contact-links a:hover { border-color: var(--accent); background: var(--bg); }
+.cta-btn {
+  display: inline-block; padding: 12px 24px;
+  background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm);
+  font-family: var(--mono); font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: filter 0.15s;
+}
+.cta-btn:hover { filter: brightness(1.1); }
+
+.order-view { max-width: 720px; margin: 0 auto; }
+.sidebar.inline {
+  position: static; width: 100%; max-width: none; height: auto;
+  box-shadow: none; border: 1px solid var(--border); border-radius: var(--r);
+  transform: none !important;
+}
+
+/* hide desktop sidebar when in order view (mobile) — order view is full-width */
+.view-order .sidebar:not(.inline) { display: none; }
