@@ -35,7 +35,7 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
       <button type="button" className="ground-header" onClick={() => setOpen(o => !o)}>
         <div className="ground-header-info">
           <div className="model-title">
-            <span className="comp-sec-chevron">{open ? '▾' : '▸'}</span>
+            <span className="comp-sec-chevron" aria-label={open ? 'collapse' : 'expand'}>▸</span>
             {ts(lang, titleKey)}
           </div>
           <div className="model-sub">{ts(lang, subKey)}</div>

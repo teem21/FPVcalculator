@@ -187,16 +187,29 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
   font-size: 10px; font-family: var(--mono); font-weight: 600;
   text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3);
 }
-.comp-sec { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface, transparent); }
-.comp-sec.open { border-color: rgba(26,58,92,0.25); }
+.comp-sec { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--surface, transparent); transition: border-color 0.15s, box-shadow 0.15s; }
+.comp-sec:hover { border-color: var(--accent); }
+.comp-sec.open { border-color: rgba(26,58,92,0.4); box-shadow: 0 1px 6px rgba(26,58,92,0.08); }
 .comp-sec-header {
   width: 100%; display: flex; align-items: center; justify-content: space-between;
   gap: 10px; padding: 10px 12px; background: transparent; border: none; cursor: pointer;
   text-align: left; font-family: inherit; color: inherit;
 }
 .comp-sec-header:hover { background: var(--bg); }
-.comp-sec-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.comp-sec-chevron { color: var(--text3); font-size: 11px; width: 12px; display: inline-block; }
+.comp-sec-header-left { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.comp-sec-chevron {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-lt); color: var(--accent);
+  font-size: 13px; font-weight: 700; line-height: 1;
+  border: 1px solid rgba(26,58,92,0.2);
+  transition: background 0.15s, color 0.15s, transform 0.2s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.comp-sec-header:hover .comp-sec-chevron,
+.ground-header:hover .comp-sec-chevron { background: var(--accent); color: #fff; border-color: var(--accent); }
+.comp-sec.open .comp-sec-chevron,
+.ground-card.open .comp-sec-chevron { background: var(--accent); color: #fff; border-color: var(--accent); transform: rotate(90deg); }
 .comp-sec-preview {
   font-size: 12px; color: var(--text2); text-align: right;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
@@ -518,4 +531,3 @@ body { padding-bottom: 56px; }
   font-family: var(--mono); font-size: 12px; font-weight: 600;
   color: var(--accent); flex-shrink: 0;
 }
-.ground-card.open .comp-sec-chevron { color: var(--accent); }

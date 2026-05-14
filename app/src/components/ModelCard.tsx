@@ -66,7 +66,7 @@ export function ModelCard({
           <div className={`comp-sec${versionOpen ? ' open' : ''}`}>
             <button type="button" className="comp-sec-header" onClick={() => setVersionOpen(o => !o)}>
               <div className="comp-sec-header-left">
-                <span className="comp-sec-chevron">{versionOpen ? '▾' : '▸'}</span>
+                <span className="comp-sec-chevron" aria-label={versionOpen ? 'collapse' : 'expand'}>▸</span>
                 <span className="comp-sec-title">{ts(lang, 'versions')}</span>
               </div>
               {!versionOpen && <span className="comp-sec-preview">{verPreview}</span>}
