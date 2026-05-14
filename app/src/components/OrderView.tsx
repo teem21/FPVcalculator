@@ -34,8 +34,6 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
   const grouped = groupItems(group.items);
   const dronesText = ts(lang, 'totalDrones').replace('{n}', String(group.droneCount));
 
-  let counter = 0;
-
   return (
     <div className={`order-config${open ? ' open' : ''}`}>
       <button type="button" className="order-config-header" onClick={() => setOpen(o => !o)}>
@@ -56,9 +54,7 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
           <table className="order-table">
             <thead>
               <tr>
-                <th className="col-no">{ts(lang, 'colNo')}</th>
-                <th className="col-name">{ts(lang, 'colName')}</th>
-                <th className="col-spec">{ts(lang, 'colSpec')}</th>
+                <th className="col-item">{ts(lang, 'colName')}</th>
                 <th className="col-qty">{ts(lang, 'colQty')}</th>
                 <th className="col-unit">{ts(lang, 'colUnit')}</th>
                 <th className="col-total">{ts(lang, 'colTotal')}</th>
@@ -72,24 +68,21 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
                 return (
                   <Fragment key={gk}>
                     <tr className="order-table-group">
-                      <td colSpan={6}>{ts(lang, GROUP_LABEL_KEY[gk])}</td>
+                      <td colSpan={4}>{ts(lang, GROUP_LABEL_KEY[gk])}</td>
                     </tr>
-                    {rows.map((r, i) => {
-                      counter++;
-                      return (
-                        <tr key={`${gk}-${i}`}>
-                          <td className="col-no">{counter}</td>
-                          <td className="col-name">{r.name}</td>
-                          <td className="col-spec">{r.sub || '—'}</td>
-                          <td className="col-qty">{r.qty}</td>
-                          <td className="col-unit">¥{r.unitPrice.toLocaleString()}</td>
-                          <td className="col-total">¥{r.price.toLocaleString()}</td>
-                        </tr>
-                      );
-                    })}
+                    {rows.map((r, i) => (
+                      <tr key={`${gk}-${i}`}>
+                        <td className="col-item">
+                          <div className="item-name">{r.name}</div>
+                          {r.sub && <div className="item-sub">{r.sub}</div>}
+                        </td>
+                        <td className="col-qty">×{r.qty}</td>
+                        <td className="col-unit">¥{r.unitPrice.toLocaleString()}</td>
+                        <td className="col-total">¥{r.price.toLocaleString()}</td>
+                      </tr>
+                    ))}
                     <tr className="order-table-subtotal">
-                      <td />
-                      <td colSpan={4}>{ts(lang, 'grpSubtotal')} · {ts(lang, GROUP_LABEL_KEY[gk])}</td>
+                      <td colSpan={3}>{ts(lang, 'grpSubtotal')} · {ts(lang, GROUP_LABEL_KEY[gk])}</td>
                       <td className="col-total">¥{subtotal.toLocaleString()}</td>
                     </tr>
                   </Fragment>
@@ -98,7 +91,7 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={5}>{ts(lang, 'totalLbl')} · {group.groupLabel}</td>
+                <td colSpan={3}>{ts(lang, 'totalLbl')} · {group.groupLabel}</td>
                 <td className="col-total">¥{group.total.toLocaleString()}</td>
               </tr>
             </tfoot>
