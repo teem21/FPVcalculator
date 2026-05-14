@@ -17,6 +17,7 @@ import './App.css';
 export default function App() {
   const c = useConfigurator();
   const [view, setView] = useState<View>('configs');
+  const [quickOpen, setQuickOpen] = useState(false);
 
   const exportXlsx = () => downloadOrderXlsx({
     groups: c.summary.groups,
@@ -183,13 +184,37 @@ export default function App() {
 
       {view === 'configs' && c.summary.hasAny && (
         <div className="quick-check-bar">
-          <button className="quick-check-info" onClick={() => setView('order')}>
+          <button className="quick-check-info" onClick={() => setQuickOpen(true)}>
             <span className="quick-check-label">{ts(c.lang, 'quickCheck')}</span>
             <span className="quick-check-total">¥{c.cnyTotal.toLocaleString()} FOB · ${c.usdTotal.toLocaleString()}</span>
           </button>
           <button className="quick-check-download" onClick={exportXlsx}>
             {ts(c.lang, 'quickDownload')}
           </button>
+        </div>
+      )}
+
+      {quickOpen && (
+        <div className="quick-modal-backdrop" onClick={() => setQuickOpen(false)}>
+          <div className="quick-modal" onClick={e => e.stopPropagation()}>
+            <div className="quick-modal-header">
+              <div className="quick-modal-title">{ts(c.lang, 'summary')}</div>
+              <button className="quick-modal-close" onClick={() => setQuickOpen(false)}>×</button>
+            </div>
+            <div className="quick-modal-body">
+              <OrderView
+                lang={c.lang}
+                pricing={c.pricing}
+                groups={c.summary.groups}
+                grandTotal={c.summary.grandTotal}
+                cnyTotal={c.cnyTotal}
+                usdTotal={c.usdTotal}
+                hasAny={c.summary.hasAny}
+                onReset={() => { c.resetCurrent(); setQuickOpen(false); }}
+                onExport={exportXlsx}
+              />
+            </div>
+          </div>
         </div>
       )}
 
