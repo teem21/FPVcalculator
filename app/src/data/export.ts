@@ -102,6 +102,7 @@ export async function downloadOrderXlsx(params: {
 
   // ── DATA ROWS ──
   let itemIndex = 1;
+  const allDataRanges: Array<{ start: number; end: number }> = [];
 
   groups.forEach((group, gi) => {
     // Config group header
@@ -114,35 +115,42 @@ export async function downloadOrderXlsx(params: {
     ws.getRow(row).height = 18;
     row++;
 
+    const dataStart = row;
     group.items.forEach(item => {
-      const cols = [
-        itemIndex,
-        item.name,
-        item.qty,
-        item.unitPrice,
-        item.price,
-      ];
-      cols.forEach((val, i) => {
-        const c = cell(ws, row, i + 1);
-        c.value = val;
+      // # / Name / Qty / Unit / Total — Total is a formula =Qty*Unit
+      const valByCol: Record<number, number | string> = {
+        1: itemIndex,
+        2: item.name,
+        3: item.qty,
+        4: item.unitPrice,
+      };
+      for (let i = 1; i <= 5; i++) {
+        const c = cell(ws, row, i);
+        if (i === 5) {
+          c.value = { formula: `C${row}*D${row}`, result: item.price } as ExcelJS.CellFormulaValue;
+        } else {
+          c.value = valByCol[i];
+        }
         c.font = { size: 11 };
         c.alignment = {
-          horizontal: i === 1 ? 'left' : 'center',
+          horizontal: i === 2 ? 'left' : 'center',
           vertical: 'middle',
         };
-        if (i === 3 || i === 4) {
+        if (i === 4 || i === 5) {
           c.numFmt = '¥#,##0';
           c.alignment = { horizontal: 'right', vertical: 'middle' };
         }
         c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: row % 2 === 0 ? 'FFF7F6F3' : `FF${WHITE}` } };
         applyBorder(c);
-      });
+      }
       ws.getRow(row).height = 18;
       row++;
       itemIndex++;
     });
+    const dataEnd = row - 1;
+    allDataRanges.push({ start: dataStart, end: dataEnd });
 
-    // Config subtotal (only when multiple configs)
+    // Config subtotal (only when multiple configs) — formula =SUM(E{start}:E{end})
     if (groups.length > 1) {
       const subtotalLabel = lang === 'ru' ? `Итого ${group.groupLabel}` : lang === 'en' ? `Subtotal ${group.groupLabel}` : `小计 ${group.groupLabel}`;
       ws.mergeCells(row, 1, row, 4);
@@ -154,7 +162,7 @@ export async function downloadOrderXlsx(params: {
       applyBorder(slCell);
 
       const stCell = cell(ws, row, 5);
-      stCell.value = group.total;
+      stCell.value = { formula: `SUM(E${dataStart}:E${dataEnd})`, result: group.total } as ExcelJS.CellFormulaValue;
       stCell.numFmt = '¥#,##0';
       stCell.font = { bold: true, size: 11, color: { argb: `FF${ACCENT}` } };
       stCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${ACCENT_LT}` } };
@@ -170,17 +178,23 @@ export async function downloadOrderXlsx(params: {
 
   row++;
 
-  // ── GRAND TOTAL CNY ──
+  // Build raw sum formula across all line totals (column E)
+  const rawSumFormula = allDataRanges.length
+    ? allDataRanges.map(r => `SUM(E${r.start}:E${r.end})`).join('+')
+    : '0';
+
+  // ── GRAND TOTAL CNY (formula = raw × FOB) ──
   ws.mergeCells(row, 1, row, 4);
   const gtLabel = cell(ws, row, 1);
-  gtLabel.value = lang === 'ru' ? 'ИТОГО (¥ с FOB)' : lang === 'en' ? 'TOTAL (¥ FOB)' : '合计 (¥ 含FOB)';
+  gtLabel.value = lang === 'ru' ? `ИТОГО (¥ с FOB ×${pricing.fobK})` : lang === 'en' ? `TOTAL (¥ FOB ×${pricing.fobK})` : `合计 (¥ 含FOB ×${pricing.fobK})`;
   gtLabel.font = { bold: true, size: 12, color: { argb: `FF${WHITE}` } };
   gtLabel.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${ACCENT}` } };
   gtLabel.alignment = { horizontal: 'right', vertical: 'middle' };
   applyBorder(gtLabel);
 
+  const cnyRow = row;
   const gtVal = cell(ws, row, 5);
-  gtVal.value = cnyTotal;
+  gtVal.value = { formula: `(${rawSumFormula})*${pricing.fobK}`, result: cnyTotal } as ExcelJS.CellFormulaValue;
   gtVal.numFmt = '¥#,##0';
   gtVal.font = { bold: true, size: 12, color: { argb: `FF${WHITE}` } };
   gtVal.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${ACCENT}` } };
@@ -189,17 +203,17 @@ export async function downloadOrderXlsx(params: {
   ws.getRow(row).height = 24;
   row++;
 
-  // ── USD TOTAL ──
+  // ── USD TOTAL (formula = CNY ÷ rate) ──
   ws.mergeCells(row, 1, row, 4);
   const usdLabel = cell(ws, row, 1);
-  usdLabel.value = lang === 'ru' ? '≈ ИТОГО (USD FOB)' : lang === 'en' ? '≈ TOTAL (USD FOB)' : '≈ 合计 (USD FOB)';
+  usdLabel.value = lang === 'ru' ? `≈ ИТОГО (USD, курс ${pricing.rate})` : lang === 'en' ? `≈ TOTAL (USD, rate ${pricing.rate})` : `≈ 合计 (USD, 汇率 ${pricing.rate})`;
   usdLabel.font = { bold: true, size: 12, color: { argb: `FF${WHITE}` } };
   usdLabel.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${GREEN}` } };
   usdLabel.alignment = { horizontal: 'right', vertical: 'middle' };
   applyBorder(usdLabel);
 
   const usdVal = cell(ws, row, 5);
-  usdVal.value = usdTotal;
+  usdVal.value = { formula: `E${cnyRow}/${pricing.rate}`, result: usdTotal } as ExcelJS.CellFormulaValue;
   usdVal.numFmt = '$#,##0';
   usdVal.font = { bold: true, size: 12, color: { argb: `FF${WHITE}` } };
   usdVal.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${GREEN}` } };
@@ -211,7 +225,11 @@ export async function downloadOrderXlsx(params: {
   // ── FORMULA NOTE ──
   ws.mergeCells(row, 1, row, 5);
   const noteCell = cell(ws, row, 1);
-  noteCell.value = `¥${grandTotal.toLocaleString()} × ${pricing.fobK} ÷ ${pricing.rate} = $${usdTotal.toLocaleString()}`;
+  noteCell.value = lang === 'ru'
+    ? `Σ(qty × unit) × ${pricing.fobK} = ¥${grandTotal.toLocaleString()} × ${pricing.fobK} = ¥${cnyTotal.toLocaleString()} ÷ ${pricing.rate} = $${usdTotal.toLocaleString()}  ·  значения можно править — формулы пересчитаются`
+    : lang === 'en'
+      ? `Σ(qty × unit) × ${pricing.fobK} = ¥${grandTotal.toLocaleString()} × ${pricing.fobK} = ¥${cnyTotal.toLocaleString()} ÷ ${pricing.rate} = $${usdTotal.toLocaleString()}  ·  edit values — formulas will recalc`
+      : `Σ(qty × unit) × ${pricing.fobK} = ¥${grandTotal.toLocaleString()} × ${pricing.fobK} = ¥${cnyTotal.toLocaleString()} ÷ ${pricing.rate} = $${usdTotal.toLocaleString()}  ·  可修改数值，公式会自动重算`;
   noteCell.font = { size: 9, italic: true, color: { argb: 'FFA8A59E' } };
   noteCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: `FF${GREEN_LT}` } };
   noteCell.alignment = { horizontal: 'right', vertical: 'middle' };
