@@ -34,13 +34,14 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
     <div className={`model-card ground-card${open ? ' open' : ''}`}>
       <button type="button" className="ground-header" onClick={() => setOpen(o => !o)}>
         <div className="ground-header-info">
-          <div className="model-title">
-            <span className="comp-sec-chevron" aria-label={open ? 'collapse' : 'expand'}>▸</span>
-            {ts(lang, titleKey)}
-          </div>
+          <div className="model-title">{ts(lang, titleKey)}</div>
           <div className="model-sub">{ts(lang, subKey)}</div>
         </div>
         {preview && <span className="ground-preview">{preview}</span>}
+        <span className="acc-toggle">
+          <span className="acc-toggle-label">{ts(lang, open ? 'collapse' : 'expand')}</span>
+          <span className="acc-toggle-tri" aria-hidden="true">▶</span>
+        </span>
       </button>
 
       {open && (

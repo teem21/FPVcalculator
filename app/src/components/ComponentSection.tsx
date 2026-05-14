@@ -28,10 +28,13 @@ export function ComponentSection({ section, tier, lang, selections, disabledIds 
     <div className={`comp-sec${open ? ' open' : ''}`}>
       <button type="button" className="comp-sec-header" onClick={() => setOpen(o => !o)}>
         <div className="comp-sec-header-left">
-          <span className="comp-sec-chevron" aria-label={open ? 'collapse' : 'expand'}>▸</span>
           <span className="comp-sec-title">{section.titleKey}</span>
         </div>
         {!open && preview && <span className="comp-sec-preview">{preview}</span>}
+        <span className="acc-toggle">
+          <span className="acc-toggle-label">{ts(lang, open ? 'collapse' : 'expand')}</span>
+          <span className="acc-toggle-tri" aria-hidden="true">▶</span>
+        </span>
       </button>
       {open && (
         <div className="comp-sec-body">

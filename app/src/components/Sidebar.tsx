@@ -26,9 +26,12 @@ function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: 
   return (
     <div className={`sum-group${open ? ' open' : ''}`}>
       <button type="button" className="sum-group-header" onClick={() => setOpen(o => !o)}>
-        <span className="comp-sec-chevron" aria-label={open ? 'collapse' : 'expand'}>▸</span>
         <span className="sum-group-label">{group.groupLabel}</span>
         <span className="sum-group-meta">{itemCount} · ¥{group.total.toLocaleString()}</span>
+        <span className="acc-toggle">
+          <span className="acc-toggle-label">{ts(lang, open ? 'collapse' : 'expand')}</span>
+          <span className="acc-toggle-tri" aria-hidden="true">▶</span>
+        </span>
       </button>
       {open && (
         <div className="sum-group-body">
