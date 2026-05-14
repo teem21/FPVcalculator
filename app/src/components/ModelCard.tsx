@@ -21,6 +21,7 @@ export function ModelCard({
   onQtyChange, onQtyDelta, onSelectVersion, onSelectComponent,
 }: Props) {
   const ver = model.versions.find(v => v.id === selections.version) || model.versions[0];
+  const verPrice = tierPrice(ver.prices, tier);
 
   const cameraSection = model.components.find(s => s.key === 'camera');
   const selectedCamera = cameraSection?.items.find(
@@ -37,7 +38,10 @@ export function ModelCard({
           <div className="m-size">{model.size}</div>
         </div>
         <div className="model-info">
-          <div className="model-title">{model.label} {ver.name}</div>
+          <div className="model-title">
+            {model.label} {ver.name}
+            {verPrice != null && <span className="model-price">¥{verPrice.toLocaleString()}</span>}
+          </div>
           <div className="model-sub">{model.sub}</div>
         </div>
         <div className="model-qty">

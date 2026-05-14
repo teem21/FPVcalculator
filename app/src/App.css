@@ -147,6 +147,7 @@ h1 { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1.2; }
 .model-badge .m-name { font-size: 18px; line-height: 1; }
 .model-badge .m-size { font-size: 10px; color: rgba(255,255,255,0.6); }
 .model-info .model-title { font-size: 15px; font-weight: 600; }
+.model-info .model-price { margin-left: 10px; color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; }
 .model-info .model-sub { font-size: 11px; color: var(--text3); margin-top: 3px; line-height: 1.5; }
 .model-qty { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .qty-btn {
