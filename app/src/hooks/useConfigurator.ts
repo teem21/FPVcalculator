@@ -165,34 +165,16 @@ export function useConfigurator() {
     let hasAny = false;
     const groups: SummaryGroup[] = [];
 
-    const SPEC_SECTIONS: Array<{ key: string; labelKey: 'spec_version' | 'spec_battery' | 'spec_esc' | 'spec_fc' | 'spec_camera' | 'spec_vtx' | 'spec_rx' | 'spec_tx' | 'spec_fib_gnd' | 'spec_fib_len' | 'spec_ai' }> = [
-      { key: 'battery', labelKey: 'spec_battery' },
-      { key: 'esc', labelKey: 'spec_esc' },
-      { key: 'fc', labelKey: 'spec_fc' },
-      { key: 'camera', labelKey: 'spec_camera' },
-      { key: 'vtx', labelKey: 'spec_vtx' },
-      { key: 'rx', labelKey: 'spec_rx' },
-      { key: 'tx', labelKey: 'spec_tx' },
-      { key: 'fib_gnd', labelKey: 'spec_fib_gnd' },
-      { key: 'fib_len', labelKey: 'spec_fib_len' },
-      { key: 'ai', labelKey: 'spec_ai' },
-    ];
-
     configs.forEach(cfg => {
       const items: SummaryGroup['items'] = [];
       let cfgTotal = 0;
       let droneCount = 0;
-      let modelLabel = '';
-      let modelQty = 0;
-      const specs: SummaryGroup['specs'] = [];
 
       models.forEach(model => {
         const qty = cfg.modelQtys[model.id] || 0;
         if (!qty) return;
         hasAny = true;
         droneCount += qty;
-        modelLabel = model.label;
-        modelQty = qty;
         const sel = cfg.selections[model.id];
         if (!sel) return;
         const ver = model.versions.find(v => v.id === sel.version) || model.versions[0];
@@ -201,16 +183,6 @@ export function useConfigurator() {
         cfgTotal += dt;
         grandTotal += dt;
         items.push({ name: `${model.label} ${ver.name}`, sub: ver.sub, qty, unitPrice: bp, price: dt, group: 'drone' });
-
-        specs.push({ label: ts(lang, 'spec_version'), value: ver.name });
-
-        SPEC_SECTIONS.forEach(({ key, labelKey }) => {
-          const sec = model.components.find(s => s.key === key);
-          if (!sec) return;
-          const selected = sec.items.find(it => !!(sel as Record<string, unknown>)[it.id]);
-          if (!selected) return;
-          specs.push({ label: ts(lang, labelKey), value: selected.name });
-        });
 
         model.components.forEach(sec => {
           sec.items.forEach(it => {
@@ -253,10 +225,7 @@ export function useConfigurator() {
       });
 
       if (items.length) {
-        groups.push({
-          groupLabel: `${ts(lang, 'cfg')} ${String.fromCharCode(64 + cfg.id)}`,
-          configId: cfg.id, items, total: cfgTotal, droneCount, modelLabel, modelQty, specs,
-        });
+        groups.push({ groupLabel: `${ts(lang, 'cfg')} ${cfg.id}`, configId: cfg.id, items, total: cfgTotal, droneCount });
       }
     });
 

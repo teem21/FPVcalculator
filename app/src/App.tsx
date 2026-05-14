@@ -181,6 +181,18 @@ export default function App() {
         )}
       </div>
 
+      {view === 'configs' && c.summary.hasAny && (
+        <div className="quick-check-bar">
+          <button className="quick-check-info" onClick={() => setView('order')}>
+            <span className="quick-check-label">{ts(c.lang, 'quickCheck')}</span>
+            <span className="quick-check-total">¥{c.cnyTotal.toLocaleString()} FOB · ${c.usdTotal.toLocaleString()}</span>
+          </button>
+          <button className="quick-check-download" onClick={exportXlsx}>
+            {ts(c.lang, 'quickDownload')}
+          </button>
+        </div>
+      )}
+
       <BottomToolbar lang={c.lang} view={view} onChange={setView} />
     </>
   );
