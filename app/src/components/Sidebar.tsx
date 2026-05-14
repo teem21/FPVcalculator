@@ -28,9 +28,10 @@ function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: 
       <button type="button" className="sum-group-header" onClick={() => setOpen(o => !o)}>
         <span className="sum-group-label">{group.groupLabel}</span>
         <span className="sum-group-meta">{itemCount} · ¥{group.total.toLocaleString()}</span>
-        <span className="acc-toggle">
-          <span className="acc-toggle-label">{ts(lang, open ? 'collapse' : 'expand')}</span>
-          <span className="acc-toggle-tri" aria-hidden="true">▶</span>
+        <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
+          <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
+            <polygon points="4,2 13,8 4,14" />
+          </svg>
         </span>
       </button>
       {open && (

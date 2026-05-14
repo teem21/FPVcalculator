@@ -38,9 +38,10 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
           <div className="model-sub">{ts(lang, subKey)}</div>
         </div>
         {preview && <span className="ground-preview">{preview}</span>}
-        <span className="acc-toggle">
-          <span className="acc-toggle-label">{ts(lang, open ? 'collapse' : 'expand')}</span>
-          <span className="acc-toggle-tri" aria-hidden="true">▶</span>
+        <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
+          <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
+            <polygon points="4,2 13,8 4,14" />
+          </svg>
         </span>
       </button>
 
