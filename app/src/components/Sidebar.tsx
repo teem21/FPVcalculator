@@ -22,12 +22,15 @@ interface Props {
 
 function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: Lang; defaultOpen: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
-  const itemCount = group.items.length;
+  const dronesText = ts(lang, 'totalDrones').replace('{n}', String(group.droneCount));
   return (
     <div className={`sum-group${open ? ' open' : ''}`}>
       <button type="button" className="sum-group-header" onClick={() => setOpen(o => !o)}>
-        <span className="sum-group-label">{group.groupLabel}</span>
-        <span className="sum-group-meta">{itemCount} · ¥{group.total.toLocaleString()}</span>
+        <span className="sum-group-label">
+          {group.groupLabel}
+          <span className="sum-group-drones">{dronesText}</span>
+        </span>
+        <span className="sum-group-meta">¥{group.total.toLocaleString()}</span>
         <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
           <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
             <polygon points="4,2 13,8 4,14" />

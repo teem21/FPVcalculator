@@ -168,11 +168,13 @@ export function useConfigurator() {
     configs.forEach(cfg => {
       const items: SummaryGroup['items'] = [];
       let cfgTotal = 0;
+      let droneCount = 0;
 
       models.forEach(model => {
         const qty = cfg.modelQtys[model.id] || 0;
         if (!qty) return;
         hasAny = true;
+        droneCount += qty;
         const sel = cfg.selections[model.id];
         if (!sel) return;
         const ver = model.versions.find(v => v.id === sel.version) || model.versions[0];
@@ -210,7 +212,7 @@ export function useConfigurator() {
       });
 
       if (items.length) {
-        groups.push({ groupLabel: `${ts(lang, 'cfg')} ${cfg.id}`, configId: cfg.id, items, total: cfgTotal });
+        groups.push({ groupLabel: `${ts(lang, 'cfg')} ${cfg.id}`, configId: cfg.id, items, total: cfgTotal, droneCount });
       }
     });
 

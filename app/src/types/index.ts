@@ -72,4 +72,5 @@ export interface SummaryGroup {
   configId: number;
   items: SummaryItem[];
   total: number;
+  droneCount: number;
 }
