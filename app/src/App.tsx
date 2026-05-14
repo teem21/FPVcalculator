@@ -10,6 +10,7 @@ import { GroundSection } from '@/components/GroundSection';
 import { Sidebar } from '@/components/Sidebar';
 import { OrderView } from '@/components/OrderView';
 import { BottomToolbar, type View } from '@/components/BottomToolbar';
+import { SpecsTable } from '@/components/SpecsTable';
 import { downloadOrderXlsx } from '@/data/export';
 import type { ConfigSelections } from '@/types';
 import './App.css';
@@ -50,6 +51,19 @@ export default function App() {
                 <h1>{ts(c.lang, 'overviewTitle')}</h1>
               </div>
               <p className="static-body">{ts(c.lang, 'overviewBody')}</p>
+
+              <h2 className="static-section-title">{ts(c.lang, 'specsTitle')}</h2>
+              <p className="static-sub">{ts(c.lang, 'specsSub')}</p>
+              <SpecsTable lang={c.lang} />
+
+              <button
+                className="cta-btn cta-btn-secondary"
+                title={ts(c.lang, 'downloadCompSpecsHint')}
+                onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
+              >
+                {ts(c.lang, 'downloadCompSpecs')}
+              </button>
+
               <button className="cta-btn" onClick={() => setView('configs')}>
                 {ts(c.lang, 'tabConfigs')} →
               </button>

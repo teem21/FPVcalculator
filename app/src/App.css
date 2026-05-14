@@ -722,3 +722,51 @@ body { padding-bottom: 56px; }
   .quick-modal { max-width: none; max-height: 100vh; height: 100vh; border-radius: 0; }
   .quick-modal-body { padding: 14px 14px 24px; }
 }
+
+/* ── OVERVIEW SPECS ── */
+.static-view .static-section-title { margin: 28px 0 6px; font-size: 16px; font-weight: 700; color: var(--text); }
+.static-view .static-sub { color: var(--text2); font-size: 13px; margin: 0 0 14px; }
+.static-view { max-width: 960px; }
+
+.specs-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow);
+  margin-bottom: 18px; overflow-x: auto;
+}
+.specs-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+.specs-table th, .specs-table td {
+  text-align: left; padding: 10px 14px; vertical-align: middle;
+  border-bottom: 1px solid var(--bg2);
+}
+.specs-table thead th { background: var(--accent); color: #fff;
+  font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.specs-table thead th:first-child { background: var(--accent); }
+.specs-table .specs-model { text-align: center; letter-spacing: 0.05em; }
+.specs-table .specs-label {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em;
+  background: var(--bg); width: 200px;
+}
+.specs-table .specs-value {
+  font-family: var(--mono); font-size: 12px; color: var(--text); text-align: center;
+}
+.specs-table .specs-shared {
+  background: var(--accent-lt); color: var(--accent);
+  font-weight: 500; line-height: 1.5;
+}
+.specs-table tbody tr:hover { background: var(--bg); }
+.specs-table tbody tr:hover .specs-label { background: var(--bg2); }
+
+.cta-btn-secondary {
+  background: var(--surface); color: var(--accent);
+  border: 1px solid var(--accent); margin-right: 10px;
+}
+.cta-btn-secondary:hover { background: var(--accent-lt); }
+
+@media (max-width: 640px) {
+  .specs-table { font-size: 11px; }
+  .specs-table th, .specs-table td { padding: 8px 10px; }
+  .specs-table .specs-label { width: 130px; font-size: 10px; }
+  .specs-table .specs-value { font-size: 11px; }
+  .cta-btn-secondary { width: 100%; margin: 0 0 10px; }
+}
