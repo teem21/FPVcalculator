@@ -53,7 +53,9 @@ export function Sidebar({
                 <div className="sum-group-label">{g.groupLabel}</div>
                 {g.items.map((it, i) => (
                   <div key={i} className="sum-row">
-                    <span className="sum-name">{it.name}</span>
+                    <span className="sum-name">
+                      {it.name} <span className="sum-unit">¥{it.unitPrice.toLocaleString()}</span>
+                    </span>
                     <span className="sum-qty">×{it.qty}</span>
                     <span className="sum-price">¥{it.price.toLocaleString()}</span>
                   </div>
