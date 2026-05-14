@@ -71,10 +71,18 @@ export interface SummaryItem {
   group: SummaryGroupKey;
 }
 
+export interface SpecPair {
+  label: string;
+  value: string;
+}
+
 export interface SummaryGroup {
   groupLabel: string;
   configId: number;
   items: SummaryItem[];
   total: number;
   droneCount: number;
+  modelLabel: string;
+  modelQty: number;
+  specs: SpecPair[];
 }
