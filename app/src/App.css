@@ -579,21 +579,25 @@ body { padding-bottom: 56px; }
 .order-config-total { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--accent); }
 .order-config-body { padding: 0 4px 16px; }
 
-.order-table { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.35; }
-.order-table th, .order-table td { text-align: left; padding: 4px 8px; vertical-align: middle; }
+.order-table { width: 100%; table-layout: fixed; border-collapse: collapse;
+  font-size: 11px; line-height: 1.35; }
+.order-table th, .order-table td { text-align: left; padding: 8px 6px; vertical-align: middle;
+  word-break: break-word; overflow-wrap: anywhere; }
 .order-table tbody td { border-bottom: 1px solid var(--bg2); }
 .order-table thead th {
-  font-size: 10px; font-family: var(--mono); font-weight: 700;
+  font-size: 9px; font-family: var(--mono); font-weight: 700;
   color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em;
   border-bottom: 1px solid var(--border); background: var(--bg);
 }
 .order-table tbody tr:not(.order-table-group):not(.order-table-subtotal):hover { background: var(--bg); }
-.order-table .col-no { width: 32px; color: var(--text3); font-family: var(--mono); font-size: 10px; }
-.order-table .col-name { font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-.order-table .col-spec { color: var(--text2); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
-.order-table .col-qty { width: 48px; font-family: var(--mono); font-weight: 600; text-align: right; }
-.order-table .col-unit { width: 90px; font-family: var(--mono); text-align: right; color: var(--text2); }
-.order-table .col-total { width: 100px; font-family: var(--mono); font-weight: 700; text-align: right; color: var(--text); }
+.order-table .col-no { width: 28px; color: var(--text3); font-family: var(--mono); font-size: 10px; }
+.order-table .col-name { font-weight: 500; color: var(--text); display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-clamp: 2; }
+.order-table .col-spec { color: var(--text2); font-size: 10px; display: -webkit-box;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-clamp: 2; }
+.order-table .col-qty { width: 42px; font-family: var(--mono); font-weight: 600; text-align: right; }
+.order-table .col-unit { width: 70px; font-family: var(--mono); text-align: right; color: var(--text2); }
+.order-table .col-total { width: 78px; font-family: var(--mono); font-weight: 700; text-align: right; color: var(--text); }
 .order-table-group td {
   font-size: 10px; font-family: var(--mono); font-weight: 700; color: var(--accent);
   text-transform: uppercase; letter-spacing: 0.08em;
@@ -627,19 +631,18 @@ body { padding-bottom: 56px; }
 .order-actions { display: flex; gap: 10px; margin-top: 14px; }
 .order-actions .export-btn, .order-actions .reset-btn { flex: 1; }
 
-/* Mobile: keep as a real table but compact; allow horizontal scroll on overflow */
+/* Mobile: compact table, allow wrap so no horizontal scroll needed */
 @media (max-width: 640px) {
   .order-config-header { padding: 12px; gap: 10px; }
   .order-config-total { font-size: 14px; }
-  .order-config-body { overflow-x: auto; padding: 0 0 12px; }
-  .order-table { font-size: 11px; min-width: 520px; }
-  .order-table th, .order-table td { padding: 3px 6px; }
-  .order-table .col-no { width: 26px; font-size: 9px; }
-  .order-table .col-name { max-width: 160px; }
-  .order-table .col-spec { max-width: 200px; font-size: 10px; }
-  .order-table .col-qty { width: 38px; }
-  .order-table .col-unit { width: 70px; }
-  .order-table .col-total { width: 80px; }
+  .order-config-body { padding: 0 0 12px; }
+  .order-table { font-size: 10px; }
+  .order-table th, .order-table td { padding: 6px 4px; }
+  .order-table .col-no { width: 22px; font-size: 9px; }
+  .order-table .col-spec { font-size: 9px; }
+  .order-table .col-qty { width: 32px; }
+  .order-table .col-unit { width: 56px; }
+  .order-table .col-total { width: 60px; font-size: 11px; }
   .order-grand { padding: 14px 16px; }
   .order-grand-cny { font-size: 18px; }
 }
