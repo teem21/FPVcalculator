@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Lang } from '@/types';
 import type { SummaryGroup } from '@/types';
 import type { PricingParams } from '@/data/pricing';
@@ -17,6 +18,38 @@ interface Props {
   onReset: () => void;
   onExport: () => void;
   inline?: boolean;
+}
+
+function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: Lang; defaultOpen: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const itemCount = group.items.length;
+  return (
+    <div className={`sum-group${open ? ' open' : ''}`}>
+      <button type="button" className="sum-group-header" onClick={() => setOpen(o => !o)}>
+        <span className="comp-sec-chevron" aria-label={open ? 'collapse' : 'expand'}>▸</span>
+        <span className="sum-group-label">{group.groupLabel}</span>
+        <span className="sum-group-meta">{itemCount} · ¥{group.total.toLocaleString()}</span>
+      </button>
+      {open && (
+        <div className="sum-group-body">
+          {group.items.map((it, i) => (
+            <div key={i} className="sum-row">
+              <span className="sum-name">
+                {it.name} <span className="sum-unit">¥{it.unitPrice.toLocaleString()}</span>
+              </span>
+              <span className="sum-qty">×{it.qty}</span>
+              <span className="sum-price">¥{it.price.toLocaleString()}</span>
+            </div>
+          ))}
+          <div className="sum-row sum-group-total">
+            <span className="sum-name">{ts(lang, 'totalLbl')} {group.groupLabel}</span>
+            <span />
+            <span className="sum-price">¥{group.total.toLocaleString()}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function Sidebar({
@@ -48,31 +81,9 @@ export function Sidebar({
             </div>
           </div>
         ) : (
-          <div>
+          <div className="sum-groups">
             {groups.map(g => (
-              <div key={g.configId}>
-                <div className="sum-group-label">{g.groupLabel}</div>
-                {g.items.map((it, i) => (
-                  <div key={i} className="sum-row">
-                    <span className="sum-name">
-                      {it.name} <span className="sum-unit">¥{it.unitPrice.toLocaleString()}</span>
-                    </span>
-                    <span className="sum-qty">×{it.qty}</span>
-                    <span className="sum-price">¥{it.price.toLocaleString()}</span>
-                  </div>
-                ))}
-                {multipleConfigs && (
-                  <div className="sum-row" style={{ borderTop: '1px dashed var(--border)', paddingTop: 5 }}>
-                    <span className="sum-name" style={{ color: 'var(--text)', fontWeight: 500 }}>
-                      {ts(lang, 'totalLbl')} {g.groupLabel}
-                    </span>
-                    <span />
-                    <span className="sum-price" style={{ color: 'var(--accent)' }}>
-                      ¥{g.total.toLocaleString()}
-                    </span>
-                  </div>
-                )}
-              </div>
+              <ConfigBlock key={g.configId} group={g} lang={lang} defaultOpen={!multipleConfigs || groups.length === 1} />
             ))}
           </div>
         )}
