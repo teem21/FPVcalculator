@@ -17,6 +17,13 @@ export default function App() {
   return (
     <>
       <LangBar lang={c.lang} onChangeLang={c.setLang} />
+      {c.summary.hasAny && (
+        <button className="mobile-total-bar" onClick={() => c.setSidebarOpen(true)}>
+          <span className="mobile-total-label">{ts(c.lang, 'totalLbl')}</span>
+          <span className="mobile-total-val">¥{c.cnyTotal.toLocaleString()} FOB</span>
+          <span className="mobile-total-arrow">→</span>
+        </button>
+      )}
       <div className="app">
         <div className="main">
           <div className="header">
@@ -70,6 +77,7 @@ export default function App() {
                         onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
                         titleKey="antennas"
                         subKey="antennasSub"
+                        grid
                       />
                       <button className="save-cfg-btn" onClick={c.addConfig}>
                         {ts(c.lang, 'saveCfg')}

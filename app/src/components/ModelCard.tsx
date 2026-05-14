@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { Lang, Tier, DroneModel, ConfigSelections } from '@/types';
 import { tierPrice } from '@/data/pricing';
 import { ts } from '@/data/i18n';
@@ -30,6 +31,9 @@ export function ModelCard({
   const vtxHidden = selectedCamera?.includesVtx ?? false;
   const aiBlocked = selectedCamera?.blocksAi ?? false;
 
+  const [versionOpen, setVersionOpen] = useState(false);
+  const verPreview = verPrice != null ? `${ver.name} · ¥${verPrice.toLocaleString()}` : ver.name;
+
   return (
     <div className={`model-card${qty > 0 ? ' active' : ''}`}>
       <div className="model-top">
@@ -59,24 +63,29 @@ export function ModelCard({
 
       {qty > 0 && (
         <div className="comp-area">
-          <div>
-            <div className="comp-sec-title">{ts(lang, 'versions')}</div>
-            {model.versions.map(v => (
-              <ComponentItemRow
-                key={v.id}
-                item={{
-                  id: v.id,
-                  name: v.name,
-                  sub: v.sub,
-                  prices: v.prices,
-                }}
-                tier={tier}
-                lang={lang}
-                type="radio"
-                selected={selections.version === v.id}
-                onClick={() => onSelectVersion(v.id)}
-              />
-            ))}
+          <div className={`comp-sec${versionOpen ? ' open' : ''}`}>
+            <button type="button" className="comp-sec-header" onClick={() => setVersionOpen(o => !o)}>
+              <div className="comp-sec-header-left">
+                <span className="comp-sec-chevron">{versionOpen ? '▾' : '▸'}</span>
+                <span className="comp-sec-title">{ts(lang, 'versions')}</span>
+              </div>
+              {!versionOpen && <span className="comp-sec-preview">{verPreview}</span>}
+            </button>
+            {versionOpen && (
+              <div className="comp-sec-body">
+                {model.versions.map(v => (
+                  <ComponentItemRow
+                    key={v.id}
+                    item={{ id: v.id, name: v.name, sub: v.sub, prices: v.prices }}
+                    tier={tier}
+                    lang={lang}
+                    type="radio"
+                    selected={selections.version === v.id}
+                    onClick={() => onSelectVersion(v.id)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {model.components.map(sec => {

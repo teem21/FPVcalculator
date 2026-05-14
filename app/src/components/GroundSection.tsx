@@ -11,9 +11,10 @@ interface Props {
   onQtyDelta: (itemId: string, delta: number) => void;
   titleKey?: 'ground' | 'antennas';
   subKey?: 'groundSub' | 'antennasSub';
+  grid?: boolean;
 }
 
-export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta, titleKey = 'ground', subKey = 'groundSub' }: Props) {
+export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta, titleKey = 'ground', subKey = 'groundSub', grid = false }: Props) {
   return (
     <div className="model-card ground-card">
       <div className="model-top">
@@ -23,7 +24,7 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
         </div>
       </div>
 
-      <div className="comp-area">
+      <div className={`comp-area${grid ? ' grid-2' : ''}`}>
         {items.map(item => {
           const price = tierPrice(item.prices, tier);
           const qty = qtys[item.id] || 0;
