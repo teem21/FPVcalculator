@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Lang, Tier, ComponentItem } from '@/types';
 import { tierPrice } from '@/data/pricing';
 import { ts } from '@/data/i18n';
+import { NumberInput } from './NumberInput';
 
 interface Props {
   lang: Lang;
@@ -88,11 +89,10 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
                     >
                       <span className="material-symbols-outlined text-sm">remove</span>
                     </button>
-                    <input
-                      type="number"
-                      min="0"
+                    <NumberInput
                       value={qty}
-                      onChange={e => onQtyChange(item.id, parseInt(e.target.value) || 0)}
+                      min={0}
+                      onChange={n => onQtyChange(item.id, n)}
                       className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-0 focus:outline-none focus:ring-0 p-0"
                     />
                     <button

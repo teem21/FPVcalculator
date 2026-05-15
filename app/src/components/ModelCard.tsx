@@ -4,6 +4,7 @@ import { tierPrice } from '@/data/pricing';
 import { ts } from '@/data/i18n';
 import { ComponentItemRow } from './ComponentItem';
 import { ComponentSection } from './ComponentSection';
+import { NumberInput } from './NumberInput';
 
 interface Props {
   model: DroneModel;
@@ -27,11 +28,10 @@ function QtyStepper({ qty, onDelta, onChange }: { qty: number; onDelta: (d: numb
       >
         <span className="material-symbols-outlined text-sm">remove</span>
       </button>
-      <input
-        type="number"
-        min="0"
+      <NumberInput
         value={qty}
-        onChange={e => onChange(parseInt(e.target.value) || 0)}
+        min={0}
+        onChange={onChange}
         className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-0 focus:outline-none focus:ring-0 p-0"
       />
       <button
