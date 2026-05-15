@@ -46,7 +46,8 @@ type CompNameKey =
   | 'fib_no' | 'gnd40' | 'gnd80'
   | 'fib_0' | 'fib_5' | 'fib_10' | 'fib_20' | 'fib_30'
   | 'ai_no' | 'ai1' | 'ai2' | 'ai3' | 'ai4' | 'ai5'
-  | 'rc' | 'goggb' | 'gogbc' | 'chr6' | 'chr8'
+  | 'rc' | 'goggb' | 'gogbc' | 'goggles_l' | 'chr6' | 'chr8'
+  | 'cam_avatar' | 'gm3_v2_20_hd'
   | 'ant_mush' | 'ant_patch' | 'ant_moxon9' | 'ant_moxon24'
   | 'ant_maple' | 'ant_helic' | 'ant_clover' | 'ant_feed'
   | 'nano_jr';
@@ -71,6 +72,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai5: 'ТОП ★ — двойная + тепловизор 640',
     rc: 'Пульт RadioMaster TX12 Mark II', goggb: 'FPV-очки базовые 5.8G',
     gogbc: 'SKYZONE Cobra X V4',
+    goggles_l: 'Goggles L',
+    cam_avatar: 'Avatar HD Moonlight Kit',
+    gm3_v2_20_hd: 'GM3 V2-20-HD',
     chr6: 'Зарядник 6S', chr8: 'Зарядник 8S',
     ant_mush: 'Антенна Mushroom 5.8G LHCP/RHCP 3.7dBi',
     ant_patch: 'Антенна Foxeer Echo Patch 5.8G 8dBi LHCP',
@@ -101,6 +105,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai5: 'TOP ★ — dual + thermal 640',
     rc: 'RadioMaster TX12 Mark II', goggb: 'Basic FPV goggles 5.8G',
     gogbc: 'SKYZONE Cobra X V4',
+    goggles_l: 'Goggles L',
+    cam_avatar: 'Avatar HD Moonlight Kit',
+    gm3_v2_20_hd: 'GM3 V2-20-HD',
     chr6: '6S charger', chr8: '8S charger',
     ant_mush: 'Mushroom 5.8G LHCP/RHCP 3.7dBi antenna',
     ant_patch: 'Foxeer Echo Patch 5.8G 8dBi LHCP antenna',
@@ -131,6 +138,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai5: '顶配★ — 双光学+热成像640',
     rc: 'RadioMaster TX12 Mark II遥控器', goggb: '基础款FPV眼镜 5.8G',
     gogbc: 'SKYZONE Cobra X V4眼镜',
+    goggles_l: 'Goggles L 眼镜',
+    cam_avatar: 'Avatar HD Moonlight Kit',
+    gm3_v2_20_hd: 'GM3 V2-20-HD',
     chr6: '6S充电器', chr8: '8S充电器',
     ant_mush: 'Mushroom 5.8G LHCP/RHCP 3.7dBi 天线',
     ant_patch: 'Foxeer Echo Patch 5.8G 8dBi LHCP 天线',
@@ -174,6 +184,9 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: 'одна камера + тепловизор 384', ai4: 'двойная + тепловизор 384', ai5: 'двойная + тепловизор 640 · максимум',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G стандартные очки',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
+      goggles_l: 'FPV-очки',
+      cam_avatar: 'Walksnail Avatar HD · цифровой комплект ночной съёмки',
+      gm3_v2_20_hd: 'Подвес/крепление GM3 V2-20-HD',
       chr6: 'HOTA D6 Pro · для F10', chr8: 'для F13 / F15',
       ant_mush: 'круговая, бортовая',
       ant_patch: 'направленная, наземная',
@@ -205,6 +218,9 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: 'single cam + thermal 384', ai4: 'dual cam + thermal 384', ai5: 'dual cam + thermal 640 · maximum',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G standard goggles',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
+      goggles_l: 'FPV goggles',
+      cam_avatar: 'Walksnail Avatar HD · digital low-light kit',
+      gm3_v2_20_hd: 'GM3 V2-20-HD mount',
       chr6: 'HOTA D6 Pro · for F10', chr8: 'for F13 / F15',
       ant_mush: 'omni, onboard',
       ant_patch: 'directional, ground',
@@ -236,6 +252,9 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       ai3: '单摄像头+热成像384', ai4: '双摄像头+热成像384', ai5: '双摄像头+热成像640 · 顶配',
       rc: 'ELRS FCC EdgeTX', goggb: '基础款5.8G眼镜',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · 分集接收 · Steadyview`,
+      goggles_l: 'FPV眼镜',
+      cam_avatar: 'Walksnail Avatar HD · 数字夜视套件',
+      gm3_v2_20_hd: 'GM3 V2-20-HD 云台/支架',
       chr6: 'HOTA D6 Pro · F10用', chr8: 'F13/F15用',
       ant_mush: '全向 · 机载',
       ant_patch: '定向 · 地面',
@@ -307,6 +326,7 @@ function buildComponents(
       { id: 'cam_std', name: cn.cam_std, sub: cs.cam_std, prices: null, incl: true, default: true },
       { id: 'cam_n2', name: cn.cam_n2, sub: cs.cam_n2, prices: tp(160, 135, 120) },
       { id: 'cam_n2p', name: cn.cam_n2p, sub: cs.cam_n2p, prices: tp(180, 150, 135) },
+      { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031) },
       { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
       // camera+TX combos — VTX section hidden when selected; DJI also blocks AI
       { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
@@ -385,6 +405,8 @@ export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentIte
     { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(650, 600, 580) },
     { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(420, 400, 380) },
     { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
+    { id: 'goggles_l', name: cn.goggles_l, sub: cs.goggles_l, prices: tp(1460, 1460, 1460) },
+    { id: 'gm3_v2_20_hd', name: cn.gm3_v2_20_hd, sub: cs.gm3_v2_20_hd, prices: tp(447, 447, 447) },
     { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
     { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
     { id: 'nano_jr', name: cn.nano_jr, sub: cs.nano_jr, prices: tp(33, 33, 33) },
