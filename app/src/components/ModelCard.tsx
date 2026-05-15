@@ -17,29 +17,29 @@ interface Props {
   onSelectComponent: (sectionKey: string, itemId: string, type: 'radio' | 'check') => void;
 }
 
-function QtyStepper({ qty, onDelta, onChange, full }: { qty: number; onDelta: (d: number) => void; onChange: (q: number) => void; full?: boolean }) {
+function QtyStepper({ qty, onDelta, onChange }: { qty: number; onDelta: (d: number) => void; onChange: (q: number) => void }) {
   return (
-    <div className={'flex items-stretch bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden h-9 ' + (full ? 'w-full' : '')}>
+    <div className="inline-flex items-stretch bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden h-8">
       <button
         type="button"
         onClick={() => onDelta(-1)}
-        className={'w-10 flex items-center justify-center transition-colors hover:bg-surface-variant ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
+        className={'w-8 flex items-center justify-center transition-colors hover:bg-surface-variant ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
       >
-        <span className="material-symbols-outlined text-base">remove</span>
+        <span className="material-symbols-outlined text-sm">remove</span>
       </button>
       <input
         type="number"
         min="0"
         value={qty}
         onChange={e => onChange(parseInt(e.target.value) || 0)}
-        className={'flex-1 min-w-0 text-center text-sm font-bold text-on-surface bg-surface-container-lowest border-x border-outline-variant focus:outline-none focus:ring-0 focus:border-outline-variant p-0 ' + (full ? '' : 'w-12')}
+        className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-0 focus:outline-none focus:ring-0 p-0"
       />
       <button
         type="button"
         onClick={() => onDelta(1)}
-        className="w-10 flex items-center justify-center text-primary transition-colors hover:bg-primary/5"
+        className="w-8 flex items-center justify-center text-primary transition-colors hover:bg-primary/5"
       >
-        <span className="material-symbols-outlined text-base">add</span>
+        <span className="material-symbols-outlined text-sm">add</span>
       </button>
     </div>
   );
@@ -98,8 +98,8 @@ export function ModelCard({
             )}
           </div>
           <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{model.sub}</p>
-          <div className="mt-3">
-            <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} full />
+          <div className="mt-3 flex justify-end">
+            <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} />
           </div>
         </div>
       </div>

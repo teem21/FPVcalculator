@@ -93,7 +93,7 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
                       min="0"
                       value={qty}
                       onChange={e => onQtyChange(item.id, parseInt(e.target.value) || 0)}
-                      className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-x border-outline-variant focus:outline-none focus:ring-0 focus:border-outline-variant p-0"
+                      className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-0 focus:outline-none focus:ring-0 p-0"
                     />
                     <button
                       type="button"
