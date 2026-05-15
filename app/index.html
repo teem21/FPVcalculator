@@ -1,12 +1,83 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FPV Configurator</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'primary-fixed': '#dbe1ff',
+              'on-error': '#ffffff',
+              'outline': '#737686',
+              'primary-container': '#2563eb',
+              'on-error-container': '#93000a',
+              'surface-dim': '#dadada',
+              'surface': '#f9f9f9',
+              'error': '#ba1a1a',
+              'on-secondary-fixed-variant': '#444749',
+              'surface-container-highest': '#e2e2e2',
+              'secondary-fixed-dim': '#c4c7c9',
+              'surface-container-low': '#f3f3f3',
+              'on-secondary-fixed': '#191c1e',
+              'on-tertiary-fixed-variant': '#3f465c',
+              'background': '#f9f9f9',
+              'on-tertiary-container': '#eef0ff',
+              'surface-variant': '#e2e2e2',
+              'surface-container-high': '#e8e8e8',
+              'on-surface-variant': '#434655',
+              'secondary-container': '#e0e3e5',
+              'surface-container-lowest': '#ffffff',
+              'primary-fixed-dim': '#b4c5ff',
+              'primary': '#004ac6',
+              'inverse-primary': '#b4c5ff',
+              'surface-tint': '#0053db',
+              'on-primary-fixed': '#00174b',
+              'on-surface': '#1b1b1b',
+              'on-primary-container': '#eeefff',
+              'on-tertiary': '#ffffff',
+              'inverse-surface': '#303030',
+              'inverse-on-surface': '#f1f1f1',
+              'on-secondary': '#ffffff',
+              'on-background': '#1b1b1b',
+              'secondary': '#5c5f61',
+              'tertiary-fixed': '#dae2fd',
+              'tertiary': '#4d556b',
+              'surface-container': '#eeeeee',
+              'surface-bright': '#f9f9f9',
+              'tertiary-fixed-dim': '#bec6e0',
+              'outline-variant': '#c3c6d7',
+              'on-secondary-container': '#626567',
+              'error-container': '#ffdad6',
+              'secondary-fixed': '#e0e3e5',
+              'on-tertiary-fixed': '#131b2e',
+              'on-primary-fixed-variant': '#003ea8',
+              'on-primary': '#ffffff',
+              'tertiary-container': '#656d84',
+            },
+            borderRadius: { DEFAULT: '0.25rem', lg: '0.5rem', xl: '0.75rem', full: '9999px' },
+            fontFamily: { headline: ['Geist'], body: ['Geist'], label: ['Geist'] },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      body { font-family: 'Geist', sans-serif; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+      input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+    </style>
   </head>
-  <body>
+  <body class="bg-background text-on-background pb-32">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

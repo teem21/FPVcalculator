@@ -31,44 +31,76 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
     : '';
 
   return (
-    <div className={`model-card ground-card${open ? ' open' : ''}`}>
-      <button type="button" className="ground-header" onClick={() => setOpen(o => !o)}>
-        <div className="ground-header-info">
-          <div className="model-title">{ts(lang, titleKey)}</div>
-          <div className="model-sub">{ts(lang, subKey)}</div>
+    <div className="rounded-xl bg-surface-container-lowest border border-outline-variant overflow-hidden mb-4 shadow-sm">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full p-4 flex items-center justify-between gap-3 group hover:bg-surface-variant transition-colors text-left"
+      >
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded bg-surface-container-low border border-outline-variant flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-primary">
+              {titleKey === 'antennas' ? 'settings_input_antenna' : 'router'}
+            </span>
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="font-headline font-bold text-on-surface text-sm">{ts(lang, titleKey)}</span>
+            <span className="text-[11px] text-on-surface-variant truncate">{ts(lang, subKey)}</span>
+          </div>
         </div>
-        {preview && <span className="ground-preview">{preview}</span>}
-        <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
-          <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
-            <polygon points="4,2 13,8 4,14" />
-          </svg>
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          {preview && <span className="text-[11px] font-bold text-primary">{preview}</span>}
+          <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">
+            {open ? 'expand_less' : 'expand_more'}
+          </span>
+        </div>
       </button>
 
       {open && (
-        <div className={`comp-area${grid ? ' grid-2' : ''}`}>
+        <div className={'border-t border-outline-variant bg-white p-4 ' + (grid ? 'grid grid-cols-1 sm:grid-cols-2 gap-3' : 'space-y-3')}>
           {items.map(item => {
             const price = tierPrice(item.prices, tier);
             const qty = qtys[item.id] || 0;
+            const selected = qty > 0;
             return (
-              <div key={item.id} className={`comp-item ground-row${qty > 0 ? ' selected' : ''}`}>
-                <div className="comp-item-body">
-                  <div className="comp-item-name">{item.name}</div>
-                  <div className="comp-item-sub">{item.sub}</div>
+              <div
+                key={item.id}
+                className={
+                  'p-3 rounded-lg flex items-center justify-between gap-3 ' +
+                  (selected ? 'border-2 border-primary bg-primary/5' : 'border border-outline-variant bg-white')
+                }
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-on-surface">{item.name}</div>
+                  {item.sub && <div className="text-[10px] text-on-surface-variant mt-0.5">{item.sub}</div>}
                 </div>
-                <div className="comp-item-price">
-                  {price != null ? `¥${price.toLocaleString()}` : ''}
-                </div>
-                <div className="model-qty ground-qty">
-                  <button className="qty-btn" onClick={() => onQtyDelta(item.id, -1)}>−</button>
-                  <input
-                    className="qty-input"
-                    type="number"
-                    min="0"
-                    value={qty}
-                    onChange={e => onQtyChange(item.id, parseInt(e.target.value) || 0)}
-                  />
-                  <button className="qty-btn" onClick={() => onQtyDelta(item.id, 1)}>+</button>
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {price != null && (
+                    <span className={'text-[10px] font-bold ' + (selected ? 'text-primary' : 'text-on-surface-variant')}>
+                      ¥{price.toLocaleString()}
+                    </span>
+                  )}
+                  <div className="flex items-center bg-surface-container-low border border-outline-variant rounded-lg p-0.5">
+                    <button
+                      onClick={() => onQtyDelta(item.id, -1)}
+                      className={'w-7 h-7 flex items-center justify-center ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
+                    >
+                      <span className="material-symbols-outlined text-sm">remove</span>
+                    </button>
+                    <input
+                      type="number"
+                      min="0"
+                      value={qty}
+                      onChange={e => onQtyChange(item.id, parseInt(e.target.value) || 0)}
+                      className="w-8 text-center text-xs font-bold text-on-surface bg-transparent focus:outline-none"
+                    />
+                    <button
+                      onClick={() => onQtyDelta(item.id, 1)}
+                      className="w-7 h-7 flex items-center justify-center text-primary"
+                    >
+                      <span className="material-symbols-outlined text-sm">add</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             );

@@ -35,29 +35,31 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
   const dronesText = ts(lang, 'totalDrones').replace('{n}', String(group.droneCount));
 
   return (
-    <div className={`order-config${open ? ' open' : ''}`}>
-      <button type="button" className="order-config-header" onClick={() => setOpen(o => !o)}>
-        <div className="order-config-titles">
-          <div className="order-config-label">{group.groupLabel}</div>
-          <div className="order-config-drones">{dronesText}</div>
+    <div className="rounded-xl bg-surface-container-lowest border border-outline-variant overflow-hidden mb-4">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full p-4 flex items-center justify-between gap-3 group hover:bg-surface-variant transition-colors text-left"
+      >
+        <div className="flex flex-col min-w-0 flex-1">
+          <span className="font-headline font-bold text-on-surface text-sm truncate">{group.groupLabel}</span>
+          <span className="text-[10px] text-on-surface-variant uppercase tracking-wider mt-0.5">{dronesText}</span>
         </div>
-        <div className="order-config-total">¥{group.total.toLocaleString()}</div>
-        <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
-          <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
-            <polygon points="4,2 13,8 4,14" />
-          </svg>
+        <span className="text-sm font-bold text-primary shrink-0">¥{group.total.toLocaleString()}</span>
+        <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">
+          {open ? 'expand_less' : 'expand_more'}
         </span>
       </button>
 
       {open && (
-        <div className="order-config-body">
-          <table className="order-table">
-            <thead>
-              <tr>
-                <th className="col-item">{ts(lang, 'colName')}</th>
-                <th className="col-qty">{ts(lang, 'colQty')}</th>
-                <th className="col-unit">{ts(lang, 'colUnit')}</th>
-                <th className="col-total">{ts(lang, 'colTotal')}</th>
+        <div className="border-t border-outline-variant overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-surface-container-low">
+              <tr className="text-on-surface-variant uppercase tracking-wider text-[10px]">
+                <th className="text-left font-bold py-2 px-3">{ts(lang, 'colName')}</th>
+                <th className="text-right font-bold py-2 px-3 w-16">{ts(lang, 'colQty')}</th>
+                <th className="text-right font-bold py-2 px-3 w-24">{ts(lang, 'colUnit')}</th>
+                <th className="text-right font-bold py-2 px-3 w-24">{ts(lang, 'colTotal')}</th>
               </tr>
             </thead>
             <tbody>
@@ -67,32 +69,36 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
                 const subtotal = rows.reduce((s, r) => s + r.price, 0);
                 return (
                   <Fragment key={gk}>
-                    <tr className="order-table-group">
-                      <td colSpan={4}>{ts(lang, GROUP_LABEL_KEY[gk])}</td>
+                    <tr className="bg-primary/5">
+                      <td colSpan={4} className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                        {ts(lang, GROUP_LABEL_KEY[gk])}
+                      </td>
                     </tr>
                     {rows.map((r, i) => (
-                      <tr key={`${gk}-${i}`}>
-                        <td className="col-item">
-                          <div className="item-name">{r.name}</div>
-                          {r.sub && <div className="item-sub">{r.sub}</div>}
+                      <tr key={`${gk}-${i}`} className="border-b border-outline-variant/50">
+                        <td className="px-3 py-2">
+                          <div className="font-medium text-on-surface">{r.name}</div>
+                          {r.sub && <div className="text-[10px] text-on-surface-variant mt-0.5">{r.sub}</div>}
                         </td>
-                        <td className="col-qty">×{r.qty}</td>
-                        <td className="col-unit">¥{r.unitPrice.toLocaleString()}</td>
-                        <td className="col-total">¥{r.price.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right text-on-surface-variant">×{r.qty}</td>
+                        <td className="px-3 py-2 text-right text-on-surface-variant">¥{r.unitPrice.toLocaleString()}</td>
+                        <td className="px-3 py-2 text-right font-bold text-on-surface">¥{r.price.toLocaleString()}</td>
                       </tr>
                     ))}
-                    <tr className="order-table-subtotal">
-                      <td colSpan={3}>{ts(lang, 'grpSubtotal')} · {ts(lang, GROUP_LABEL_KEY[gk])}</td>
-                      <td className="col-total">¥{subtotal.toLocaleString()}</td>
+                    <tr className="bg-surface-container-low">
+                      <td colSpan={3} className="px-3 py-1.5 text-[11px] font-bold text-on-surface-variant text-right">
+                        {ts(lang, 'grpSubtotal')} · {ts(lang, GROUP_LABEL_KEY[gk])}
+                      </td>
+                      <td className="px-3 py-1.5 text-right text-[11px] font-bold text-on-surface">¥{subtotal.toLocaleString()}</td>
                     </tr>
                   </Fragment>
                 );
               })}
             </tbody>
             <tfoot>
-              <tr>
-                <td colSpan={3}>{ts(lang, 'totalLbl')} · {group.groupLabel}</td>
-                <td className="col-total">¥{group.total.toLocaleString()}</td>
+              <tr className="bg-primary text-on-primary">
+                <td colSpan={3} className="px-3 py-2 font-bold text-right">{ts(lang, 'totalLbl')} · {group.groupLabel}</td>
+                <td className="px-3 py-2 text-right font-bold">¥{group.total.toLocaleString()}</td>
               </tr>
             </tfoot>
           </table>
@@ -105,36 +111,42 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
 export function OrderView({ lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny, onReset, onExport }: Props) {
   if (!hasAny) {
     return (
-      <div className="order-page">
-        <div className="order-empty">
-          <div className="empty-icon">📋</div>
-          <div className="empty-txt">{ts(lang, 'orderEmpty')}</div>
-        </div>
+      <div className="rounded-xl bg-surface-container-lowest border border-outline-variant p-12 text-center">
+        <span className="material-symbols-outlined text-5xl text-on-surface-variant mb-3 block">receipt_long</span>
+        <div className="text-sm text-on-surface-variant">{ts(lang, 'orderEmpty')}</div>
       </div>
     );
   }
 
   return (
-    <div className="order-page">
+    <div>
       {groups.map((g, i) => (
         <ConfigInvoice key={g.configId} group={g} lang={lang} defaultOpen={groups.length === 1 || i === 0} />
       ))}
 
-      <div className="order-grand">
-        <div className="order-grand-row">
-          <span>{ts(lang, 'totalLbl')}</span>
-          <span className="order-grand-cny">¥{cnyTotal.toLocaleString()} FOB</span>
+      <div className="rounded-xl bg-surface-container-lowest border-2 border-primary p-4 mt-4 shadow-md">
+        <div className="flex items-baseline justify-between">
+          <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{ts(lang, 'totalLbl')}</span>
+          <span className="text-xl font-headline font-bold text-primary">¥{cnyTotal.toLocaleString()} FOB</span>
         </div>
-        <div className="order-grand-row order-grand-usd">
-          <span />
-          <span>≈ ${usdTotal.toLocaleString()} FOB</span>
-        </div>
-        <div className="order-grand-formula">
+        <div className="flex justify-end text-xs text-on-surface-variant mt-1">≈ ${usdTotal.toLocaleString()} FOB</div>
+        <div className="text-[10px] text-on-surface-variant font-mono mt-2 break-all">
           ¥{grandTotal.toLocaleString()} × {pricing.fobK} = ¥{cnyTotal.toLocaleString()} ÷ {pricing.rate} = ${usdTotal.toLocaleString()}
         </div>
-        <div className="order-actions">
-          <button className="export-btn" onClick={onExport}>{ts(lang, 'export')}</button>
-          <button className="reset-btn" onClick={onReset}>{ts(lang, 'reset')}</button>
+        <div className="flex gap-2 mt-4">
+          <button
+            onClick={onExport}
+            className="flex-1 flex items-center justify-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md"
+          >
+            <span className="material-symbols-outlined text-sm">download</span>
+            {ts(lang, 'export')}
+          </button>
+          <button
+            onClick={onReset}
+            className="flex-1 px-5 py-2.5 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-error hover:text-error transition-colors"
+          >
+            {ts(lang, 'reset')}
+          </button>
         </div>
       </div>
     </div>

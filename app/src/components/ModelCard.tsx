@@ -17,6 +17,32 @@ interface Props {
   onSelectComponent: (sectionKey: string, itemId: string, type: 'radio' | 'check') => void;
 }
 
+function QtyStepper({ qty, onDelta, onChange }: { qty: number; onDelta: (d: number) => void; onChange: (q: number) => void }) {
+  return (
+    <div className="flex items-center bg-surface-container-low border border-outline-variant rounded-lg p-0.5">
+      <button
+        className={'w-8 h-8 flex items-center justify-center font-bold ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
+        onClick={() => onDelta(-1)}
+      >
+        <span className="material-symbols-outlined text-sm">remove</span>
+      </button>
+      <input
+        type="number"
+        min="0"
+        value={qty}
+        onChange={e => onChange(parseInt(e.target.value) || 0)}
+        className="w-10 text-center text-sm font-bold text-on-surface bg-transparent focus:outline-none"
+      />
+      <button
+        className="w-8 h-8 flex items-center justify-center text-primary font-bold"
+        onClick={() => onDelta(1)}
+      >
+        <span className="material-symbols-outlined text-sm">add</span>
+      </button>
+    </div>
+  );
+}
+
 export function ModelCard({
   model, tier, lang, qty, selections,
   onQtyChange, onQtyDelta, onSelectVersion, onSelectComponent,
@@ -34,49 +60,73 @@ export function ModelCard({
   const [versionOpen, setVersionOpen] = useState(false);
   const verPreview = verPrice != null ? `${ver.name} · ¥${verPrice.toLocaleString()}` : ver.name;
 
+  const active = qty > 0;
+
   return (
-    <div className={`model-card${qty > 0 ? ' active' : ''}`}>
-      <div className="model-top">
-        <div className="model-badge">
-          <div className="m-name">{model.label}</div>
-          <div className="m-size">{model.size}</div>
+    <div
+      className={
+        'rounded-xl overflow-hidden mb-4 ' +
+        (active
+          ? 'bg-surface-container-lowest border-2 border-primary shadow-md'
+          : 'bg-surface-container-lowest border border-outline-variant')
+      }
+    >
+      <div className="p-4 flex gap-4 items-center">
+        <div className={'w-16 h-16 rounded-lg flex flex-col items-center justify-center shrink-0 ' + (active ? 'bg-primary text-on-primary' : 'bg-surface-container-low border border-outline-variant text-on-surface-variant')}>
+          <div className="text-base font-headline font-bold tracking-tight leading-none">{model.label}</div>
+          <div className={'text-[9px] font-bold tracking-widest uppercase mt-1 ' + (active ? 'text-on-primary/80' : 'text-on-surface-variant')}>{model.size}</div>
         </div>
-        <div className="model-info">
-          <div className="model-title">
-            {model.label} {ver.name}
-            {verPrice != null && <span className="model-price">¥{verPrice.toLocaleString()}</span>}
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-start gap-2">
+            <h3 className="font-headline font-bold text-base text-on-surface truncate">
+              {model.label} {ver.name}
+            </h3>
+            {verPrice != null && (
+              <span className={'font-bold text-sm whitespace-nowrap ' + (active ? 'text-primary' : 'text-on-surface-variant')}>
+                ¥{verPrice.toLocaleString()}
+              </span>
+            )}
           </div>
-          <div className="model-sub">{model.sub}</div>
-        </div>
-        <div className="model-qty">
-          <button className="qty-btn" onClick={() => onQtyDelta(-1)}>−</button>
-          <input
-            className="qty-input"
-            type="number"
-            min="0"
-            value={qty}
-            onChange={e => onQtyChange(parseInt(e.target.value) || 0)}
-          />
-          <button className="qty-btn" onClick={() => onQtyDelta(1)}>+</button>
+          <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{model.sub}</p>
+          <div className="flex items-center gap-3 mt-3">
+            <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} />
+            {active && (
+              <span
+                className="material-symbols-outlined text-primary text-xl"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                check_circle
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {qty > 0 && (
-        <div className="comp-area">
-          <div className={`comp-sec${versionOpen ? ' open' : ''}`}>
-            <button type="button" className="comp-sec-header" onClick={() => setVersionOpen(o => !o)}>
-              <div className="comp-sec-header-left">
-                <span className="comp-sec-title">{ts(lang, 'versions')}</span>
+      {active && (
+        <div className="border-t border-outline-variant bg-surface-container-low">
+          <div className="border-b border-outline-variant/50">
+            <button
+              type="button"
+              onClick={() => setVersionOpen(o => !o)}
+              className="w-full px-4 py-3 flex items-center justify-between gap-3 group text-left"
+            >
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className={'text-[11px] font-bold uppercase tracking-wider ' + (versionOpen ? 'text-primary' : 'text-on-surface-variant')}>
+                  {ts(lang, 'versions')}
+                </span>
+                {!versionOpen && (
+                  <span className="text-xs font-bold text-on-surface mt-0.5 truncate">{verPreview}</span>
+                )}
               </div>
-              {!versionOpen && <span className="comp-sec-preview">{verPreview}</span>}
-              <span className="acc-toggle" aria-label={ts(lang, versionOpen ? 'collapse' : 'expand')}>
-                <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
-                  <polygon points="4,2 13,8 4,14" />
-                </svg>
+              <span
+                className="material-symbols-outlined text-on-surface-variant group-hover:text-primary"
+                aria-label={ts(lang, versionOpen ? 'collapse' : 'expand')}
+              >
+                {versionOpen ? 'expand_less' : 'expand_more'}
               </span>
             </button>
             {versionOpen && (
-              <div className="comp-sec-body">
+              <div className="px-4 pb-4 space-y-2 bg-white">
                 {model.versions.map(v => (
                   <ComponentItemRow
                     key={v.id}

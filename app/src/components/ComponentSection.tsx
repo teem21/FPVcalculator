@@ -25,20 +25,29 @@ export function ComponentSection({ section, tier, lang, selections, disabledIds 
   }).join(', ');
 
   return (
-    <div className={`comp-sec${open ? ' open' : ''}`}>
-      <button type="button" className="comp-sec-header" onClick={() => setOpen(o => !o)}>
-        <div className="comp-sec-header-left">
-          <span className="comp-sec-title">{section.titleKey}</span>
+    <div className="border-b border-outline-variant/50 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-4 py-3 flex items-center justify-between gap-3 group text-left"
+      >
+        <div className="flex flex-col min-w-0 flex-1">
+          <span className={'text-[11px] font-bold uppercase tracking-wider ' + (open ? 'text-primary' : 'text-on-surface-variant')}>
+            {section.titleKey}
+          </span>
+          {!open && preview && (
+            <span className="text-xs font-bold text-on-surface mt-0.5 truncate">{preview}</span>
+          )}
         </div>
-        {!open && preview && <span className="comp-sec-preview">{preview}</span>}
-        <span className="acc-toggle" aria-label={ts(lang, open ? 'collapse' : 'expand')}>
-          <svg className="acc-toggle-tri" viewBox="0 0 16 16" aria-hidden="true">
-            <polygon points="4,2 13,8 4,14" />
-          </svg>
+        <span
+          className="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-transform"
+          aria-label={ts(lang, open ? 'collapse' : 'expand')}
+        >
+          {open ? 'expand_less' : 'expand_more'}
         </span>
       </button>
       {open && (
-        <div className="comp-sec-body">
+        <div className="px-4 pb-4 space-y-2 bg-white">
           {section.items.map(item => (
             <ComponentItemRow
               key={item.id}

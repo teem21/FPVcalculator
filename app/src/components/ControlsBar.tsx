@@ -8,6 +8,32 @@ interface Props {
   onPricingChange: (p: PricingParams) => void;
 }
 
+interface FieldProps {
+  label: string;
+  value: number;
+  step: string;
+  onChange: (val: string) => void;
+  full?: boolean;
+}
+
+function Field({ label, value, step, onChange, full }: FieldProps) {
+  return (
+    <div className={'flex flex-col gap-1 ' + (full ? 'col-span-2' : '')}>
+      <label className="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">{label}</label>
+      <div className="bg-surface-container-lowest rounded-lg px-3 py-1.5 border border-outline-variant flex items-center h-full">
+        <input
+          type="number"
+          value={value}
+          step={step}
+          min="0"
+          onChange={e => onChange(e.target.value)}
+          className="w-full bg-transparent text-xs text-on-surface font-medium focus:outline-none"
+        />
+      </div>
+    </div>
+  );
+}
+
 export function ControlsBar({ lang, pricing, onPricingChange }: Props) {
   const update = (field: keyof PricingParams, val: string) => {
     const n = parseFloat(val);
@@ -17,39 +43,12 @@ export function ControlsBar({ lang, pricing, onPricingChange }: Props) {
   };
 
   return (
-    <div className="controls-bar">
-      <div className="ctrl-field">
-        <label>{ts(lang, 'rate')}</label>
-        <input
-          type="number"
-          value={pricing.rate}
-          step="0.01"
-          min="1"
-          onChange={e => update('rate', e.target.value)}
-        />
+    <section className="bg-surface-container-low rounded-xl p-4 border border-outline-variant mb-6">
+      <div className="grid grid-cols-2 gap-3">
+        <Field label={ts(lang, 'rate')} value={pricing.rate} step="0.01" onChange={v => update('rate', v)} />
+        <Field label={ts(lang, 'fob')} value={pricing.fobK} step="0.01" onChange={v => update('fobK', v)} />
+        <Field label={ts(lang, 'xkm')} value={pricing.xkm} step="1" onChange={v => update('xkm', v)} full />
       </div>
-      <div className="ctrl-sep" />
-      <div className="ctrl-field">
-        <label>{ts(lang, 'fob')}</label>
-        <input
-          type="number"
-          value={pricing.fobK}
-          step="0.01"
-          min="1"
-          onChange={e => update('fobK', e.target.value)}
-        />
-      </div>
-      <div className="ctrl-sep" />
-      <div className="ctrl-field">
-        <label>{ts(lang, 'xkm')}</label>
-        <input
-          type="number"
-          value={pricing.xkm}
-          step="1"
-          min="1"
-          onChange={e => update('xkm', e.target.value)}
-        />
-      </div>
-    </div>
+    </section>
   );
 }

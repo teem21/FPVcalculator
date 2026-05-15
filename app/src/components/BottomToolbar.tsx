@@ -9,26 +9,38 @@ interface Props {
   onChange: (v: View) => void;
 }
 
-const tabs: Array<{ id: View; icon: string; labelKey: 'tabOverview' | 'tabConfigs' | 'tabOrder' | 'tabContact'; mobileOnly?: boolean }> = [
-  { id: 'overview', icon: '🏠', labelKey: 'tabOverview' },
-  { id: 'configs', icon: '🛸', labelKey: 'tabConfigs' },
-  { id: 'order', icon: '📋', labelKey: 'tabOrder', mobileOnly: true },
-  { id: 'contact', icon: '✉', labelKey: 'tabContact' },
+const tabs: Array<{ id: View; icon: string; labelKey: 'tabOverview' | 'tabConfigs' | 'tabOrder' | 'tabContact' }> = [
+  { id: 'overview', icon: 'analytics', labelKey: 'tabOverview' },
+  { id: 'configs', icon: 'tune', labelKey: 'tabConfigs' },
+  { id: 'order', icon: 'shopping_cart', labelKey: 'tabOrder' },
+  { id: 'contact', icon: 'chat_bubble', labelKey: 'tabContact' },
 ];
 
 export function BottomToolbar({ lang, view, onChange }: Props) {
   return (
-    <nav className="bottom-toolbar">
-      {tabs.map(t => (
-        <button
-          key={t.id}
-          className={`bt-tab${view === t.id ? ' active' : ''}${t.mobileOnly ? ' mobile-only' : ''}`}
-          onClick={() => onChange(t.id)}
-        >
-          <span className="bt-icon">{t.icon}</span>
-          <span className="bt-label">{ts(lang, t.labelKey)}</span>
-        </button>
-      ))}
+    <nav className="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center px-4 h-16 shadow-inner">
+      {tabs.map(t => {
+        const active = view === t.id;
+        return (
+          <button
+            key={t.id}
+            onClick={() => onChange(t.id)}
+            className={
+              'flex flex-col items-center justify-center pt-2 pb-1 relative transition-colors ' +
+              (active ? 'text-primary' : 'text-on-surface-variant hover:text-primary')
+            }
+          >
+            {active && <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-b-full" />}
+            <span
+              className="material-symbols-outlined"
+              style={active ? { fontVariationSettings: "'FILL' 1" } : undefined}
+            >
+              {t.icon}
+            </span>
+            <span className="font-label text-[9px] uppercase tracking-widest font-bold mt-1">{ts(lang, t.labelKey)}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
