@@ -17,27 +17,29 @@ interface Props {
   onSelectComponent: (sectionKey: string, itemId: string, type: 'radio' | 'check') => void;
 }
 
-function QtyStepper({ qty, onDelta, onChange }: { qty: number; onDelta: (d: number) => void; onChange: (q: number) => void }) {
+function QtyStepper({ qty, onDelta, onChange, full }: { qty: number; onDelta: (d: number) => void; onChange: (q: number) => void; full?: boolean }) {
   return (
-    <div className="flex items-center bg-surface-container-low border border-outline-variant rounded-lg p-0.5">
+    <div className={'flex items-stretch bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden h-9 ' + (full ? 'w-full' : '')}>
       <button
-        className={'w-8 h-8 flex items-center justify-center font-bold ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
+        type="button"
         onClick={() => onDelta(-1)}
+        className={'w-10 flex items-center justify-center transition-colors hover:bg-surface-variant ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
       >
-        <span className="material-symbols-outlined text-sm">remove</span>
+        <span className="material-symbols-outlined text-base">remove</span>
       </button>
       <input
         type="number"
         min="0"
         value={qty}
         onChange={e => onChange(parseInt(e.target.value) || 0)}
-        className="w-10 text-center text-sm font-bold text-on-surface bg-transparent focus:outline-none"
+        className={'flex-1 min-w-0 text-center text-sm font-bold text-on-surface bg-surface-container-lowest border-x border-outline-variant focus:outline-none focus:ring-0 focus:border-outline-variant p-0 ' + (full ? '' : 'w-12')}
       />
       <button
-        className="w-8 h-8 flex items-center justify-center text-primary font-bold"
+        type="button"
         onClick={() => onDelta(1)}
+        className="w-10 flex items-center justify-center text-primary transition-colors hover:bg-primary/5"
       >
-        <span className="material-symbols-outlined text-sm">add</span>
+        <span className="material-symbols-outlined text-base">add</span>
       </button>
     </div>
   );
@@ -78,8 +80,16 @@ export function ModelCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
-            <h3 className="font-headline font-bold text-base text-on-surface truncate">
-              {model.label} {ver.name}
+            <h3 className="font-headline font-bold text-base text-on-surface truncate flex items-center gap-1.5">
+              {active && (
+                <span
+                  className="material-symbols-outlined text-primary text-base"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+              )}
+              <span className="truncate">{model.label} {ver.name}</span>
             </h3>
             {verPrice != null && (
               <span className={'font-bold text-sm whitespace-nowrap ' + (active ? 'text-primary' : 'text-on-surface-variant')}>
@@ -88,16 +98,8 @@ export function ModelCard({
             )}
           </div>
           <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{model.sub}</p>
-          <div className="flex items-center gap-3 mt-3">
-            <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} />
-            {active && (
-              <span
-                className="material-symbols-outlined text-primary text-xl"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                check_circle
-              </span>
-            )}
+          <div className="mt-3">
+            <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} full />
           </div>
         </div>
       </div>

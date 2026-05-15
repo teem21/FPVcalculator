@@ -80,10 +80,11 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
                       ¥{price.toLocaleString()}
                     </span>
                   )}
-                  <div className="flex items-center bg-surface-container-low border border-outline-variant rounded-lg p-0.5">
+                  <div className="flex items-stretch bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden h-8">
                     <button
+                      type="button"
                       onClick={() => onQtyDelta(item.id, -1)}
-                      className={'w-7 h-7 flex items-center justify-center ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
+                      className={'w-8 flex items-center justify-center transition-colors hover:bg-surface-variant ' + (qty > 0 ? 'text-primary' : 'text-on-surface-variant')}
                     >
                       <span className="material-symbols-outlined text-sm">remove</span>
                     </button>
@@ -92,11 +93,12 @@ export function GroundSection({ lang, tier, items, qtys, onQtyChange, onQtyDelta
                       min="0"
                       value={qty}
                       onChange={e => onQtyChange(item.id, parseInt(e.target.value) || 0)}
-                      className="w-8 text-center text-xs font-bold text-on-surface bg-transparent focus:outline-none"
+                      className="w-10 text-center text-xs font-bold text-on-surface bg-surface-container-lowest border-x border-outline-variant focus:outline-none focus:ring-0 focus:border-outline-variant p-0"
                     />
                     <button
+                      type="button"
                       onClick={() => onQtyDelta(item.id, 1)}
-                      className="w-7 h-7 flex items-center justify-center text-primary"
+                      className="w-8 flex items-center justify-center text-primary transition-colors hover:bg-primary/5"
                     >
                       <span className="material-symbols-outlined text-sm">add</span>
                     </button>
