@@ -152,14 +152,14 @@ export default function App() {
                   <span>{ts(c.lang, 'tabConfigs')}</span>
                   <span className="material-symbols-outlined">arrow_forward</span>
                 </button>
-                <button
-                  onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
-                  title={ts(c.lang, 'downloadCompSpecsHint')}
+                <a
+                  href={c.lang === 'ru' ? '/specs/AGR-FPV-Spec-RU.docx' : '/specs/AGR-FPV-Spec-EN.docx'}
+                  download
                   className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-sm font-bold bg-surface-container-lowest border border-outline-variant text-on-surface hover:border-primary hover:text-primary transition-colors"
                 >
                   <span className="material-symbols-outlined">download</span>
                   <span>{ts(c.lang, 'downloadCompSpecs')}</span>
-                </button>
+                </a>
               </div>
             </section>
 
@@ -177,32 +177,43 @@ export default function App() {
         {view === 'contact' && (
           <div className="max-w-2xl mx-auto">
             <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'contactTitle')} sub={ts(c.lang, 'contactBody')} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <a
-                href="mailto:sales@example.com"
+                href="mailto:tim@qifeizn.com"
                 className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors"
               >
                 <span className="material-symbols-outlined text-primary">mail</span>
-                <span className="text-sm font-medium text-on-surface truncate">sales@example.com</span>
+                <span className="text-sm font-medium text-on-surface truncate">tim@qifeizn.com</span>
               </a>
               <a
-                href="https://t.me/example"
+                href="https://t.me/baigarin_t1"
                 target="_blank"
                 rel="noopener"
                 className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors"
               >
                 <span className="material-symbols-outlined text-primary">send</span>
-                <span className="text-sm font-medium text-on-surface">Telegram</span>
+                <span className="text-sm font-medium text-on-surface">Telegram · @baigarin_t1</span>
               </a>
               <a
-                href="https://wa.me/00000000000"
+                href="https://wa.link/2cpy3b"
                 target="_blank"
                 rel="noopener"
                 className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors"
               >
                 <span className="material-symbols-outlined text-primary">chat</span>
-                <span className="text-sm font-medium text-on-surface">WhatsApp</span>
+                <span className="text-sm font-medium text-on-surface">WhatsApp · +7 747 988 8860</span>
               </a>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText('Baigarin_Zhan');
+                }}
+                title="Baigarin_Zhan"
+                className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors text-left"
+              >
+                <span className="material-symbols-outlined text-primary">forum</span>
+                <span className="text-sm font-medium text-on-surface">WeChat · Baigarin_Zhan</span>
+              </button>
             </div>
           </div>
         )}
