@@ -135,28 +135,42 @@ export default function App() {
       <main className="px-4 md:px-6 py-6 max-w-md md:max-w-3xl xl:max-w-7xl mx-auto">
         {view === 'overview' && (
           <div className="max-w-3xl mx-auto">
-            <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'overviewTitle')} />
-            <p className="text-on-surface-variant text-sm md:text-base leading-relaxed mb-8">{ts(c.lang, 'overviewBody')}</p>
+            {/* Hero */}
+            <section className="mb-10">
+              <h1 className="text-4xl md:text-5xl font-headline font-bold tracking-tight text-on-surface mb-4 leading-[1.05]">
+                {ts(c.lang, 'overviewTitle')}
+              </h1>
+              <p className="text-on-surface-variant text-base md:text-lg leading-relaxed mb-8 max-w-2xl">
+                {ts(c.lang, 'overviewBody')}
+              </p>
 
-            <h2 className="text-lg md:text-xl font-headline font-bold text-on-surface mb-1">{ts(c.lang, 'specsTitle')}</h2>
-            <p className="text-xs md:text-sm text-on-surface-variant mb-4">{ts(c.lang, 'specsSub')}</p>
-            <SpecsTable lang={c.lang} />
+              <div className="space-y-3">
+                <button
+                  onClick={() => setView('configs')}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-sm font-bold bg-primary text-on-primary shadow-md hover:shadow-lg active:scale-[0.98] transition-all"
+                >
+                  <span>{ts(c.lang, 'tabConfigs')}</span>
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </button>
+                <button
+                  onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
+                  title={ts(c.lang, 'downloadCompSpecsHint')}
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl text-sm font-bold bg-surface-container-lowest border border-outline-variant text-on-surface hover:border-primary hover:text-primary transition-colors"
+                >
+                  <span className="material-symbols-outlined">download</span>
+                  <span>{ts(c.lang, 'downloadCompSpecs')}</span>
+                </button>
+              </div>
+            </section>
 
-            <div className="flex flex-col md:flex-row gap-3">
-              <button
-                onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
-                title={ts(c.lang, 'downloadCompSpecsHint')}
-                className="flex-1 px-5 py-3 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
-              >
-                {ts(c.lang, 'downloadCompSpecs')}
-              </button>
-              <button
-                onClick={() => setView('configs')}
-                className="flex-1 px-5 py-3 rounded-lg text-xs font-bold bg-primary text-on-primary shadow-md hover:shadow-lg active:scale-95 transition-all"
-              >
-                {ts(c.lang, 'tabConfigs')} →
-              </button>
-            </div>
+            {/* Specs */}
+            <section>
+              <h2 className="text-2xl md:text-3xl font-headline font-bold tracking-tight text-on-surface mb-1">
+                {ts(c.lang, 'specsTitle')}
+              </h2>
+              <p className="text-sm text-on-surface-variant mb-6">{ts(c.lang, 'specsSub')}</p>
+              <SpecsTable lang={c.lang} />
+            </section>
           </div>
         )}
 
