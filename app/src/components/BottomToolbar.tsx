@@ -18,8 +18,9 @@ const tabs: Array<{ id: View; icon: string; labelKey: 'tabOverview' | 'tabConfig
 
 export function BottomToolbar({ lang, view, onChange }: Props) {
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest border-t border-outline-variant flex justify-around items-center px-4 h-16 shadow-inner">
-      {tabs.map(t => {
+    <nav className="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest border-t border-outline-variant h-16 shadow-inner">
+      <div className="flex justify-around items-center max-w-md md:max-w-2xl mx-auto h-full px-4">
+        {tabs.map(t => {
         const active = view === t.id;
         return (
           <button
@@ -41,6 +42,7 @@ export function BottomToolbar({ lang, view, onChange }: Props) {
           </button>
         );
       })}
+      </div>
     </nav>
   );
 }

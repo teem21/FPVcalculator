@@ -19,8 +19,8 @@ function PageHeader({ kicker, title, sub }: { kicker: string; title: string; sub
   return (
     <section className="mb-8">
       <div className="text-[10px] font-bold uppercase tracking-widest text-primary mb-2">{kicker}</div>
-      <h1 className="text-3xl font-headline font-bold tracking-tight text-on-surface mb-2">{title}</h1>
-      {sub && <p className="text-on-surface-variant text-sm leading-relaxed">{sub}</p>}
+      <h1 className="text-3xl md:text-4xl font-headline font-bold tracking-tight text-on-surface mb-2">{title}</h1>
+      {sub && <p className="text-on-surface-variant text-sm md:text-base leading-relaxed max-w-2xl">{sub}</p>}
     </section>
   );
 }
@@ -40,47 +40,136 @@ export default function App() {
     lang: c.lang,
   });
 
+  const sidebarProps = {
+    lang: c.lang,
+    pricing: c.pricing,
+    groups: c.summary.groups,
+    grandTotal: c.summary.grandTotal,
+    cnyTotal: c.cnyTotal,
+    usdTotal: c.usdTotal,
+    hasAny: c.summary.hasAny,
+    multipleConfigs: c.configs.length > 1,
+    onReset: c.resetCurrent,
+    onExport: exportXlsx,
+  };
+
+  // Configurator main column (used as-is on mobile, as left column on xl+)
+  const ConfigsMain = (
+    <>
+      <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'title')} sub={ts(c.lang, 'sub')} />
+
+      <ControlsBar lang={c.lang} pricing={c.pricing} onPricingChange={c.setPricing} />
+      <TierRow lang={c.lang} tier={c.tier} onTierChange={c.setTier} />
+      <ConfigTabs
+        lang={c.lang}
+        configs={c.configs}
+        activeConfigId={c.activeConfigId}
+        onSelect={c.setActiveConfigId}
+        onRemove={c.removeConfig}
+      />
+
+      <div className="space-y-4">
+        {c.models.map(model => {
+          const qty = c.activeConfig.modelQtys[model.id] || 0;
+          return (
+            <div key={model.id}>
+              <ModelCard
+                model={model}
+                tier={c.tier}
+                lang={c.lang}
+                qty={qty}
+                selections={(c.activeConfig.selections[model.id] || { version: model.versions[0].id }) as ConfigSelections}
+                onQtyChange={q => c.setModelQty(model.id, q)}
+                onQtyDelta={delta => c.changeModelQty(model.id, delta)}
+                onSelectVersion={vid => c.selectVersion(model.id, vid)}
+                onSelectComponent={(secKey, itemId, type) => c.selectComponent(model.id, secKey, itemId, type)}
+              />
+              {qty > 0 && (
+                <>
+                  <GroundSection
+                    lang={c.lang}
+                    tier={c.tier}
+                    items={c.groundItems}
+                    qtys={c.activeConfig.groundQtys || {}}
+                    onQtyChange={c.setGroundQty}
+                    onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
+                  />
+                  <GroundSection
+                    lang={c.lang}
+                    tier={c.tier}
+                    items={c.antennaItems}
+                    qtys={c.activeConfig.groundQtys || {}}
+                    onQtyChange={c.setGroundQty}
+                    onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
+                    titleKey="antennas"
+                    subKey="antennasSub"
+                    grid
+                  />
+                  <button
+                    onClick={c.addConfig}
+                    className="w-full mt-2 px-5 py-3 rounded-lg text-xs font-bold border-2 border-dashed border-primary/50 text-primary hover:bg-primary/5 transition-colors"
+                  >
+                    {ts(c.lang, 'saveCfg')}
+                  </button>
+                </>
+              )}
+            </div>
+          );
+        })}
+
+        <button
+          onClick={c.addConfig}
+          className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-xs font-bold bg-surface-container-lowest border border-dashed border-outline text-primary hover:bg-primary/5 transition-colors"
+        >
+          <span className="material-symbols-outlined text-base">add</span>
+          {ts(c.lang, 'addCfg')}
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <>
       <LangBar lang={c.lang} onChangeLang={c.setLang} />
 
-      <main className="px-4 py-6 max-w-md mx-auto">
+      <main className="px-4 md:px-6 py-6 max-w-md md:max-w-3xl xl:max-w-7xl mx-auto">
         {view === 'overview' && (
-          <>
+          <div className="max-w-3xl mx-auto">
             <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'overviewTitle')} />
-            <p className="text-on-surface-variant text-sm leading-relaxed mb-8">{ts(c.lang, 'overviewBody')}</p>
+            <p className="text-on-surface-variant text-sm md:text-base leading-relaxed mb-8">{ts(c.lang, 'overviewBody')}</p>
 
-            <h2 className="text-lg font-headline font-bold text-on-surface mb-1">{ts(c.lang, 'specsTitle')}</h2>
-            <p className="text-xs text-on-surface-variant mb-4">{ts(c.lang, 'specsSub')}</p>
+            <h2 className="text-lg md:text-xl font-headline font-bold text-on-surface mb-1">{ts(c.lang, 'specsTitle')}</h2>
+            <p className="text-xs md:text-sm text-on-surface-variant mb-4">{ts(c.lang, 'specsSub')}</p>
             <SpecsTable lang={c.lang} />
 
-            <button
-              onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
-              title={ts(c.lang, 'downloadCompSpecsHint')}
-              className="w-full mb-3 px-5 py-3 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
-            >
-              {ts(c.lang, 'downloadCompSpecs')}
-            </button>
-
-            <button
-              onClick={() => setView('configs')}
-              className="w-full px-5 py-3 rounded-lg text-xs font-bold bg-primary text-on-primary shadow-md hover:shadow-lg active:scale-95 transition-all"
-            >
-              {ts(c.lang, 'tabConfigs')} →
-            </button>
-          </>
+            <div className="flex flex-col md:flex-row gap-3">
+              <button
+                onClick={() => alert(ts(c.lang, 'downloadCompSpecsHint'))}
+                title={ts(c.lang, 'downloadCompSpecsHint')}
+                className="flex-1 px-5 py-3 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
+              >
+                {ts(c.lang, 'downloadCompSpecs')}
+              </button>
+              <button
+                onClick={() => setView('configs')}
+                className="flex-1 px-5 py-3 rounded-lg text-xs font-bold bg-primary text-on-primary shadow-md hover:shadow-lg active:scale-95 transition-all"
+              >
+                {ts(c.lang, 'tabConfigs')} →
+              </button>
+            </div>
+          </div>
         )}
 
         {view === 'contact' && (
-          <>
+          <div className="max-w-2xl mx-auto">
             <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'contactTitle')} sub={ts(c.lang, 'contactBody')} />
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <a
                 href="mailto:sales@example.com"
                 className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors"
               >
                 <span className="material-symbols-outlined text-primary">mail</span>
-                <span className="text-sm font-medium text-on-surface">sales@example.com</span>
+                <span className="text-sm font-medium text-on-surface truncate">sales@example.com</span>
               </a>
               <a
                 href="https://t.me/example"
@@ -101,11 +190,11 @@ export default function App() {
                 <span className="text-sm font-medium text-on-surface">WhatsApp</span>
               </a>
             </div>
-          </>
+          </div>
         )}
 
         {view === 'order' && (
-          <>
+          <div className="max-w-4xl mx-auto">
             <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'summary')} />
             <OrderView
               lang={c.lang}
@@ -118,114 +207,44 @@ export default function App() {
               onReset={c.resetCurrent}
               onExport={exportXlsx}
             />
-          </>
+          </div>
         )}
 
         {view === 'configs' && (
-          <>
-            <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'title')} sub={ts(c.lang, 'sub')} />
-
-            <ControlsBar lang={c.lang} pricing={c.pricing} onPricingChange={c.setPricing} />
-            <TierRow lang={c.lang} tier={c.tier} onTierChange={c.setTier} />
-            <ConfigTabs
-              lang={c.lang}
-              configs={c.configs}
-              activeConfigId={c.activeConfigId}
-              onSelect={c.setActiveConfigId}
-              onRemove={c.removeConfig}
-            />
-
-            <div className="space-y-4">
-              {c.models.map(model => {
-                const qty = c.activeConfig.modelQtys[model.id] || 0;
-                return (
-                  <div key={model.id}>
-                    <ModelCard
-                      model={model}
-                      tier={c.tier}
-                      lang={c.lang}
-                      qty={qty}
-                      selections={(c.activeConfig.selections[model.id] || { version: model.versions[0].id }) as ConfigSelections}
-                      onQtyChange={q => c.setModelQty(model.id, q)}
-                      onQtyDelta={delta => c.changeModelQty(model.id, delta)}
-                      onSelectVersion={vid => c.selectVersion(model.id, vid)}
-                      onSelectComponent={(secKey, itemId, type) => c.selectComponent(model.id, secKey, itemId, type)}
-                    />
-                    {qty > 0 && (
-                      <>
-                        <GroundSection
-                          lang={c.lang}
-                          tier={c.tier}
-                          items={c.groundItems}
-                          qtys={c.activeConfig.groundQtys || {}}
-                          onQtyChange={c.setGroundQty}
-                          onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
-                        />
-                        <GroundSection
-                          lang={c.lang}
-                          tier={c.tier}
-                          items={c.antennaItems}
-                          qtys={c.activeConfig.groundQtys || {}}
-                          onQtyChange={c.setGroundQty}
-                          onQtyDelta={(id, delta) => c.changeGroundQty(id, delta)}
-                          titleKey="antennas"
-                          subKey="antennasSub"
-                          grid
-                        />
-                        <button
-                          onClick={c.addConfig}
-                          className="w-full mt-2 px-5 py-3 rounded-lg text-xs font-bold border-2 border-dashed border-primary/50 text-primary hover:bg-primary/5 transition-colors"
-                        >
-                          {ts(c.lang, 'saveCfg')}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-
-              <button
-                onClick={c.addConfig}
-                className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-xs font-bold bg-surface-container-lowest border border-dashed border-outline text-primary hover:bg-primary/5 transition-colors"
-              >
-                <span className="material-symbols-outlined text-base">add</span>
-                {ts(c.lang, 'addCfg')}
-              </button>
+          <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-8">
+            <div className="min-w-0">{ConfigsMain}</div>
+            <div className="hidden xl:block">
+              <Sidebar {...sidebarProps} sidebarOpen={false} onClose={() => {}} inline />
             </div>
-          </>
+          </div>
         )}
       </main>
 
-      {/* Quick-check bar (configs view, when there is anything) */}
+      {/* Floating quick-check bar — mobile/tablet only; on xl the sidebar shows the same info */}
       {view === 'configs' && c.summary.hasAny && (
-        <div className="fixed bottom-16 left-0 w-full z-40 bg-white/95 backdrop-blur-md px-4 py-3 border-t border-outline-variant flex items-center justify-between gap-3 shadow-lg">
-          <button onClick={() => setQuickOpen(true)} className="flex flex-col items-start text-left flex-1 min-w-0">
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{ts(c.lang, 'quickCheck')}</span>
-            <span className="text-base font-headline font-bold text-primary truncate">¥{c.cnyTotal.toLocaleString()} FOB · ${c.usdTotal.toLocaleString()}</span>
-          </button>
-          <button
-            onClick={exportXlsx}
-            className="flex items-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md shrink-0"
-          >
-            <span className="material-symbols-outlined text-sm">download</span>
-            {ts(c.lang, 'quickDownload')}
-          </button>
+        <div className="fixed bottom-16 left-0 w-full z-40 xl:hidden bg-white/95 backdrop-blur-md px-4 py-3 border-t border-outline-variant shadow-lg">
+          <div className="max-w-md md:max-w-3xl mx-auto flex items-center justify-between gap-3">
+            <button onClick={() => setQuickOpen(true)} className="flex flex-col items-start text-left flex-1 min-w-0">
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{ts(c.lang, 'quickCheck')}</span>
+              <span className="text-base font-headline font-bold text-primary truncate">¥{c.cnyTotal.toLocaleString()} FOB · ${c.usdTotal.toLocaleString()}</span>
+            </button>
+            <button
+              onClick={exportXlsx}
+              className="flex items-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md shrink-0"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              {ts(c.lang, 'quickDownload')}
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Modal sidebar (mobile/tablet quick-check trigger) */}
       <Sidebar
-        lang={c.lang}
-        pricing={c.pricing}
-        groups={c.summary.groups}
-        grandTotal={c.summary.grandTotal}
-        cnyTotal={c.cnyTotal}
-        usdTotal={c.usdTotal}
-        hasAny={c.summary.hasAny}
-        multipleConfigs={c.configs.length > 1}
+        {...sidebarProps}
         sidebarOpen={quickOpen}
         onClose={() => setQuickOpen(false)}
         onReset={() => { c.resetCurrent(); setQuickOpen(false); }}
-        onExport={exportXlsx}
       />
 
       <BottomToolbar lang={c.lang} view={view} onChange={setView} />

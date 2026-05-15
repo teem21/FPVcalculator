@@ -61,65 +61,118 @@ function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: 
   );
 }
 
+interface PanelProps {
+  lang: Lang;
+  pricing: PricingParams;
+  groups: SummaryGroup[];
+  grandTotal: number;
+  cnyTotal: number;
+  usdTotal: number;
+  hasAny: boolean;
+  multipleConfigs: boolean;
+  onReset: () => void;
+  onExport: () => void;
+  onClose?: () => void;
+  inline: boolean;
+}
+
+function Panel({
+  lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny,
+  multipleConfigs, onReset, onExport, onClose, inline,
+}: PanelProps) {
+  return (
+    <div
+      className={
+        inline
+          ? 'bg-surface-container-low border border-outline-variant rounded-xl flex flex-col max-h-[calc(100dvh-8rem)] overflow-hidden'
+          : 'bg-surface-container-low w-full sm:max-w-md rounded-t-xl sm:rounded-xl border border-outline-variant max-h-[90dvh] flex flex-col'
+      }
+      onClick={inline ? undefined : (e => e.stopPropagation())}
+    >
+      <div className="flex items-center justify-between p-4 border-b border-outline-variant">
+        <div className="font-headline font-bold text-lg text-on-surface">{ts(lang, 'summary')}</div>
+        {!inline && (
+          <button onClick={onClose} className="material-symbols-outlined text-on-surface-variant hover:text-primary">close</button>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {!hasAny ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <span className="material-symbols-outlined text-5xl text-on-surface-variant mb-2">flight</span>
+            <div className="text-sm text-on-surface-variant whitespace-pre-line">{ts(lang, 'empty')}</div>
+          </div>
+        ) : (
+          groups.map(g => (
+            <ConfigBlock key={g.configId} group={g} lang={lang} defaultOpen={!multipleConfigs || groups.length === 1} />
+          ))
+        )}
+      </div>
+
+      {hasAny && (
+        <div className="p-4 border-t border-outline-variant bg-surface-container-lowest space-y-2">
+          <div className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{ts(lang, 'totalLbl')}</div>
+          <div className="text-xl font-headline font-bold text-primary">¥{cnyTotal.toLocaleString()} FOB</div>
+          <div className="text-xs text-on-surface-variant">≈ ${usdTotal.toLocaleString()} FOB</div>
+          <div className="text-[10px] text-on-surface-variant font-mono break-all">
+            ¥{grandTotal.toLocaleString()} × {pricing.fobK} = ¥{cnyTotal.toLocaleString()} ÷ {pricing.rate} = ${usdTotal.toLocaleString()}
+          </div>
+        </div>
+      )}
+
+      <div className="p-4 border-t border-outline-variant flex gap-2">
+        {hasAny && (
+          <button
+            onClick={onExport}
+            className="flex-1 flex items-center justify-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md"
+          >
+            <span className="material-symbols-outlined text-sm">download</span>
+            {ts(lang, 'export')}
+          </button>
+        )}
+        <button
+          onClick={onReset}
+          className="flex-1 px-5 py-2.5 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-error hover:text-error transition-colors"
+        >
+          {ts(lang, 'reset')}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function Sidebar({
   lang, pricing, groups, grandTotal, cnyTotal, usdTotal, hasAny,
-  multipleConfigs, sidebarOpen, onClose, onReset, onExport,
+  multipleConfigs, sidebarOpen, onClose, onReset, onExport, inline = false,
 }: Props) {
+  if (inline) {
+    return (
+      <aside className="sticky top-20">
+        <Panel
+          lang={lang} pricing={pricing} groups={groups}
+          grandTotal={grandTotal} cnyTotal={cnyTotal} usdTotal={usdTotal}
+          hasAny={hasAny} multipleConfigs={multipleConfigs}
+          onReset={onReset} onExport={onExport}
+          inline
+        />
+      </aside>
+    );
+  }
+
   if (!sidebarOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center bg-on-surface/40" onClick={onClose}>
-      <div
-        onClick={e => e.stopPropagation()}
-        className="bg-surface-container-low w-full sm:max-w-md rounded-t-xl sm:rounded-xl border border-outline-variant max-h-[90dvh] flex flex-col"
-      >
-        <div className="flex items-center justify-between p-4 border-b border-outline-variant">
-          <div className="font-headline font-bold text-lg text-on-surface">{ts(lang, 'summary')}</div>
-          <button onClick={onClose} className="material-symbols-outlined text-on-surface-variant hover:text-primary">close</button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {!hasAny ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <span className="material-symbols-outlined text-5xl text-on-surface-variant mb-2">flight</span>
-              <div className="text-sm text-on-surface-variant whitespace-pre-line">{ts(lang, 'empty')}</div>
-            </div>
-          ) : (
-            groups.map(g => (
-              <ConfigBlock key={g.configId} group={g} lang={lang} defaultOpen={!multipleConfigs || groups.length === 1} />
-            ))
-          )}
-        </div>
-
-        {hasAny && (
-          <div className="p-4 border-t border-outline-variant bg-surface-container-lowest space-y-2">
-            <div className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{ts(lang, 'totalLbl')}</div>
-            <div className="text-xl font-headline font-bold text-primary">¥{cnyTotal.toLocaleString()} FOB</div>
-            <div className="text-xs text-on-surface-variant">≈ ${usdTotal.toLocaleString()} FOB</div>
-            <div className="text-[10px] text-on-surface-variant font-mono">
-              ¥{grandTotal.toLocaleString()} × {pricing.fobK} = ¥{cnyTotal.toLocaleString()} ÷ {pricing.rate} = ${usdTotal.toLocaleString()}
-            </div>
-          </div>
-        )}
-
-        <div className="p-4 border-t border-outline-variant flex gap-2">
-          {hasAny && (
-            <button
-              onClick={onExport}
-              className="flex-1 flex items-center justify-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md"
-            >
-              <span className="material-symbols-outlined text-sm">download</span>
-              {ts(lang, 'export')}
-            </button>
-          )}
-          <button
-            onClick={onReset}
-            className="flex-1 px-5 py-2.5 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:border-error hover:text-error transition-colors"
-          >
-            {ts(lang, 'reset')}
-          </button>
-        </div>
-      </div>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center sm:justify-center bg-on-surface/40"
+      onClick={onClose}
+    >
+      <Panel
+        lang={lang} pricing={pricing} groups={groups}
+        grandTotal={grandTotal} cnyTotal={cnyTotal} usdTotal={usdTotal}
+        hasAny={hasAny} multipleConfigs={multipleConfigs}
+        onReset={onReset} onExport={onExport} onClose={onClose}
+        inline={false}
+      />
     </div>
   );
 }

@@ -18,7 +18,7 @@ interface FieldProps {
 
 function Field({ label, value, step, onChange, full }: FieldProps) {
   return (
-    <div className={'flex flex-col gap-1 ' + (full ? 'col-span-2' : '')}>
+    <div className={'flex flex-col gap-1 ' + (full ? 'col-span-2 md:col-span-1' : '')}>
       <label className="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">{label}</label>
       <div className="bg-surface-container-lowest rounded-lg px-3 py-1.5 border border-outline-variant flex items-center h-full">
         <input
@@ -44,7 +44,7 @@ export function ControlsBar({ lang, pricing, onPricingChange }: Props) {
 
   return (
     <section className="bg-surface-container-low rounded-xl p-4 border border-outline-variant mb-6">
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <Field label={ts(lang, 'rate')} value={pricing.rate} step="0.01" onChange={v => update('rate', v)} />
         <Field label={ts(lang, 'fob')} value={pricing.fobK} step="0.01" onChange={v => update('fobK', v)} />
         <Field label={ts(lang, 'xkm')} value={pricing.xkm} step="1" onChange={v => update('xkm', v)} full />
