@@ -27,7 +27,7 @@ function Field({ label, value, step, onChange, full }: FieldProps) {
           step={step}
           min="0"
           onChange={e => onChange(e.target.value)}
-          className="w-full bg-transparent text-xs text-on-surface font-medium focus:outline-none"
+          className="w-full bg-transparent text-xs text-on-surface font-medium border-0 focus:outline-none focus:ring-0 p-0"
         />
       </div>
     </div>
