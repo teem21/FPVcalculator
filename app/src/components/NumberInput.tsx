@@ -29,14 +29,15 @@ export function NumberInput({
     if (!focused.current) setText(String(value));
   }, [value]);
 
-  const re = allowDecimal ? /^$|^\d*\.?\d*$/ : /^$|^\d*$/;
+  const re = allowDecimal ? /^$|^\d*[.,]?\d*$/ : /^$|^\d*$/;
 
   const tryCommit = (raw: string) => {
-    if (raw === '' || raw === '.') return false;
-    const n = parseFloat(raw);
+    if (raw === '' || raw === '.' || raw === ',') return false;
+    const norm = raw.replace(',', '.');
+    const n = parseFloat(norm);
     if (Number.isNaN(n) || n < min) return false;
-    // Avoid committing intermediate forms like "6." (parseFloat → 6) or "01"
-    if (String(n) !== raw) return false;
+    // Avoid committing intermediate forms like "6." / "6," (parseFloat → 6) or "01"
+    if (String(n) !== norm) return false;
     onChange(n);
     return true;
   };
@@ -51,7 +52,7 @@ export function NumberInput({
       onFocus={() => { focused.current = true; }}
       onBlur={() => {
         focused.current = false;
-        const raw = text.trim();
+        const raw = text.trim().replace(',', '.');
         const n = parseFloat(raw);
         if (raw === '' || Number.isNaN(n) || n < min) {
           setText(String(value));
