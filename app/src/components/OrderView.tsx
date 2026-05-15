@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import type { Lang, SummaryGroup, SummaryGroupKey, SummaryItem } from '@/types';
 import type { PricingParams } from '@/data/pricing';
 import { ts } from '@/data/i18n';
@@ -29,8 +29,66 @@ function groupItems(items: SummaryItem[]): Record<SummaryGroupKey, SummaryItem[]
   return out;
 }
 
-function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang: Lang; defaultOpen: boolean }) {
+function GroupBlock({
+  gk, rows, lang, defaultOpen,
+}: {
+  gk: SummaryGroupKey;
+  rows: SummaryItem[];
+  lang: Lang;
+  defaultOpen: boolean;
+}) {
   const [open, setOpen] = useState(defaultOpen);
+  const subtotal = rows.reduce((s, r) => s + r.price, 0);
+  return (
+    <div className="border-b border-outline-variant/50 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-3 py-2 flex items-center justify-between gap-3 hover:bg-surface-variant/40 transition-colors text-left"
+      >
+        <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+          {ts(lang, GROUP_LABEL_KEY[gk])}
+        </span>
+        <span className="flex items-center gap-2 shrink-0">
+          <span className="text-[11px] font-bold text-on-surface">¥{subtotal.toLocaleString()}</span>
+          <span className="material-symbols-outlined text-on-surface-variant text-base">
+            {open ? 'expand_less' : 'expand_more'}
+          </span>
+        </span>
+      </button>
+      {open && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-surface-container-low">
+              <tr className="text-on-surface-variant uppercase tracking-wider text-[10px]">
+                <th className="text-left font-bold py-1.5 px-3">{ts(lang, 'colName')}</th>
+                <th className="text-right font-bold py-1.5 px-3 w-14">{ts(lang, 'colQty')}</th>
+                <th className="text-right font-bold py-1.5 px-3 w-20">{ts(lang, 'colUnit')}</th>
+                <th className="text-right font-bold py-1.5 px-3 w-20">{ts(lang, 'colTotal')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i} className="border-b border-outline-variant/30 last:border-b-0">
+                  <td className="px-3 py-2">
+                    <div className="font-medium text-on-surface">{r.name}</div>
+                    {r.sub && <div className="text-[10px] text-on-surface-variant mt-0.5">{r.sub}</div>}
+                  </td>
+                  <td className="px-3 py-2 text-right text-on-surface-variant">×{r.qty}</td>
+                  <td className="px-3 py-2 text-right text-on-surface-variant">¥{r.unitPrice.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right font-bold text-on-surface">¥{r.price.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ConfigInvoice({ group, lang }: { group: SummaryGroup; lang: Lang }) {
+  const [open, setOpen] = useState(false);
   const grouped = groupItems(group.items);
   const dronesText = ts(lang, 'totalDrones').replace('{n}', String(group.droneCount));
 
@@ -52,56 +110,25 @@ function ConfigInvoice({ group, lang, defaultOpen }: { group: SummaryGroup; lang
       </button>
 
       {open && (
-        <div className="border-t border-outline-variant overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead className="bg-surface-container-low">
-              <tr className="text-on-surface-variant uppercase tracking-wider text-[10px]">
-                <th className="text-left font-bold py-2 px-3">{ts(lang, 'colName')}</th>
-                <th className="text-right font-bold py-2 px-3 w-16">{ts(lang, 'colQty')}</th>
-                <th className="text-right font-bold py-2 px-3 w-24">{ts(lang, 'colUnit')}</th>
-                <th className="text-right font-bold py-2 px-3 w-24">{ts(lang, 'colTotal')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {GROUP_ORDER.map(gk => {
-                const rows = grouped[gk];
-                if (!rows.length) return null;
-                const subtotal = rows.reduce((s, r) => s + r.price, 0);
-                return (
-                  <Fragment key={gk}>
-                    <tr className="bg-primary/5">
-                      <td colSpan={4} className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                        {ts(lang, GROUP_LABEL_KEY[gk])}
-                      </td>
-                    </tr>
-                    {rows.map((r, i) => (
-                      <tr key={`${gk}-${i}`} className="border-b border-outline-variant/50">
-                        <td className="px-3 py-2">
-                          <div className="font-medium text-on-surface">{r.name}</div>
-                          {r.sub && <div className="text-[10px] text-on-surface-variant mt-0.5">{r.sub}</div>}
-                        </td>
-                        <td className="px-3 py-2 text-right text-on-surface-variant">×{r.qty}</td>
-                        <td className="px-3 py-2 text-right text-on-surface-variant">¥{r.unitPrice.toLocaleString()}</td>
-                        <td className="px-3 py-2 text-right font-bold text-on-surface">¥{r.price.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                    <tr className="bg-surface-container-low">
-                      <td colSpan={3} className="px-3 py-1.5 text-[11px] font-bold text-on-surface-variant text-right">
-                        {ts(lang, 'grpSubtotal')} · {ts(lang, GROUP_LABEL_KEY[gk])}
-                      </td>
-                      <td className="px-3 py-1.5 text-right text-[11px] font-bold text-on-surface">¥{subtotal.toLocaleString()}</td>
-                    </tr>
-                  </Fragment>
-                );
-              })}
-            </tbody>
-            <tfoot>
-              <tr className="bg-primary text-on-primary">
-                <td colSpan={3} className="px-3 py-2 font-bold text-right">{ts(lang, 'totalLbl')} · {group.groupLabel}</td>
-                <td className="px-3 py-2 text-right font-bold">¥{group.total.toLocaleString()}</td>
-              </tr>
-            </tfoot>
-          </table>
+        <div className="border-t border-outline-variant">
+          {GROUP_ORDER.map(gk => {
+            const rows = grouped[gk];
+            if (!rows.length) return null;
+            // drone block defaults open, others collapsed
+            return (
+              <GroupBlock
+                key={gk}
+                gk={gk}
+                rows={rows}
+                lang={lang}
+                defaultOpen={gk === 'drone'}
+              />
+            );
+          })}
+          <div className="bg-primary text-on-primary px-3 py-2 flex items-center justify-between">
+            <span className="text-xs font-bold">{ts(lang, 'totalLbl')} · {group.groupLabel}</span>
+            <span className="text-xs font-bold">¥{group.total.toLocaleString()}</span>
+          </div>
         </div>
       )}
     </div>
@@ -120,8 +147,8 @@ export function OrderView({ lang, pricing, groups, grandTotal, cnyTotal, usdTota
 
   return (
     <div>
-      {groups.map((g, i) => (
-        <ConfigInvoice key={g.configId} group={g} lang={lang} defaultOpen={groups.length === 1 || i === 0} />
+      {groups.map(g => (
+        <ConfigInvoice key={g.configId} group={g} lang={lang} />
       ))}
 
       <div className="rounded-xl bg-surface-container-lowest border-2 border-primary p-4 mt-4 shadow-md">
