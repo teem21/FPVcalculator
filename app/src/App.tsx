@@ -29,6 +29,7 @@ export default function App() {
   const c = useConfigurator();
   const [view, setView] = useState<View>('configs');
   const [quickOpen, setQuickOpen] = useState(false);
+  const [wechatOpen, setWechatOpen] = useState(false);
 
   const exportXlsx = () => downloadOrderXlsx({
     groups: c.summary.groups,
@@ -205,13 +206,11 @@ export default function App() {
               </a>
               <button
                 type="button"
-                onClick={() => {
-                  navigator.clipboard?.writeText('Baigarin_Zhan');
-                }}
+                onClick={() => setWechatOpen(true)}
                 title="Baigarin_Zhan"
                 className="flex items-center gap-3 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-colors text-left"
               >
-                <span className="material-symbols-outlined text-primary">forum</span>
+                <span className="material-symbols-outlined text-primary">qr_code_2</span>
                 <span className="text-sm font-medium text-on-surface">WeChat · Baigarin_Zhan</span>
               </button>
             </div>
@@ -271,6 +270,46 @@ export default function App() {
         onClose={() => setQuickOpen(false)}
         onReset={() => { c.resetCurrent(); setQuickOpen(false); }}
       />
+
+      {wechatOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/40 p-4"
+          onClick={() => setWechatOpen(false)}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="bg-surface-container-lowest rounded-xl border border-outline-variant w-full max-w-xs flex flex-col"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-outline-variant">
+              <div className="font-headline font-bold text-on-surface flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">qr_code_2</span>
+                WeChat
+              </div>
+              <button
+                onClick={() => setWechatOpen(false)}
+                className="material-symbols-outlined text-on-surface-variant hover:text-primary"
+              >
+                close
+              </button>
+            </div>
+            <img
+              src="/specs/wechat-qr.png"
+              alt="WeChat QR code"
+              className="w-full h-auto p-4"
+            />
+            <div className="px-4 pb-4 flex flex-col gap-3">
+              <div className="text-center text-sm font-bold text-on-surface">Baigarin_Zhan</div>
+              <button
+                onClick={() => { navigator.clipboard?.writeText('Baigarin_Zhan'); }}
+                className="w-full flex items-center justify-center gap-2 bg-on-surface text-white px-5 py-2.5 rounded-lg text-xs font-bold active:scale-95 transition-all shadow-md"
+              >
+                <span className="material-symbols-outlined text-sm">content_copy</span>
+                Baigarin_Zhan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomToolbar lang={c.lang} view={view} onChange={setView} />
     </>
