@@ -50,10 +50,31 @@ export function useConfigurator() {
       if (!newSel[mid]) {
         newSel[mid] = initSelections(mid, cfg);
         changed = true;
+        return;
+      }
+      // Backfill missing radio defaults — e.g. when a new section like
+      // "Motor" appears after a config already had selections for this model.
+      const model = models.find(m => m.id === mid);
+      if (!model) return;
+      const sel = { ...(newSel[mid] as Record<string, boolean | string>) };
+      let secChanged = false;
+      model.components.forEach(sec => {
+        if (sec.type !== 'radio') return;
+        const hasAny = sec.items.some(it => sel[it.id]);
+        if (hasAny) return;
+        const def = sec.items.find(it => it.default);
+        if (def) {
+          sel[def.id] = true;
+          secChanged = true;
+        }
+      });
+      if (secChanged) {
+        newSel[mid] = sel as ConfigSelections;
+        changed = true;
       }
     });
     return changed ? { ...cfg, selections: newSel } : cfg;
-  }, [initSelections]);
+  }, [initSelections, models]);
 
   const updateActiveConfig = useCallback((updater: (cfg: UserConfig) => UserConfig) => {
     setConfigs(prev => prev.map(c => c.id === activeConfigId ? ensureSelections(updater(c)) : c));
