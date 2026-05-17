@@ -34,7 +34,7 @@ const modelNames: Record<Lang, ModelNames> = {
 
 type CompNameKey =
   | 'bat6' | 'bat8_12' | 'bat8_16'
-  | 'esc60' | 'esc80' | 'esc100'
+  | 'esc60' | 'esc65' | 'esc80' | 'esc100'
   | 'fc_std' | 'fc_f722'
   | 'cam_std' | 'cam_n2' | 'cam_n2p'
   | 'cam_hik_ir'
@@ -55,7 +55,7 @@ type CompNameKey =
 const compNames: Record<Lang, Record<CompNameKey, string>> = {
   ru: {
     bat6: '6S 8 000 мАч', bat8_12: '8S 12 000 мАч', bat8_16: '8S 16 000 мАч',
-    esc60: '60A 4-в-1 (6S)', esc80: '80A 4-в-1 (6S)', esc100: '100A 4-в-1 (8S)',
+    esc60: '60A 4-в-1 (6S)', esc65: '65A 4-в-1 (6S)', esc80: '80A 4-в-1 (6S)', esc100: '100A 4-в-1 (8S)',
     fc_std: 'F405 (штатный)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (штатная)', cam_n2: 'N2 Pro (ночная)', cam_n2p: 'N2 Pro+ (ночная+)',
     cam_hik_ir: 'HIK инфракрасная камера',
@@ -88,7 +88,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
   },
   en: {
     bat6: '6S 8,000 mAh', bat8_12: '8S 12,000 mAh', bat8_16: '8S 16,000 mAh',
-    esc60: '60A 4-in-1 (6S)', esc80: '80A 4-in-1 (6S)', esc100: '100A 4-in-1 (8S)',
+    esc60: '60A 4-in-1 (6S)', esc65: '65A 4-in-1 (6S)', esc80: '80A 4-in-1 (6S)', esc100: '100A 4-in-1 (8S)',
     fc_std: 'F405 (standard)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (standard)', cam_n2: 'N2 Pro (night)', cam_n2p: 'N2 Pro+ (night+)',
     cam_hik_ir: 'HIK infrared camera',
@@ -121,7 +121,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
   },
   zh: {
     bat6: '6S 8000mAh电池', bat8_12: '8S 12000mAh电池', bat8_16: '8S 16000mAh电池',
-    esc60: '60A四合一电调(6S)', esc80: '80A四合一电调(6S)', esc100: '100A四合一电调(8S)',
+    esc60: '60A四合一电调(6S)', esc65: '65A四合一电调(6S)', esc80: '80A四合一电调(6S)', esc100: '100A四合一电调(8S)',
     fc_std: 'F405飞控（标准）', fc_f722: 'F722 PRO V2飞控',
     cam_std: '1200TVL F1.0摄像头（标准）', cam_n2: 'N2 Pro夜视摄像头', cam_n2p: 'N2 Pro+夜视摄像头',
     cam_hik_ir: 'HIK 红外摄像头',
@@ -166,7 +166,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
   const subs: Record<Lang, Record<CompNameKey, string>> = {
     ru: {
       bat6: '1.2 кг · для F10', bat8_12: '2.1 кг · для F13', bat8_16: '2.6 кг · для F15',
-      esc60: 'штатный', esc80: 'штатный / апгрейд', esc100: 'штатный',
+      esc60: 'штатный', esc65: 'апгрейд для V2-сборок F10 (MARK4 V2)', esc80: 'штатный / апгрейд', esc100: 'штатный',
       fc_std: 'включён в стоимость дрона', fc_f722: `$26(обр)/$23(1к+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · ночное зрение · включена', cam_n2: 'превосходит Ratel 2', cam_n2p: 'превосходит Ratel Pro',
       cam_hik_ir: `HIK инфракрасная · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -200,7 +200,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
     },
     en: {
       bat6: '1.2 kg · for F10', bat8_12: '2.1 kg · for F13', bat8_16: '2.6 kg · for F15',
-      esc60: 'standard', esc80: 'standard / upgrade', esc100: 'standard',
+      esc60: 'standard', esc65: 'upgrade for F10 V2 builds (MARK4 V2)', esc80: 'standard / upgrade', esc100: 'standard',
       fc_std: 'included in drone price', fc_f722: `$26(sample)/$23(1k+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · night vision · included', cam_n2: 'better than Ratel 2', cam_n2p: 'better than Ratel Pro',
       cam_hik_ir: `HIK infrared · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -234,7 +234,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
     },
     zh: {
       bat6: '1.2千克 · F10用', bat8_12: '2.1千克 · F13用', bat8_16: '2.6千克 · F15用',
-      esc60: '标准款', esc80: '标准款/升级款', esc100: '标准款',
+      esc60: '标准款', esc65: 'F10 V2 升级款 (MARK4 V2)', esc80: '标准款/升级款', esc100: '标准款',
       fc_std: '含在无人机价格中', fc_f722: `$26(样品)/$23(1000+架) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: '超级HDR · 夜视 · 已含', cam_n2: '优于Ratel 2', cam_n2p: '优于Ratel Pro',
       cam_hik_ir: `HIK 红外 · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -303,6 +303,7 @@ function buildComponents(
   const escs: ComponentItem[] = [];
   if (is10) {
     escs.push({ id: 'esc60', name: cn.esc60, sub: cs.esc60, prices: null, tbd: true, default: true });
+    escs.push({ id: 'esc65', name: cn.esc65, sub: cs.esc65, prices: null, tbd: true, tag: 'v2' });
     escs.push({ id: 'esc80', name: cn.esc80, sub: cs.esc80, prices: tp(245, 200, 160) });
   }
   if (is13) escs.push({ id: 'esc80', name: cn.esc80, sub: cs.esc80, prices: tp(245, 200, 160), default: true });
