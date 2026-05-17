@@ -17,7 +17,14 @@ interface Props {
 export function ComponentSection({ section, tier, lang, selections, disabledIds = [], onSelect, defaultOpen = false }: Props) {
   const [open, setOpen] = useState(defaultOpen);
 
-  const selectedItems = section.items.filter(it => !!(selections as Record<string, unknown>)[it.id]);
+  // Pin defaults to the top of the list so the stock pick is always visible first.
+  const sortedItems = [...section.items].sort((a, b) => {
+    const ad = a.default ? 1 : 0;
+    const bd = b.default ? 1 : 0;
+    return bd - ad;
+  });
+
+  const selectedItems = sortedItems.filter(it => !!(selections as Record<string, unknown>)[it.id]);
   const preview = selectedItems.map(it => {
     const price = tierPrice(it.prices, tier);
     const priceTxt = it.incl ? ts(lang, 'incl') : it.tbd ? ts(lang, 'tbd') : price != null ? `¥${price.toLocaleString()}` : '';
@@ -48,7 +55,7 @@ export function ComponentSection({ section, tier, lang, selections, disabledIds 
       </button>
       {open && (
         <div className="px-4 pb-4 space-y-2 bg-white">
-          {section.items.map(item => (
+          {sortedItems.map(item => (
             <ComponentItemRow
               key={item.id}
               item={item}

@@ -49,8 +49,13 @@ export function ComponentItemRow({ item, tier, lang, type, selected, disabled, o
       }
     >
       <div className="flex-1 min-w-0 pr-3">
-        <div className={'text-xs ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
-          {item.name}
+        <div className={'text-xs flex items-center flex-wrap gap-x-1 ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
+          <span>{item.name}</span>
+          {item.default && (
+            <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary">
+              {ts(lang, 'defaultBadge')}
+            </span>
+          )}
           {item.tag && <Tag type={item.tag} />}
         </div>
         {item.sub && (

@@ -129,17 +129,22 @@ export function ModelCard({
             </button>
             {versionOpen && (
               <div className="px-4 pb-4 space-y-2 bg-white">
-                {model.versions.map(v => (
-                  <ComponentItemRow
-                    key={v.id}
-                    item={{ id: v.id, name: v.name, sub: v.sub, prices: v.prices }}
-                    tier={tier}
-                    lang={lang}
-                    type="radio"
-                    selected={selections.version === v.id}
-                    onClick={() => onSelectVersion(v.id)}
-                  />
-                ))}
+                {[...model.versions]
+                  .sort((a, b) => (a.id === model.versions[0].id ? -1 : b.id === model.versions[0].id ? 1 : 0))
+                  .map(v => (
+                    <ComponentItemRow
+                      key={v.id}
+                      item={{
+                        id: v.id, name: v.name, sub: v.sub, prices: v.prices,
+                        default: v.id === model.versions[0].id,
+                      }}
+                      tier={tier}
+                      lang={lang}
+                      type="radio"
+                      selected={selections.version === v.id}
+                      onClick={() => onSelectVersion(v.id)}
+                    />
+                  ))}
               </div>
             )}
           </div>
