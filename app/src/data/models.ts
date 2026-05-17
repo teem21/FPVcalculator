@@ -35,6 +35,8 @@ const modelNames: Record<Lang, ModelNames> = {
 type CompNameKey =
   | 'bat6' | 'bat8_12' | 'bat8_16'
   | 'esc60' | 'esc65' | 'esc80' | 'esc100'
+  | 'motor_2810' | 'motor_2812' | 'motor_3110' | 'motor_3115' | 'motor_3314'
+  | 'motor_4214' | 'motor_4315' | 'motor_4320' | 'motor_4325' | 'motor_5215'
   | 'fc_std' | 'fc_f722'
   | 'cam_std' | 'cam_n2' | 'cam_n2p'
   | 'cam_hik_ir'
@@ -56,6 +58,11 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
   ru: {
     bat6: '6S 8 000 мАч', bat8_12: '8S 12 000 мАч', bat8_16: '8S 16 000 мАч',
     esc60: '60A 4-в-1 (6S)', esc65: '65A 4-в-1 (6S)', esc80: '80A 4-в-1 (6S)', esc100: '100A 4-в-1 (8S)',
+    motor_2810: '2810 1350KV', motor_2812: '2812 900/1150/1250KV',
+    motor_3110: '3110 900KV',  motor_3115: '3115 640/900KV',
+    motor_3314: '3314 900KV',  motor_4214: '4214 400/600KV',
+    motor_4315: '4315 400KV',  motor_4320: '4320 400KV',
+    motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405 (штатный)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (штатная)', cam_n2: 'N2 Pro (ночная)', cam_n2p: 'N2 Pro+ (ночная+)',
     cam_hik_ir: 'HIK инфракрасная камера',
@@ -89,6 +96,11 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
   en: {
     bat6: '6S 8,000 mAh', bat8_12: '8S 12,000 mAh', bat8_16: '8S 16,000 mAh',
     esc60: '60A 4-in-1 (6S)', esc65: '65A 4-in-1 (6S)', esc80: '80A 4-in-1 (6S)', esc100: '100A 4-in-1 (8S)',
+    motor_2810: '2810 1350KV', motor_2812: '2812 900/1150/1250KV',
+    motor_3110: '3110 900KV',  motor_3115: '3115 640/900KV',
+    motor_3314: '3314 900KV',  motor_4214: '4214 400/600KV',
+    motor_4315: '4315 400KV',  motor_4320: '4320 400KV',
+    motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405 (standard)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (standard)', cam_n2: 'N2 Pro (night)', cam_n2p: 'N2 Pro+ (night+)',
     cam_hik_ir: 'HIK infrared camera',
@@ -122,6 +134,11 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
   zh: {
     bat6: '6S 8000mAh电池', bat8_12: '8S 12000mAh电池', bat8_16: '8S 16000mAh电池',
     esc60: '60A四合一电调(6S)', esc65: '65A四合一电调(6S)', esc80: '80A四合一电调(6S)', esc100: '100A四合一电调(8S)',
+    motor_2810: '2810 1350KV', motor_2812: '2812 900/1150/1250KV',
+    motor_3110: '3110 900KV',  motor_3115: '3115 640/900KV',
+    motor_3314: '3314 900KV',  motor_4214: '4214 400/600KV',
+    motor_4315: '4315 400KV',  motor_4320: '4320 400KV',
+    motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405飞控（标准）', fc_f722: 'F722 PRO V2飞控',
     cam_std: '1200TVL F1.0摄像头（标准）', cam_n2: 'N2 Pro夜视摄像头', cam_n2p: 'N2 Pro+夜视摄像头',
     cam_hik_ir: 'HIK 红外摄像头',
@@ -167,6 +184,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
     ru: {
       bat6: '1.2 кг · для F10', bat8_12: '2.1 кг · для F13', bat8_16: '2.6 кг · для F15',
       esc60: 'штатный', esc65: 'апгрейд для V2-сборок F10 (MARK4 V2)', esc80: 'штатный / апгрейд', esc100: 'штатный',
+      motor_2810: 'D33.2×25.3 · 65.8 г · 4–6S · 7" винт · тяга 2.4 кг',
+      motor_2812: 'D33.2×27.3 · 74.8 г · 4–6S · 8/9" винт · тяга 2.7/3.5 кг',
+      motor_3110: 'D36.4×25.1 · 74 г · 4–6S · 8" винт · тяга 3 кг',
+      motor_3115: 'D36.85×30.8 · 102.9 г · 6–8S · 10/11" винт · тяга 4.2 кг',
+      motor_3314: 'D38.6×29.8 · 123 г · 6–8S · 8/9" винт · тяга 3.9 кг',
+      motor_4214: 'D48.6×34.5 · 210 г · 4–12S · 12/15" винт · тяга 5/7 кг',
+      motor_4315: 'D50.5×39.6 · 260.8 г · 7–9S · 13/15" винт · тяга 6 кг',
+      motor_4320: 'D50.5×44.6 · 293.2 г · 8–12S · 13/15" винт · тяга 8 кг',
+      motor_4325: 'D50.5×49.6 · 334.3 г · 8–12S · 13/15" винт · тяга 9 кг',
+      motor_5215: 'D60.2×39 · 333.1 г · 6–12S · 15/13" винт · тяга 7.8 кг',
       fc_std: 'включён в стоимость дрона', fc_f722: `$26(обр)/$23(1к+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · ночное зрение · включена', cam_n2: 'превосходит Ratel 2', cam_n2p: 'превосходит Ratel Pro',
       cam_hik_ir: `HIK инфракрасная · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -201,6 +228,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
     en: {
       bat6: '1.2 kg · for F10', bat8_12: '2.1 kg · for F13', bat8_16: '2.6 kg · for F15',
       esc60: 'standard', esc65: 'upgrade for F10 V2 builds (MARK4 V2)', esc80: 'standard / upgrade', esc100: 'standard',
+      motor_2810: 'D33.2×25.3 · 65.8 g · 4–6S · 7" prop · 2.4 kg thrust',
+      motor_2812: 'D33.2×27.3 · 74.8 g · 4–6S · 8/9" prop · 2.7/3.5 kg thrust',
+      motor_3110: 'D36.4×25.1 · 74 g · 4–6S · 8" prop · 3 kg thrust',
+      motor_3115: 'D36.85×30.8 · 102.9 g · 6–8S · 10/11" prop · 4.2 kg thrust',
+      motor_3314: 'D38.6×29.8 · 123 g · 6–8S · 8/9" prop · 3.9 kg thrust',
+      motor_4214: 'D48.6×34.5 · 210 g · 4–12S · 12/15" prop · 5/7 kg thrust',
+      motor_4315: 'D50.5×39.6 · 260.8 g · 7–9S · 13/15" prop · 6 kg thrust',
+      motor_4320: 'D50.5×44.6 · 293.2 g · 8–12S · 13/15" prop · 8 kg thrust',
+      motor_4325: 'D50.5×49.6 · 334.3 g · 8–12S · 13/15" prop · 9 kg thrust',
+      motor_5215: 'D60.2×39 · 333.1 g · 6–12S · 15/13" prop · 7.8 kg thrust',
       fc_std: 'included in drone price', fc_f722: `$26(sample)/$23(1k+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · night vision · included', cam_n2: 'better than Ratel 2', cam_n2p: 'better than Ratel Pro',
       cam_hik_ir: `HIK infrared · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -235,6 +272,16 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
     zh: {
       bat6: '1.2千克 · F10用', bat8_12: '2.1千克 · F13用', bat8_16: '2.6千克 · F15用',
       esc60: '标准款', esc65: 'F10 V2 升级款 (MARK4 V2)', esc80: '标准款/升级款', esc100: '标准款',
+      motor_2810: 'D33.2×25.3 · 65.8g · 4–6S · 7" 桨 · 推力 2.4kg',
+      motor_2812: 'D33.2×27.3 · 74.8g · 4–6S · 8/9" 桨 · 推力 2.7/3.5kg',
+      motor_3110: 'D36.4×25.1 · 74g · 4–6S · 8" 桨 · 推力 3kg',
+      motor_3115: 'D36.85×30.8 · 102.9g · 6–8S · 10/11" 桨 · 推力 4.2kg',
+      motor_3314: 'D38.6×29.8 · 123g · 6–8S · 8/9" 桨 · 推力 3.9kg',
+      motor_4214: 'D48.6×34.5 · 210g · 4–12S · 12/15" 桨 · 推力 5/7kg',
+      motor_4315: 'D50.5×39.6 · 260.8g · 7–9S · 13/15" 桨 · 推力 6kg',
+      motor_4320: 'D50.5×44.6 · 293.2g · 8–12S · 13/15" 桨 · 推力 8kg',
+      motor_4325: 'D50.5×49.6 · 334.3g · 8–12S · 13/15" 桨 · 推力 9kg',
+      motor_5215: 'D60.2×39 · 333.1g · 6–12S · 15/13" 桨 · 推力 7.8kg',
       fc_std: '含在无人机价格中', fc_f722: `$26(样品)/$23(1000+架) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: '超级HDR · 夜视 · 已含', cam_n2: '优于Ratel 2', cam_n2p: '优于Ratel Pro',
       cam_hik_ir: `HIK 红外 · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
@@ -308,6 +355,23 @@ function buildComponents(
     { id: 'esc100', name: cn.esc100, sub: cs.esc100, prices: tp(300, 230, 210), default: is15 },
   ];
   sections.push({ key: 'esc', titleKey: 'esc', type: 'radio', items: escs });
+
+  // Motor — full FPV motor catalog; every motor can be picked for any frame.
+  // Defaults match the stock build per model (3115 → F10, 4214 → F13,
+  // 4315 → F15). Prices TBD until supplier quotes are in.
+  const motors: ComponentItem[] = [
+    { id: 'motor_2810', name: cn.motor_2810, sub: cs.motor_2810, prices: null, tbd: true },
+    { id: 'motor_2812', name: cn.motor_2812, sub: cs.motor_2812, prices: null, tbd: true },
+    { id: 'motor_3110', name: cn.motor_3110, sub: cs.motor_3110, prices: null, tbd: true },
+    { id: 'motor_3115', name: cn.motor_3115, sub: cs.motor_3115, prices: null, tbd: true, default: is10 },
+    { id: 'motor_3314', name: cn.motor_3314, sub: cs.motor_3314, prices: null, tbd: true },
+    { id: 'motor_4214', name: cn.motor_4214, sub: cs.motor_4214, prices: null, tbd: true, default: is13 },
+    { id: 'motor_4315', name: cn.motor_4315, sub: cs.motor_4315, prices: null, tbd: true, default: is15 },
+    { id: 'motor_4320', name: cn.motor_4320, sub: cs.motor_4320, prices: null, tbd: true },
+    { id: 'motor_4325', name: cn.motor_4325, sub: cs.motor_4325, prices: null, tbd: true },
+    { id: 'motor_5215', name: cn.motor_5215, sub: cs.motor_5215, prices: null, tbd: true },
+  ];
+  sections.push({ key: 'motor', titleKey: 'motor', type: 'radio', items: motors });
 
   // FC (F10 only)
   if (is10) {
