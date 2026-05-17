@@ -299,15 +299,14 @@ function buildComponents(
   if (is15) bats.push({ id: 'bat8_16', name: cn.bat8_16, sub: cs.bat8_16, prices: tp(750, 680, 650), default: true });
   sections.push({ key: 'battery', titleKey: 'battery', type: 'radio', items: bats });
 
-  // ESC
-  const escs: ComponentItem[] = [];
-  if (is10) {
-    escs.push({ id: 'esc60', name: cn.esc60, sub: cs.esc60, prices: null, tbd: true, default: true });
-    escs.push({ id: 'esc65', name: cn.esc65, sub: cs.esc65, prices: null, tbd: true, tag: 'v2' });
-    escs.push({ id: 'esc80', name: cn.esc80, sub: cs.esc80, prices: tp(245, 200, 160) });
-  }
-  if (is13) escs.push({ id: 'esc80', name: cn.esc80, sub: cs.esc80, prices: tp(245, 200, 160), default: true });
-  if (is15) escs.push({ id: 'esc100', name: cn.esc100, sub: cs.esc100, prices: tp(300, 230, 210), default: true });
+  // ESC — every controller is mechanically swappable across builds; only the
+  // default selection per model differs (60A → F10, 80A → F13, 100A → F15).
+  const escs: ComponentItem[] = [
+    { id: 'esc60',  name: cn.esc60,  sub: cs.esc60,  prices: null, tbd: true, default: is10 },
+    { id: 'esc65',  name: cn.esc65,  sub: cs.esc65,  prices: null, tbd: true, tag: 'v2' },
+    { id: 'esc80',  name: cn.esc80,  sub: cs.esc80,  prices: tp(245, 200, 160), default: is13 },
+    { id: 'esc100', name: cn.esc100, sub: cs.esc100, prices: tp(300, 230, 210), default: is15 },
+  ];
   sections.push({ key: 'esc', titleKey: 'esc', type: 'radio', items: escs });
 
   // FC (F10 only)
