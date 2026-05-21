@@ -341,9 +341,9 @@ function buildComponents(
 
   // Battery
   const bats: ComponentItem[] = [];
-  if (is10) bats.push({ id: 'bat6', name: cn.bat6, sub: cs.bat6, prices: tp(350, 300, 280), default: true });
-  if (is13) bats.push({ id: 'bat8_12', name: cn.bat8_12, sub: cs.bat8_12, prices: tp(580, 530, 510), default: true });
-  if (is15) bats.push({ id: 'bat8_16', name: cn.bat8_16, sub: cs.bat8_16, prices: tp(750, 680, 650), default: true });
+  if (is10) bats.push({ id: 'bat6', name: cn.bat6, sub: cs.bat6, prices: tp(354, 305, 280), default: true });
+  if (is13) bats.push({ id: 'bat8_12', name: cn.bat8_12, sub: cs.bat8_12, prices: tp(585, 535, 516), default: true });
+  if (is15) bats.push({ id: 'bat8_16', name: cn.bat8_16, sub: cs.bat8_16, prices: tp(752, 684, 653), default: true });
   sections.push({ key: 'battery', titleKey: 'battery', type: 'radio', items: bats });
 
   // ESC — every controller is mechanically swappable across builds; only the
@@ -428,7 +428,7 @@ function buildComponents(
   sections.push({
     key: 'fib_gnd', titleKey: 'fiber_gnd', type: 'radio', items: [
       { id: 'fib_no', name: cn.fib_no, sub: cs.fib_no, prices: null, incl: true, default: true },
-      { id: 'gnd40', name: cn.gnd40, sub: cs.gnd40, prices: tp(330, 300, 270) },
+      { id: 'gnd40', name: cn.gnd40, sub: cs.gnd40, prices: tp(317, 274, 274) },
       { id: 'gnd80', name: cn.gnd80, sub: cs.gnd80, prices: tp(400, 370, 340) },
     ],
   });
@@ -437,10 +437,10 @@ function buildComponents(
   sections.push({
     key: 'fib_len', titleKey: 'fiber_len', type: 'radio', items: [
       { id: 'fib_0', name: cn.fib_0, sub: '', prices: null, incl: true, default: true },
-      { id: 'fib_5', name: cn.fib_5, sub: cs.fib_5, prices: tp(fiberPrice(5, xkm, 0), fiberPrice(5, xkm, 1), fiberPrice(5, xkm, 2)), dynamic: true },
-      { id: 'fib_10', name: cn.fib_10, sub: cs.fib_10, prices: tp(fiberPrice(10, xkm, 0), fiberPrice(10, xkm, 1), fiberPrice(10, xkm, 2)), dynamic: true },
-      { id: 'fib_20', name: cn.fib_20, sub: cs.fib_20, prices: tp(fiberPrice(20, xkm, 0), fiberPrice(20, xkm, 1), fiberPrice(20, xkm, 2)), dynamic: true },
-      { id: 'fib_30', name: cn.fib_30, sub: cs.fib_30, prices: tp(fiberPrice(30, xkm, 0), fiberPrice(30, xkm, 1), fiberPrice(30, xkm, 2)), dynamic: true },
+      { id: 'fib_5',  name: cn.fib_5,  sub: '', prices: tp(1374, 1324, 1119) },
+      { id: 'fib_10', name: cn.fib_10, sub: '', prices: tp(2742, 2469, 2239) },
+      { id: 'fib_20', name: cn.fib_20, sub: '', prices: tp(5484, 4757, 4483) },
+      { id: 'fib_30', name: cn.fib_30, sub: '', prices: tp(8233, 7039, 6722) },
     ],
   });
 
@@ -448,11 +448,11 @@ function buildComponents(
   sections.push({
     key: 'ai', titleKey: 'ai', type: 'radio', items: [
       { id: 'ai_no', name: cn.ai_no, sub: '', prices: null, incl: true, default: true },
-      { id: 'ai1', name: cn.ai1, sub: cs.ai1, prices: tp(1300, 1200, 1100), tag: 'ai' },
-      { id: 'ai2', name: cn.ai2, sub: cs.ai2, prices: tp(1850, 1800, 1750), tag: 'ai' },
-      { id: 'ai3', name: cn.ai3, sub: cs.ai3, prices: tp(3250, 3150, 3000), tag: 'ai' },
-      { id: 'ai4', name: cn.ai4, sub: cs.ai4, prices: tp(4250, 4050, 3900), tag: 'ai' },
-      { id: 'ai5', name: cn.ai5, sub: cs.ai5, prices: tp(5200, 5100, 4800), tag: 'top' },
+      { id: 'ai1', name: cn.ai1, sub: cs.ai1, prices: tp(1007, 908, 802), tag: 'ai' },
+      { id: 'ai2', name: cn.ai2, sub: cs.ai2, prices: tp(1561, 1511, 1461), tag: 'ai' },
+      { id: 'ai3', name: cn.ai3, sub: cs.ai3, prices: tp(2966, 2867, 2717), tag: 'ai' },
+      { id: 'ai4', name: cn.ai4, sub: cs.ai4, prices: tp(3973, 3774, 3619), tag: 'ai' },
+      { id: 'ai5', name: cn.ai5, sub: cs.ai5, prices: tp(4931, 4825, 4527), tag: 'top' },
     ],
   });
 
@@ -466,13 +466,13 @@ export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentIte
   const cobraPrice = usdToCny(220, r, k);
 
   return [
-    { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(650, 600, 580) },
-    { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(420, 400, 380) },
+    { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(653, 603, 585) },
+    { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(423, 404, 379) },
     { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
     { id: 'goggles_l', name: cn.goggles_l, sub: cs.goggles_l, prices: tp(1460, 1460, 1460) },
     { id: 'gm3_v2_20_hd', name: cn.gm3_v2_20_hd, sub: cs.gm3_v2_20_hd, prices: tp(447, 447, 447) },
-    { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(350, 300, 280) },
-    { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(550, 500, 450) },
+    { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(354, 305, 280) },
+    { id: 'chr8', name: cn.chr8, sub: cs.chr8, prices: tp(553, 504, 454) },
     { id: 'nano_jr', name: cn.nano_jr, sub: cs.nano_jr, prices: tp(33, 33, 33) },
   ];
 }
@@ -499,22 +499,22 @@ export function getModels(lang: Lang, pricing: PricingParams): DroneModel[] {
     {
       id: 'F10', label: 'F10', size: '10"', sub: n.f10sub,
       versions: [
-        { id: 'f10_rf', name: n.std, sub: n.std_sub, prices: tp(1480, 1180, 1080) },
-        { id: 'f10_fib', name: n.fib, sub: n.fib_sub, prices: tp(1280, 980, 880) },
+        { id: 'f10_rf', name: n.std, sub: n.std_sub, prices: tp(1486, 1188, 1088) },
+        { id: 'f10_fib', name: n.fib, sub: n.fib_sub, prices: tp(1287, 989, 883) },
       ],
     },
     {
       id: 'F13', label: 'F13', size: '13"', sub: n.f13sub,
       versions: [
-        { id: 'f13_rf', name: n.std, sub: n.std_sub, prices: tp(2000, 1700, 1600) },
-        { id: 'f13_fib', name: n.fib, sub: n.fib_sub, prices: tp(1700, 1400, 1300) },
+        { id: 'f13_rf', name: n.std, sub: n.std_sub, prices: tp(2015, 1710, 1611) },
+        { id: 'f13_fib', name: n.fib, sub: n.fib_sub, prices: tp(1710, 1405, 1306) },
       ],
     },
     {
       id: 'F15', label: 'F15', size: '15"', sub: n.f15sub,
       versions: [
-        { id: 'f15_rf', name: n.std, sub: n.std_sub, prices: tp(2100, 1900, 1800) },
-        { id: 'f15_fib', name: n.fib, sub: n.fib_sub, prices: tp(1900, 1600, 1500) },
+        { id: 'f15_rf', name: n.std, sub: n.std_sub, prices: tp(2114, 1909, 1809) },
+        { id: 'f15_fib', name: n.fib, sub: n.fib_sub, prices: tp(1909, 1611, 1511) },
       ],
     },
   ];
