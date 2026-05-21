@@ -373,16 +373,13 @@ function buildComponents(
   ];
   sections.push({ key: 'motor', titleKey: 'motor', type: 'radio', items: motors });
 
-  // FC (F10 only)
-  if (is10) {
-    const f722p = f722price;
-    sections.push({
-      key: 'fc', titleKey: 'fc', type: 'radio', items: [
-        { id: 'fc_std', name: cn.fc_std, sub: cs.fc_std, prices: null, incl: true, default: true },
-        { id: 'fc_f722', name: cn.fc_f722, sub: cs.fc_f722, prices: tp(f722p, f722price_bulk, f722price_bulk), tag: 'v2' },
-      ],
-    });
-  }
+  // FC — F405 ships with every model; F722 PRO V2 upgrade is offered across the board.
+  sections.push({
+    key: 'fc', titleKey: 'fc', type: 'radio', items: [
+      { id: 'fc_std', name: cn.fc_std, sub: cs.fc_std, prices: null, incl: true, default: true },
+      { id: 'fc_f722', name: cn.fc_f722, sub: cs.fc_f722, prices: tp(f722price, f722price_bulk, f722price_bulk), tag: 'v2' },
+    ],
+  });
 
   // Camera
   sections.push({
@@ -407,22 +404,21 @@ function buildComponents(
   else vtxItems.push({ id: 'vtx_rf4', name: cn.vtx_rf4, sub: cs.vtx_rf4, prices: null, incl: true, default: true });
   sections.push({ key: 'vtx', titleKey: 'vtx', type: 'radio', items: vtxItems });
 
-  // RX
-  const rxItems: ComponentItem[] = [
-    { id: 'rx_std', name: cn.rx_std, sub: cs.rx_std, prices: null, incl: true, default: true },
-  ];
-  if (is10) rxItems.push({ id: 'rx_gem', name: cn.rx_gem, sub: cs.rx_gem, prices: tp(geminiPrice, geminiPrice, geminiPrice), tag: 'v2' });
-  sections.push({ key: 'rx', titleKey: 'rx', type: 'radio', items: rxItems });
+  // RX — ELRS 915 stock + BAYCKRC Gemini upgrade for any frame.
+  sections.push({
+    key: 'rx', titleKey: 'rx', type: 'radio', items: [
+      { id: 'rx_std', name: cn.rx_std, sub: cs.rx_std, prices: null, incl: true, default: true },
+      { id: 'rx_gem', name: cn.rx_gem, sub: cs.rx_gem, prices: tp(geminiPrice, geminiPrice, geminiPrice), tag: 'v2' },
+    ],
+  });
 
-  // TX (F10 only)
-  if (is10) {
-    sections.push({
-      key: 'tx', titleKey: 'tx', type: 'radio', items: [
-        { id: 'tx_none', name: cn.tx_none, sub: cs.tx_none, prices: null, incl: true, default: true },
-        { id: 'tx_nano', name: cn.tx_nano, sub: cs.tx_nano, prices: tp(326, 326, 326), tag: 'v2' },
-      ],
-    });
-  }
+  // TX module — optional NANO GEMINI add-on, also offered on every frame.
+  sections.push({
+    key: 'tx', titleKey: 'tx', type: 'radio', items: [
+      { id: 'tx_none', name: cn.tx_none, sub: cs.tx_none, prices: null, incl: true, default: true },
+      { id: 'tx_nano', name: cn.tx_nano, sub: cs.tx_nano, prices: tp(326, 326, 326), tag: 'v2' },
+    ],
+  });
 
   // Fiber ground station
   sections.push({
