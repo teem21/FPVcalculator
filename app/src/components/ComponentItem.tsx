@@ -53,6 +53,7 @@ export function ComponentItemRow({ item, tier, lang, type, selected, disabled, o
           src={item.img}
           alt={item.name}
           loading="lazy"
+          onError={e => { e.currentTarget.style.display = 'none'; }}
           className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0"
         />
       )}

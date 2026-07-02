@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Lang, Tier, DroneModel, ConfigSelections } from '@/types';
 import { tierPrice } from '@/data/pricing';
+import { getBasePrices, getSelectedFrameId, frameLabel } from '@/data/models';
 import { ts } from '@/data/i18n';
 import { ComponentItemRow } from './ComponentItem';
 import { ComponentSection } from './ComponentSection';
@@ -49,10 +50,13 @@ export function ModelCard({
   model, tier, lang, qty, selections,
   onQtyChange, onQtyDelta, onSelectVersion, onSelectComponent,
 }: Props) {
-  const ver = model.versions.find(v => v.id === selections.version) || model.versions[0];
-  const verPrice = tierPrice(ver.prices, tier);
-
   const sel = selections as Record<string, unknown>;
+  const ver = model.versions.find(v => v.id === selections.version) || model.versions[0];
+  const frameId = getSelectedFrameId(sel);
+  const frameSize = frameLabel(frameId);
+  const frameSection = model.components.find(s => s.key === 'frame');
+  const frameSub = frameSection?.items.find(it => !!sel[it.id])?.sub || model.sub;
+  const verPrice = tierPrice(getBasePrices(frameId, ver.id), tier);
   const cameraSection = model.components.find(s => s.key === 'camera');
   const selectedCamera = cameraSection?.items.find(it => !!sel[it.id]);
   const comboSection = model.components.find(s => s.key === 'cam_vtx');
@@ -81,7 +85,7 @@ export function ModelCard({
       <div className="p-4 flex gap-4 items-center">
         <div className={'w-16 h-16 rounded-lg flex flex-col items-center justify-center shrink-0 ' + (active ? 'bg-primary text-on-primary' : 'bg-surface-container-low border border-outline-variant text-on-surface-variant')}>
           <div className="text-base font-headline font-bold tracking-tight leading-none">{model.label}</div>
-          <div className={'text-[9px] font-bold tracking-widest uppercase mt-1 ' + (active ? 'text-on-primary/80' : 'text-on-surface-variant')}>{model.size}</div>
+          <div className={'text-[9px] font-bold tracking-widest uppercase mt-1 ' + (active ? 'text-on-primary/80' : 'text-on-surface-variant')}>{frameSize}</div>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-2">
@@ -94,7 +98,7 @@ export function ModelCard({
                   check_circle
                 </span>
               )}
-              <span className="truncate">{model.label} {ver.name}</span>
+              <span className="truncate">{model.label} {frameSize} {ver.name}</span>
             </h3>
             {verPrice != null && (
               <span className={'font-bold text-sm whitespace-nowrap ' + (active ? 'text-primary' : 'text-on-surface-variant')}>
@@ -102,7 +106,7 @@ export function ModelCard({
               </span>
             )}
           </div>
-          <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{model.sub}</p>
+          <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{frameSub}</p>
           <div className="mt-3 flex justify-end">
             <QtyStepper qty={qty} onDelta={onQtyDelta} onChange={onQtyChange} />
           </div>
@@ -140,7 +144,7 @@ export function ModelCard({
                     <ComponentItemRow
                       key={v.id}
                       item={{
-                        id: v.id, name: v.name, sub: v.sub, prices: v.prices,
+                        id: v.id, name: v.name, sub: v.sub, prices: getBasePrices(frameId, v.id),
                         default: v.id === model.versions[0].id,
                       }}
                       tier={tier}

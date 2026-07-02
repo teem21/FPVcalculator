@@ -325,12 +325,12 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
 }
 
 function buildComponents(
-  modelId: string,
   lang: Lang,
   pricing: PricingParams,
 ): ComponentSection[] {
   const cn = compNames[lang];
   const cs = getCompSubs(lang, pricing);
+  const n = modelNames[lang];
   const { rate: r, fobK: k, xkm } = pricing;
 
   const f722price = usdToCny(26, r, k);
@@ -344,40 +344,47 @@ function buildComponents(
   const eclipse009hdPrice = usdToCny(520, r, k);
   const geprcMatenPrice = usdToCny(70.8, r, k);
 
-  const is10 = modelId === 'F10';
-  const is13 = modelId === 'F13';
-  const is15 = modelId === 'F15';
-
   const sections: ComponentSection[] = [];
 
-  // Battery
-  const bats: ComponentItem[] = [];
-  if (is10) bats.push({ id: 'bat6', name: cn.bat6, sub: cs.bat6, prices: tp(354, 305, 280), default: true });
-  if (is13) bats.push({ id: 'bat8_12', name: cn.bat8_12, sub: cs.bat8_12, prices: tp(585, 535, 516), default: true });
-  if (is15) bats.push({ id: 'bat8_16', name: cn.bat8_16, sub: cs.bat8_16, prices: tp(752, 684, 653), default: true });
-  sections.push({ key: 'battery', titleKey: 'battery', type: 'radio', items: bats });
+  // Frame — the airframe size is now a selectable category instead of three
+  // separate drone cards. It drives the base price (see BASE_PRICES) together
+  // with the RF/Fiber version. 13" is the default build.
+  sections.push({
+    key: 'frame', titleKey: 'frame', type: 'radio', items: [
+      { id: 'fr10', name: '10″', sub: n.f10sub, prices: null },
+      { id: 'fr13', name: '13″', sub: n.f13sub, prices: null, default: true },
+      { id: 'fr15', name: '15″', sub: n.f15sub, prices: null },
+    ],
+  });
 
-  // ESC — every controller is mechanically swappable across builds; only the
-  // default selection per model differs (60A → F10, 80A → F13, 100A → F15).
+  // Battery — all packs selectable; 8S 12000 (13") is the default.
+  sections.push({
+    key: 'battery', titleKey: 'battery', type: 'radio', items: [
+      { id: 'bat6', name: cn.bat6, sub: cs.bat6, prices: tp(354, 305, 280) },
+      { id: 'bat8_12', name: cn.bat8_12, sub: cs.bat8_12, prices: tp(585, 535, 516), default: true },
+      { id: 'bat8_16', name: cn.bat8_16, sub: cs.bat8_16, prices: tp(752, 684, 653) },
+    ],
+  });
+
+  // ESC — every controller is mechanically swappable; 80A is the 13" default.
   const escs: ComponentItem[] = [
-    { id: 'esc60',  name: cn.esc60,  sub: cs.esc60,  prices: null, tbd: true, default: is10 },
+    { id: 'esc60',  name: cn.esc60,  sub: cs.esc60,  prices: null, tbd: true },
     { id: 'esc65',  name: cn.esc65,  sub: cs.esc65,  prices: null, tbd: true, tag: 'v2' },
-    { id: 'esc80',  name: cn.esc80,  sub: cs.esc80,  prices: tp(245, 200, 160), default: is13 },
-    { id: 'esc100', name: cn.esc100, sub: cs.esc100, prices: tp(300, 230, 210), default: is15 },
+    { id: 'esc80',  name: cn.esc80,  sub: cs.esc80,  prices: tp(245, 200, 160), default: true },
+    { id: 'esc100', name: cn.esc100, sub: cs.esc100, prices: tp(300, 230, 210) },
   ];
   sections.push({ key: 'esc', titleKey: 'esc', type: 'radio', items: escs });
 
   // Motor — full FPV motor catalog; every motor can be picked for any frame.
-  // Defaults match the stock build per model (3115 → F10, 4214 → F13,
-  // 4315 → F15). Prices TBD until supplier quotes are in.
+  // 4214 is the 13" default. Prices TBD until supplier quotes are in.
   const motors: ComponentItem[] = [
     { id: 'motor_2810', name: cn.motor_2810, sub: cs.motor_2810, prices: null, tbd: true },
     { id: 'motor_2812', name: cn.motor_2812, sub: cs.motor_2812, prices: null, tbd: true },
     { id: 'motor_3110', name: cn.motor_3110, sub: cs.motor_3110, prices: null, tbd: true },
-    { id: 'motor_3115', name: cn.motor_3115, sub: cs.motor_3115, prices: null, tbd: true, default: is10 },
+    { id: 'motor_3115', name: cn.motor_3115, sub: cs.motor_3115, prices: null, tbd: true },
     { id: 'motor_3314', name: cn.motor_3314, sub: cs.motor_3314, prices: null, tbd: true },
-    { id: 'motor_4214', name: cn.motor_4214, sub: cs.motor_4214, prices: null, tbd: true, default: is13 },
-    { id: 'motor_4315', name: cn.motor_4315, sub: cs.motor_4315, prices: null, tbd: true, default: is15 },
+    { id: 'motor_4214', name: cn.motor_4214, sub: cs.motor_4214, prices: null, tbd: true, default: true },
+    { id: 'motor_4315', name: cn.motor_4315, sub: cs.motor_4315, prices: null, tbd: true },
     { id: 'motor_4320', name: cn.motor_4320, sub: cs.motor_4320, prices: null, tbd: true },
     { id: 'motor_4325', name: cn.motor_4325, sub: cs.motor_4325, prices: null, tbd: true },
     { id: 'motor_5215', name: cn.motor_5215, sub: cs.motor_5215, prices: null, tbd: true },
@@ -398,7 +405,6 @@ function buildComponents(
       { id: 'cam_std', name: cn.cam_std, sub: cs.cam_std, prices: null, incl: true, default: true },
       { id: 'cam_n2', name: cn.cam_n2, sub: cs.cam_n2, prices: tp(160, 135, 120) },
       { id: 'cam_n2p', name: cn.cam_n2p, sub: cs.cam_n2p, prices: tp(180, 150, 135) },
-      { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031) },
       { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
       { id: 'cam_eclipse_009ca', name: 'Eclipse 009CA V.1', sub: 'FPV camera', prices: tp(eclipse009caPrice, eclipse009caPrice, eclipse009caPrice), img: '/products/eclipse-009ca-v1.png' },
     ],
@@ -410,6 +416,7 @@ function buildComponents(
   sections.push({
     key: 'cam_vtx', titleKey: 'cam_vtx', type: 'radio', items: [
       { id: 'cam_vtx_none', name: cn.cam_vtx_none, sub: '', prices: null, incl: true, default: true },
+      { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031), img: '/products/moonlight-kit.png', includesVtx: true },
       { id: 'cam_eclipse_009hd', name: 'Eclipse 009HD-4W', sub: 'HD camera · 5.8G 4W VTX built-in', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true },
       { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },
@@ -419,12 +426,15 @@ function buildComponents(
     ],
   });
 
-  // VTX — only standard; hidden by ModelCard when a camera with built-in TX is selected
-  const vtxItems: ComponentItem[] = [];
-  if (is10) vtxItems.push({ id: 'vtx_rf3', name: cn.vtx_rf3, sub: cs.vtx_rf3, prices: null, incl: true, default: true });
-  else vtxItems.push({ id: 'vtx_rf4', name: cn.vtx_rf4, sub: cs.vtx_rf4, prices: null, incl: true, default: true });
-  vtxItems.push({ id: 'vtx_geprc_maten', name: 'GEPRC Maten 5.8G 10W', sub: '5.8G · 10W', prices: tp(geprcMatenPrice, geprcMatenPrice, geprcMatenPrice), img: '/products/geprc-maten-58g-10w.png' });
-  sections.push({ key: 'vtx', titleKey: 'vtx', type: 'radio', items: vtxItems });
+  // VTX — standard 3W/4W options (included); hidden by ModelCard when a combo
+  // with a built-in transmitter is selected. 4W is the default.
+  sections.push({
+    key: 'vtx', titleKey: 'vtx', type: 'radio', items: [
+      { id: 'vtx_rf4', name: cn.vtx_rf4, sub: cs.vtx_rf4, prices: null, incl: true, default: true },
+      { id: 'vtx_rf3', name: cn.vtx_rf3, sub: cs.vtx_rf3, prices: null, incl: true },
+      { id: 'vtx_geprc_maten', name: 'GEPRC Maten 5.8G 10W', sub: '5.8G · 10W', prices: tp(geprcMatenPrice, geprcMatenPrice, geprcMatenPrice), img: '/products/geprc-maten-58g-10w.png' },
+    ],
+  });
 
   // RX — ELRS 915 stock + BAYCKRC Gemini upgrade for any frame.
   sections.push({
@@ -515,37 +525,49 @@ export function getAntennaItems(lang: Lang, _pricing: PricingParams): ComponentI
   ];
 }
 
+export type FrameId = 'fr10' | 'fr13' | 'fr15';
+export type VersionId = 'v_std' | 'v_fib';
+
+// Base airframe price by frame size × link version. The frame is picked in the
+// "Frame" category and the version (RF/Fiber) in the version selector; together
+// they set the drone's base price.
+const BASE_PRICES: Record<FrameId, Record<VersionId, TierPrices>> = {
+  fr10: { v_std: tp(1486, 1188, 1088), v_fib: tp(1287, 989, 883) },
+  fr13: { v_std: tp(2015, 1710, 1611), v_fib: tp(1710, 1405, 1306) },
+  fr15: { v_std: tp(2114, 1909, 1809), v_fib: tp(1909, 1611, 1511) },
+};
+
+const FRAME_LABELS: Record<FrameId, string> = { fr10: '10″', fr13: '13″', fr15: '15″' };
+
+export function getBasePrices(frameId: string, versionId: string): TierPrices {
+  const frame = BASE_PRICES[frameId as FrameId] ?? BASE_PRICES.fr13;
+  return frame[versionId as VersionId] ?? frame.v_std;
+}
+
+/** Which frame is selected in the "frame" radio section (defaults to 13"). */
+export function getSelectedFrameId(sel: Record<string, unknown>): FrameId {
+  if (sel.fr10) return 'fr10';
+  if (sel.fr15) return 'fr15';
+  return 'fr13';
+}
+
+export function frameLabel(frameId: string): string {
+  return FRAME_LABELS[frameId as FrameId] ?? FRAME_LABELS.fr13;
+}
+
 export function getModels(lang: Lang, pricing: PricingParams): DroneModel[] {
   const n = modelNames[lang];
 
-  const defs: Array<{ id: string; label: string; size: string; sub: string; versions: DroneVersion[] }> = [
-    {
-      id: 'F10', label: 'F10', size: '10"', sub: n.f10sub,
-      versions: [
-        { id: 'f10_rf', name: n.std, sub: n.std_sub, prices: tp(1486, 1188, 1088) },
-        { id: 'f10_fib', name: n.fib, sub: n.fib_sub, prices: tp(1287, 989, 883) },
-      ],
-    },
-    {
-      id: 'F13', label: 'F13', size: '13"', sub: n.f13sub,
-      versions: [
-        { id: 'f13_rf', name: n.std, sub: n.std_sub, prices: tp(2015, 1710, 1611) },
-        { id: 'f13_fib', name: n.fib, sub: n.fib_sub, prices: tp(1710, 1405, 1306) },
-      ],
-    },
-    {
-      id: 'F15', label: 'F15', size: '15"', sub: n.f15sub,
-      versions: [
-        { id: 'f15_rf', name: n.std, sub: n.std_sub, prices: tp(2114, 1909, 1809) },
-        { id: 'f15_fib', name: n.fib, sub: n.fib_sub, prices: tp(1909, 1611, 1511) },
-      ],
-    },
+  const versions: DroneVersion[] = [
+    { id: 'v_std', name: n.std, sub: n.std_sub, prices: getBasePrices('fr13', 'v_std') },
+    { id: 'v_fib', name: n.fib, sub: n.fib_sub, prices: getBasePrices('fr13', 'v_fib') },
   ];
 
-  return defs.map(d => ({
-    ...d,
-    components: buildComponents(d.id, lang, pricing),
-  }));
+  return [{
+    id: 'AGR', label: 'AGR', size: '', sub: n.f13sub,
+    versions,
+    components: buildComponents(lang, pricing),
+  }];
 }
 
 function tp(sample: number, k1: number, k5: number): TierPrices {
