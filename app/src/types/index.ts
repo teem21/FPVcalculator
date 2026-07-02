@@ -19,6 +19,8 @@ export interface ComponentItem {
   tbd?: boolean;
   tag?: TagType;
   dynamic?: boolean;
+  /** Optional product photo shown as a thumbnail (path under /public). */
+  img?: string;
   /** When this camera is selected, the VTX section is hidden (camera has built-in TX) */
   includesVtx?: boolean;
   /** When this camera is selected, AI modules are incompatible */

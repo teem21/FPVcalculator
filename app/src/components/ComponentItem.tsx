@@ -48,6 +48,14 @@ export function ComponentItemRow({ item, tier, lang, type, selected, disabled, o
             : 'border border-outline-variant bg-white hover:border-primary')
       }
     >
+      {item.img && (
+        <img
+          src={item.img}
+          alt={item.name}
+          loading="lazy"
+          className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0"
+        />
+      )}
       <div className="flex-1 min-w-0 pr-3">
         <div className={'text-xs flex items-center flex-wrap gap-x-1 ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
           <span>{item.name}</span>

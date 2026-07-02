@@ -332,6 +332,10 @@ function buildComponents(
   const cobraPrice = usdToCny(220, r, k);
   const djiPrice = usdToCny(208, r, k);
   const hikIrPrice = usdToCny(60, r, k);
+  // Catalog add-ons priced in USD → converted to ¥ so they track the rate slider.
+  const eclipse009caPrice = usdToCny(401.70, r, k);
+  const eclipse009hdPrice = usdToCny(520, r, k);
+  const geprcMatenPrice = usdToCny(70.8, r, k);
 
   const is10 = modelId === 'F10';
   const is13 = modelId === 'F13';
@@ -389,6 +393,8 @@ function buildComponents(
       { id: 'cam_n2p', name: cn.cam_n2p, sub: cs.cam_n2p, prices: tp(180, 150, 135) },
       { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031) },
       { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
+      { id: 'cam_eclipse_009ca', name: 'Eclipse 009CA V.1', sub: 'FPV camera', prices: tp(eclipse009caPrice, eclipse009caPrice, eclipse009caPrice), img: '/products/eclipse-009ca-v1.png' },
+      { id: 'cam_eclipse_009hd', name: 'Eclipse 009HD-4W', sub: 'HD camera · 5.8G 4W VTX built-in', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true },
       // camera+TX combos — VTX section hidden when selected; DJI also blocks AI
       { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },
@@ -402,6 +408,7 @@ function buildComponents(
   const vtxItems: ComponentItem[] = [];
   if (is10) vtxItems.push({ id: 'vtx_rf3', name: cn.vtx_rf3, sub: cs.vtx_rf3, prices: null, incl: true, default: true });
   else vtxItems.push({ id: 'vtx_rf4', name: cn.vtx_rf4, sub: cs.vtx_rf4, prices: null, incl: true, default: true });
+  vtxItems.push({ id: 'vtx_geprc_maten', name: 'GEPRC Maten 5.8G 10W', sub: '5.8G · 10W', prices: tp(geprcMatenPrice, geprcMatenPrice, geprcMatenPrice), img: '/products/geprc-maten-58g-10w.png' });
   sections.push({ key: 'vtx', titleKey: 'vtx', type: 'radio', items: vtxItems });
 
   // RX — ELRS 915 stock + BAYCKRC Gemini upgrade for any frame.
@@ -409,6 +416,7 @@ function buildComponents(
     key: 'rx', titleKey: 'rx', type: 'radio', items: [
       { id: 'rx_std', name: cn.rx_std, sub: cs.rx_std, prices: null, incl: true, default: true },
       { id: 'rx_gem', name: cn.rx_gem, sub: cs.rx_gem, prices: tp(geminiPrice, geminiPrice, geminiPrice), tag: 'v2' },
+      { id: 'rx_gemini_c3', name: 'Gemini C3 RX', sub: '900/2400MHz receiver', prices: tp(135, 135, 135), img: '/products/gemini-c3-rx.png' },
     ],
   });
 
@@ -417,6 +425,7 @@ function buildComponents(
     key: 'tx', titleKey: 'tx', type: 'radio', items: [
       { id: 'tx_none', name: cn.tx_none, sub: cs.tx_none, prices: null, incl: true, default: true },
       { id: 'tx_nano', name: cn.tx_nano, sub: cs.tx_nano, prices: tp(326, 326, 326), tag: 'v2' },
+      { id: 'tx_gemini', name: 'Gemini TX', sub: '900/2400MHz transmitter module', prices: tp(310, 310, 310), img: '/products/gemini-tx.png' },
     ],
   });
 
@@ -449,6 +458,8 @@ function buildComponents(
       { id: 'ai3', name: cn.ai3, sub: cs.ai3, prices: tp(2966, 2867, 2717), tag: 'ai' },
       { id: 'ai4', name: cn.ai4, sub: cs.ai4, prices: tp(3973, 3774, 3619), tag: 'ai' },
       { id: 'ai5', name: cn.ai5, sub: cs.ai5, prices: tp(4931, 4825, 4527), tag: 'top' },
+      { id: 'ai_irai384', name: 'IR.AI 384', sub: 'thermal module 384 · 2400MHz', prices: tp(2400, 2400, 2400), tag: 'ai', img: '/products/irai-thermal.png' },
+      { id: 'ai_irai640', name: 'IR.AI 640', sub: 'thermal module 640', prices: tp(2950, 2950, 2950), tag: 'ai', img: '/products/irai-thermal.png' },
     ],
   });
 
@@ -485,6 +496,7 @@ export function getAntennaItems(lang: Lang, _pricing: PricingParams): ComponentI
     { id: 'ant_helic', name: cn.ant_helic, sub: cs.ant_helic, prices: tp(67, 67, 67) },
     { id: 'ant_clover', name: cn.ant_clover, sub: cs.ant_clover, prices: tp(62, 62, 62) },
     { id: 'ant_feed', name: cn.ant_feed, sub: cs.ant_feed, prices: tp(46, 46, 46) },
+    { id: 'ant_foxeer_pagoda', name: 'Foxeer Pagoda 5.8G', sub: 'omni 5.8G', prices: tp(40, 40, 40), img: '/products/foxeer-pagoda-58g.png' },
   ];
 }
 
