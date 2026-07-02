@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Lang, Tier, DroneModel, ConfigSelections } from '@/types';
 import { tierPrice } from '@/data/pricing';
-import { getBasePrices, getSelectedFrameId, frameLabel } from '@/data/models';
+import { getBasePrices, getSelectedFrameId, frameName, frameShort } from '@/data/models';
 import { ts } from '@/data/i18n';
 import { ComponentItemRow } from './ComponentItem';
 import { ComponentSection } from './ComponentSection';
@@ -53,10 +53,13 @@ export function ModelCard({
   const sel = selections as Record<string, unknown>;
   const ver = model.versions.find(v => v.id === selections.version) || model.versions[0];
   const frameId = getSelectedFrameId(sel);
-  const frameSize = frameLabel(frameId);
+  const frameChosen = frameId != null;
   const frameSection = model.components.find(s => s.key === 'frame');
-  const frameSub = frameSection?.items.find(it => !!sel[it.id])?.sub || model.sub;
-  const verPrice = tierPrice(getBasePrices(frameId, ver.id), tier);
+  const frameSize = frameChosen ? frameShort(frameId) : '—';
+  const frameSub = frameChosen
+    ? (frameSection?.items.find(it => !!sel[it.id])?.sub || model.sub)
+    : ts(lang, 'chooseConfig');
+  const verPrice = frameChosen ? tierPrice(getBasePrices(frameId, ver.id), tier) : null;
   const cameraSection = model.components.find(s => s.key === 'camera');
   const selectedCamera = cameraSection?.items.find(it => !!sel[it.id]);
   const comboSection = model.components.find(s => s.key === 'cam_vtx');
@@ -98,11 +101,13 @@ export function ModelCard({
                   check_circle
                 </span>
               )}
-              <span className="truncate">{model.label} {frameSize} {ver.name}</span>
+              <span className="truncate">{frameChosen ? `${model.label} · ${frameName(frameId, lang)} · ${ver.name}` : model.label}</span>
             </h3>
-            <span className={'font-bold text-sm whitespace-nowrap ' + (verPrice == null ? 'text-on-surface-variant italic' : active ? 'text-primary' : 'text-on-surface-variant')}>
-              {verPrice != null ? `¥${verPrice.toLocaleString()}` : ts(lang, 'tbd')}
-            </span>
+            {frameChosen && (
+              <span className={'font-bold text-sm whitespace-nowrap ' + (verPrice == null ? 'text-on-surface-variant italic' : active ? 'text-primary' : 'text-on-surface-variant')}>
+                {verPrice != null ? `¥${verPrice.toLocaleString()}` : ts(lang, 'tbd')}
+              </span>
+            )}
           </div>
           <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{frameSub}</p>
           <div className="mt-3 flex justify-end">
@@ -142,7 +147,7 @@ export function ModelCard({
                     <ComponentItemRow
                       key={v.id}
                       item={{
-                        id: v.id, name: v.name, sub: v.sub, prices: getBasePrices(frameId, v.id),
+                        id: v.id, name: v.name, sub: v.sub, prices: frameChosen ? getBasePrices(frameId, v.id) : null,
                         default: v.id === model.versions[0].id,
                       }}
                       tier={tier}
@@ -170,6 +175,7 @@ export function ModelCard({
                 lang={lang}
                 selections={selections}
                 disabledIds={disabledIds}
+                defaultOpen={sec.key === 'frame' && !frameChosen}
                 onSelect={onSelectComponent}
               />
             );

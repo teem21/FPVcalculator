@@ -362,19 +362,20 @@ function buildComponents(
 
   const sections: ComponentSection[] = [];
 
-  // Frame — the airframe size is now a selectable category instead of three
-  // separate drone cards. It drives the base price (see BASE_PRICES) together
-  // with the RF/Fiber version. 13" is the default build.
+  // Frame — the airframe is a selectable category instead of three separate
+  // drone cards. It drives the base price (see BASE_PRICES) together with the
+  // RF/Fiber version. No default: the user must choose a configuration first.
+  const fn = FRAME_NAMES[lang];
   sections.push({
     key: 'frame', titleKey: 'frame', type: 'radio', items: [
-      { id: 'fr7', name: '7″', sub: n.f7sub, prices: null },
-      { id: 'fr10', name: '10″', sub: n.f10sub, prices: null },
-      { id: 'fr13', name: '13″', sub: n.f13sub, prices: null, default: true },
-      { id: 'fr15', name: '15″', sub: n.f15sub, prices: null },
-      { id: 'fr15h', name: '15″ HR', sub: n.f15hsub, prices: null },
-      { id: 'fr15x6', name: '15″ ×6', sub: n.f15x6sub, prices: null },
-      { id: 'fr17', name: '17″', sub: n.f17sub, prices: null },
-      { id: 'fr22x6', name: '22″ ×6', sub: n.f22x6sub, prices: null },
+      { id: 'fr7', name: fn.fr7, sub: n.f7sub, prices: null },
+      { id: 'fr10', name: fn.fr10, sub: n.f10sub, prices: null },
+      { id: 'fr13', name: fn.fr13, sub: n.f13sub, prices: null },
+      { id: 'fr15', name: fn.fr15, sub: n.f15sub, prices: null },
+      { id: 'fr15h', name: fn.fr15h, sub: n.f15hsub, prices: null },
+      { id: 'fr15x6', name: fn.fr15x6, sub: n.f15x6sub, prices: null },
+      { id: 'fr17', name: fn.fr17, sub: n.f17sub, prices: null },
+      { id: 'fr22x6', name: fn.fr22x6, sub: n.f22x6sub, prices: null },
     ],
   });
 
@@ -552,9 +553,45 @@ export type VersionId = 'v_std' | 'v_fib';
 
 const FRAME_IDS: FrameId[] = ['fr7', 'fr10', 'fr13', 'fr15', 'fr15h', 'fr15x6', 'fr17', 'fr22x6'];
 
-const FRAME_LABELS: Record<FrameId, string> = {
-  fr7: '7″', fr10: '10″', fr13: '13″', fr15: '15″',
-  fr15h: '15″ HR', fr15x6: '15″ ×6', fr17: '17″', fr22x6: '22″ ×6',
+// Full, human-readable frame names per language (used in the frame category,
+// the drone card title and the order summary).
+const FRAME_NAMES: Record<Lang, Record<FrameId, string>> = {
+  ru: {
+    fr7: 'Рама 7 дюймов',
+    fr10: 'Рама 10 дюймов',
+    fr13: 'Рама 13 дюймов',
+    fr15: 'Рама 15 дюймов',
+    fr15h: 'Твёрдая рама 15 дюймов',
+    fr15x6: '6-роторная рама 15 дюймов',
+    fr17: 'Рама 17 дюймов',
+    fr22x6: '6-роторная рама 22 дюйма',
+  },
+  en: {
+    fr7: 'Frame 7 inch',
+    fr10: 'Frame 10 inch',
+    fr13: 'Frame 13 inch',
+    fr15: 'Frame 15 inch',
+    fr15h: 'Rigid frame 15 inch',
+    fr15x6: '6-rotor frame 15 inch',
+    fr17: 'Frame 17 inch',
+    fr22x6: '6-rotor frame 22 inch',
+  },
+  zh: {
+    fr7: '7英寸机架',
+    fr10: '10英寸机架',
+    fr13: '13英寸机架',
+    fr15: '15英寸机架',
+    fr15h: '15英寸硬质机架',
+    fr15x6: '15英寸六旋翼机架',
+    fr17: '17英寸机架',
+    fr22x6: '22英寸六旋翼机架',
+  },
+};
+
+// Compact tag for the small square badge on the drone card.
+const FRAME_SHORT: Record<FrameId, string> = {
+  fr7: '7', fr10: '10', fr13: '13', fr15: '15',
+  fr15h: '15 тв', fr15x6: '15 ×6', fr17: '17', fr22x6: '22 ×6',
 };
 
 // Base airframe price by frame size × link version. The frame is picked in the
@@ -576,13 +613,19 @@ export function getBasePrices(frameId: string, versionId: string): TierPrices | 
   return frame[versionId as VersionId] ?? null;
 }
 
-/** Which frame is selected in the "frame" radio section (defaults to 13"). */
-export function getSelectedFrameId(sel: Record<string, unknown>): FrameId {
-  return FRAME_IDS.find(id => sel[id]) ?? 'fr13';
+/** Which frame is selected in the "frame" radio section, or null if none yet. */
+export function getSelectedFrameId(sel: Record<string, unknown>): FrameId | null {
+  return FRAME_IDS.find(id => sel[id]) ?? null;
 }
 
-export function frameLabel(frameId: string): string {
-  return FRAME_LABELS[frameId as FrameId] ?? FRAME_LABELS.fr13;
+/** Full localized frame name for the title/summary. */
+export function frameName(frameId: string, lang: Lang): string {
+  return FRAME_NAMES[lang][frameId as FrameId] ?? FRAME_NAMES[lang].fr13;
+}
+
+/** Compact badge tag for the drone card. */
+export function frameShort(frameId: string): string {
+  return FRAME_SHORT[frameId as FrameId] ?? FRAME_SHORT.fr13;
 }
 
 export function getModels(lang: Lang, pricing: PricingParams): DroneModel[] {

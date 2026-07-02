@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { Lang, Tier, UserConfig, SummaryGroup, ConfigSelections } from '@/types';
-import { getModels, getGroundItems, getAntennaItems, getBasePrices, getSelectedFrameId, frameLabel } from '@/data/models';
+import { getModels, getGroundItems, getAntennaItems, getBasePrices, getSelectedFrameId, frameName } from '@/data/models';
 import { tierPrice, type PricingParams, DEFAULT_PRICING } from '@/data/pricing';
 import { ts } from '@/data/i18n';
 
@@ -215,11 +215,12 @@ export function useConfigurator() {
         if (!sel) return;
         const ver = model.versions.find(v => v.id === sel.version) || model.versions[0];
         const frameId = getSelectedFrameId(sel as Record<string, unknown>);
-        const bp = tierPrice(getBasePrices(frameId, ver.id), tier) || 0;
+        const bp = frameId ? (tierPrice(getBasePrices(frameId, ver.id), tier) || 0) : 0;
         const dt = bp * qty;
         cfgTotal += dt;
         grandTotal += dt;
-        items.push({ name: `${model.label} ${frameLabel(frameId)} ${ver.name}`, sub: ver.sub, qty, unitPrice: bp, price: dt, group: 'drone' });
+        const droneName = frameId ? `${model.label} · ${frameName(frameId, lang)} · ${ver.name}` : model.label;
+        items.push({ name: droneName, sub: ver.sub, qty, unitPrice: bp, price: dt, group: 'drone' });
 
         model.components.forEach(sec => {
           sec.items.forEach(it => {
