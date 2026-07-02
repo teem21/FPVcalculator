@@ -100,11 +100,9 @@ export function ModelCard({
               )}
               <span className="truncate">{model.label} {frameSize} {ver.name}</span>
             </h3>
-            {verPrice != null && (
-              <span className={'font-bold text-sm whitespace-nowrap ' + (active ? 'text-primary' : 'text-on-surface-variant')}>
-                ¥{verPrice.toLocaleString()}
-              </span>
-            )}
+            <span className={'font-bold text-sm whitespace-nowrap ' + (verPrice == null ? 'text-on-surface-variant italic' : active ? 'text-primary' : 'text-on-surface-variant')}>
+              {verPrice != null ? `¥${verPrice.toLocaleString()}` : ts(lang, 'tbd')}
+            </span>
           </div>
           <p className="text-[11px] text-on-surface-variant uppercase font-bold tracking-tighter mt-1 line-clamp-2">{frameSub}</p>
           <div className="mt-3 flex justify-end">

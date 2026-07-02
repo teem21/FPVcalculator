@@ -5,30 +5,46 @@ import { fiberPrice, usdToCny, type PricingParams } from './pricing';
 interface ModelNames {
   std: string; fib: string;
   std_sub: string; fib_sub: string;
-  f10sub: string; f13sub: string; f15sub: string;
+  f7sub: string; f10sub: string; f13sub: string; f15sub: string;
+  f15hsub: string; f15x6sub: string; f17sub: string; f22x6sub: string;
 }
 
 const modelNames: Record<Lang, ModelNames> = {
   ru: {
     std: 'Стандарт RF', fib: 'Оптоволоконная',
     std_sub: '5.8G радиоканал · ELRS 915 в комплекте', fib_sub: 'Встроенный оптоволоконный модуль',
+    f7sub: '7" рама · характеристики уточняются',
     f10sub: 'F405 · ESC 60A · 3115 900KV · 10×5×3 · VTX 5.8G 3W · 10км/ч–140км/ч · 2.5кг',
     f13sub: 'F405 · ESC 80A · 4214 440KV · 13×10×3 · VTX 5.8G 4W · 150км/ч · 4кг',
     f15sub: 'F405 · ESC 100A · 4315 375KV · 15×7×3 · VTX 5.8G 4W · 170км/ч · 7кг',
+    f15hsub: '15" · твёрдая рама · характеристики уточняются',
+    f15x6sub: '15" · гексакоптер (6 роторов) · характеристики уточняются',
+    f17sub: '17" рама · характеристики уточняются',
+    f22x6sub: '22" · гексакоптер (6 роторов) · характеристики уточняются',
   },
   en: {
     std: 'Standard RF', fib: 'Fiber optic',
     std_sub: '5.8G RF · ELRS 915 included', fib_sub: 'Built-in fiber optic module',
+    f7sub: '7" frame · specs TBD',
     f10sub: 'F405 · ESC 60A · 3115 900KV · 10×5×3 · VTX 5.8G 3W · max 140km/h · 2.5kg',
     f13sub: 'F405 · ESC 80A · 4214 440KV · 13×10×3 · VTX 5.8G 4W · 150km/h · 4kg',
     f15sub: 'F405 · ESC 100A · 4315 375KV · 15×7×3 · VTX 5.8G 4W · 170km/h · 7kg',
+    f15hsub: '15" · rigid frame · specs TBD',
+    f15x6sub: '15" · hexacopter (6 rotors) · specs TBD',
+    f17sub: '17" frame · specs TBD',
+    f22x6sub: '22" · hexacopter (6 rotors) · specs TBD',
   },
   zh: {
     std: '标准RF版', fib: '光纤版',
     std_sub: '5.8G无线电 · 含ELRS 915接收机', fib_sub: '内置光纤通讯模块',
+    f7sub: '7" 机架 · 参数待定',
     f10sub: 'F405飞控 · ESC 60A · 3115 900KV · 10×5×3 · VTX 5.8G 3W · 最高140km/h · 负载2.5kg',
     f13sub: 'F405飞控 · ESC 80A · 4214 440KV · 13×10×3 · VTX 5.8G 4W · 150km/h · 负载4kg',
     f15sub: 'F405飞控 · ESC 100A · 4315 375KV · 15×7×3 · VTX 5.8G 4W · 170km/h · 负载7kg',
+    f15hsub: '15" · 硬质机架 · 参数待定',
+    f15x6sub: '15" · 六旋翼 · 参数待定',
+    f17sub: '17" 机架 · 参数待定',
+    f22x6sub: '22" · 六旋翼 · 参数待定',
   },
 };
 
@@ -351,9 +367,14 @@ function buildComponents(
   // with the RF/Fiber version. 13" is the default build.
   sections.push({
     key: 'frame', titleKey: 'frame', type: 'radio', items: [
+      { id: 'fr7', name: '7″', sub: n.f7sub, prices: null },
       { id: 'fr10', name: '10″', sub: n.f10sub, prices: null },
       { id: 'fr13', name: '13″', sub: n.f13sub, prices: null, default: true },
       { id: 'fr15', name: '15″', sub: n.f15sub, prices: null },
+      { id: 'fr15h', name: '15″ HR', sub: n.f15hsub, prices: null },
+      { id: 'fr15x6', name: '15″ ×6', sub: n.f15x6sub, prices: null },
+      { id: 'fr17', name: '17″', sub: n.f17sub, prices: null },
+      { id: 'fr22x6', name: '22″ ×6', sub: n.f22x6sub, prices: null },
     ],
   });
 
@@ -396,6 +417,7 @@ function buildComponents(
     key: 'fc', titleKey: 'fc', type: 'radio', items: [
       { id: 'fc_std', name: cn.fc_std, sub: cs.fc_std, prices: null, incl: true, default: true },
       { id: 'fc_f722', name: cn.fc_f722, sub: cs.fc_f722, prices: tp(f722price, f722price_bulk, f722price_bulk), tag: 'v2' },
+      { id: 'fc_ardu743', name: 'ArduPilot H743', sub: 'STM32H743 · ArduPilot', prices: null, tbd: true },
     ],
   });
 
@@ -525,30 +547,38 @@ export function getAntennaItems(lang: Lang, _pricing: PricingParams): ComponentI
   ];
 }
 
-export type FrameId = 'fr10' | 'fr13' | 'fr15';
+export type FrameId = 'fr7' | 'fr10' | 'fr13' | 'fr15' | 'fr15h' | 'fr15x6' | 'fr17' | 'fr22x6';
 export type VersionId = 'v_std' | 'v_fib';
+
+const FRAME_IDS: FrameId[] = ['fr7', 'fr10', 'fr13', 'fr15', 'fr15h', 'fr15x6', 'fr17', 'fr22x6'];
+
+const FRAME_LABELS: Record<FrameId, string> = {
+  fr7: '7″', fr10: '10″', fr13: '13″', fr15: '15″',
+  fr15h: '15″ HR', fr15x6: '15″ ×6', fr17: '17″', fr22x6: '22″ ×6',
+};
 
 // Base airframe price by frame size × link version. The frame is picked in the
 // "Frame" category and the version (RF/Fiber) in the version selector; together
-// they set the drone's base price.
-const BASE_PRICES: Record<FrameId, Record<VersionId, TierPrices>> = {
-  fr10: { v_std: tp(1486, 1188, 1088), v_fib: tp(1287, 989, 883) },
-  fr13: { v_std: tp(2015, 1710, 1611), v_fib: tp(1710, 1405, 1306) },
-  fr15: { v_std: tp(2114, 1909, 1809), v_fib: tp(1909, 1611, 1511) },
+// they set the drone's base price. `null` = price not yet quoted (shown as TBD).
+const BASE_PRICES: Record<FrameId, Record<VersionId, TierPrices | null>> = {
+  fr7:    { v_std: null, v_fib: null },
+  fr10:   { v_std: tp(1486, 1188, 1088), v_fib: tp(1287, 989, 883) },
+  fr13:   { v_std: tp(2015, 1710, 1611), v_fib: tp(1710, 1405, 1306) },
+  fr15:   { v_std: tp(2114, 1909, 1809), v_fib: tp(1909, 1611, 1511) },
+  fr15h:  { v_std: null, v_fib: null },
+  fr15x6: { v_std: null, v_fib: null },
+  fr17:   { v_std: null, v_fib: null },
+  fr22x6: { v_std: null, v_fib: null },
 };
 
-const FRAME_LABELS: Record<FrameId, string> = { fr10: '10″', fr13: '13″', fr15: '15″' };
-
-export function getBasePrices(frameId: string, versionId: string): TierPrices {
+export function getBasePrices(frameId: string, versionId: string): TierPrices | null {
   const frame = BASE_PRICES[frameId as FrameId] ?? BASE_PRICES.fr13;
-  return frame[versionId as VersionId] ?? frame.v_std;
+  return frame[versionId as VersionId] ?? null;
 }
 
 /** Which frame is selected in the "frame" radio section (defaults to 13"). */
 export function getSelectedFrameId(sel: Record<string, unknown>): FrameId {
-  if (sel.fr10) return 'fr10';
-  if (sel.fr15) return 'fr15';
-  return 'fr13';
+  return FRAME_IDS.find(id => sel[id]) ?? 'fr13';
 }
 
 export function frameLabel(frameId: string): string {
@@ -559,8 +589,8 @@ export function getModels(lang: Lang, pricing: PricingParams): DroneModel[] {
   const n = modelNames[lang];
 
   const versions: DroneVersion[] = [
-    { id: 'v_std', name: n.std, sub: n.std_sub, prices: getBasePrices('fr13', 'v_std') },
-    { id: 'v_fib', name: n.fib, sub: n.fib_sub, prices: getBasePrices('fr13', 'v_fib') },
+    { id: 'v_std', name: n.std, sub: n.std_sub, prices: getBasePrices('fr13', 'v_std')! },
+    { id: 'v_fib', name: n.fib, sub: n.fib_sub, prices: getBasePrices('fr13', 'v_fib')! },
   ];
 
   return [{
