@@ -39,6 +39,7 @@ type CompNameKey =
   | 'motor_4214' | 'motor_4315' | 'motor_4320' | 'motor_4325' | 'motor_5215'
   | 'fc_std' | 'fc_f722'
   | 'cam_std' | 'cam_n2' | 'cam_n2p'
+  | 'cam_vtx_none'
   | 'cam_hik_ir'
   | 'cam_dji_o4'
   | 'q4max_opt_d' | 'q4max_opt_dg' | 'q4max_ir_d' | 'q4max_ir_dg'
@@ -65,6 +66,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405 (штатный)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (штатная)', cam_n2: 'N2 Pro (ночная)', cam_n2p: 'N2 Pro+ (ночная+)',
+    cam_vtx_none: '— Нет (камера и VTX отдельно)',
     cam_hik_ir: 'HIK инфракрасная камера',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max (оптика) · модуль дрона', q4max_opt_dg: 'Q4Max (оптика) · дрон + земля',
@@ -103,6 +105,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405 (standard)', fc_f722: 'F722 PRO V2',
     cam_std: '1200TVL F1.0 (standard)', cam_n2: 'N2 Pro (night)', cam_n2p: 'N2 Pro+ (night+)',
+    cam_vtx_none: '— None (separate camera & VTX)',
     cam_hik_ir: 'HIK infrared camera',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max (optical) · drone module', q4max_opt_dg: 'Q4Max (optical) · drone + ground',
@@ -141,6 +144,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     motor_4325: '4325 360KV',  motor_5215: '5215 440/500KV',
     fc_std: 'F405飞控（标准）', fc_f722: 'F722 PRO V2飞控',
     cam_std: '1200TVL F1.0摄像头（标准）', cam_n2: 'N2 Pro夜视摄像头', cam_n2p: 'N2 Pro+夜视摄像头',
+    cam_vtx_none: '— 无（摄像头与VTX分开）',
     cam_hik_ir: 'HIK 红外摄像头',
     cam_dji_o4: 'DJI O4 Air Unit Pro',
     q4max_opt_d: 'Q4Max（光学）· 机载模块', q4max_opt_dg: 'Q4Max（光学）· 机载+地面',
@@ -196,6 +200,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       motor_5215: 'D60.2×39 · 333.1 г · 6–12S · 15/13" винт · тяга 7.8 кг',
       fc_std: 'включён в стоимость дрона', fc_f722: `$26(обр)/$23(1к+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · ночное зрение · включена', cam_n2: 'превосходит Ratel 2', cam_n2p: 'превосходит Ratel Pro',
+      cam_vtx_none: '',
       cam_hik_ir: `HIK инфракрасная · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `камера + TX · несовм. с AI · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: 'антиджаммер · оптическая камера · только модуль дрона',
@@ -240,6 +245,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       motor_5215: 'D60.2×39 · 333.1 g · 6–12S · 15/13" prop · 7.8 kg thrust',
       fc_std: 'included in drone price', fc_f722: `$26(sample)/$23(1k+) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: 'Super HDR · night vision · included', cam_n2: 'better than Ratel 2', cam_n2p: 'better than Ratel Pro',
+      cam_vtx_none: '',
       cam_hik_ir: `HIK infrared · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `camera + TX · AI incompatible · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: 'anti-jam · optical camera · drone module only',
@@ -284,6 +290,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       motor_5215: 'D60.2×39 · 333.1g · 6–12S · 15/13" 桨 · 推力 7.8kg',
       fc_std: '含在无人机价格中', fc_f722: `$26(样品)/$23(1000+架) × ${r.toFixed(2)} ÷ ${k} = ¥${f722}`,
       cam_std: '超级HDR · 夜视 · 已含', cam_n2: '优于Ratel 2', cam_n2p: '优于Ratel Pro',
+      cam_vtx_none: '',
       cam_hik_ir: `HIK 红外 · $60 × ${r.toFixed(2)} ÷ ${k} = ¥${hik_ir}`,
       cam_dji_o4: `摄像头+图传 · 与AI不兼容 · $208 × ${r.toFixed(2)} ÷ ${k} = ¥${dji_o4}`,
       q4max_opt_d: '抗干扰 · 光学摄像头 · 仅机载模块',
@@ -385,7 +392,7 @@ function buildComponents(
     ],
   });
 
-  // Camera
+  // Camera — standalone cameras only (a separate VTX still has to be chosen).
   sections.push({
     key: 'camera', titleKey: 'camera', type: 'radio', items: [
       { id: 'cam_std', name: cn.cam_std, sub: cs.cam_std, prices: null, incl: true, default: true },
@@ -394,8 +401,16 @@ function buildComponents(
       { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031) },
       { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
       { id: 'cam_eclipse_009ca', name: 'Eclipse 009CA V.1', sub: 'FPV camera', prices: tp(eclipse009caPrice, eclipse009caPrice, eclipse009caPrice), img: '/products/eclipse-009ca-v1.png' },
+    ],
+  });
+
+  // Camera + VTX (combo) — units with a built-in transmitter. Mutually
+  // exclusive with the standalone Camera + VTX sections (both are hidden when a
+  // combo is picked). "None" keeps the separate camera/VTX flow.
+  sections.push({
+    key: 'cam_vtx', titleKey: 'cam_vtx', type: 'radio', items: [
+      { id: 'cam_vtx_none', name: cn.cam_vtx_none, sub: '', prices: null, incl: true, default: true },
       { id: 'cam_eclipse_009hd', name: 'Eclipse 009HD-4W', sub: 'HD camera · 5.8G 4W VTX built-in', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true },
-      // camera+TX combos — VTX section hidden when selected; DJI also blocks AI
       { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },
       { id: 'q4max_opt_dg', name: cn.q4max_opt_dg, sub: cs.q4max_opt_dg, prices: tp(2850, 2850, 2850), includesVtx: true },

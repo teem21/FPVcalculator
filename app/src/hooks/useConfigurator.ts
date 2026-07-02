@@ -126,16 +126,31 @@ export function useConfigurator() {
       if (sectionType === 'radio') {
         section.items.forEach(i => delete sel[i.id]);
         sel[itemId] = true;
+        const selectedItem = section.items.find(i => i.id === itemId);
 
-        // If the selected camera blocks AI, reset AI section to ai_no
-        if (sectionKey === 'camera') {
-          const selectedItem = section.items.find(i => i.id === itemId);
-          if (selectedItem?.blocksAi) {
-            const aiSection = model?.components.find(s => s.key === 'ai');
-            if (aiSection) {
-              aiSection.items.forEach(i => delete sel[i.id]);
-              sel['ai_no'] = true;
-            }
+        // A combo (camera + built-in VTX) and a standalone camera are mutually
+        // exclusive — reset the other section so a hidden pick isn't still billed.
+        if (sectionKey === 'cam_vtx' && itemId !== 'cam_vtx_none') {
+          const camSec = model?.components.find(s => s.key === 'camera');
+          if (camSec) {
+            camSec.items.forEach(i => delete sel[i.id]);
+            const camDef = camSec.items.find(i => i.default);
+            if (camDef) sel[camDef.id] = true;
+          }
+        } else if (sectionKey === 'camera') {
+          const comboSec = model?.components.find(s => s.key === 'cam_vtx');
+          if (comboSec) {
+            comboSec.items.forEach(i => delete sel[i.id]);
+            sel['cam_vtx_none'] = true;
+          }
+        }
+
+        // If the selected item blocks AI, reset AI section to ai_no
+        if (selectedItem?.blocksAi) {
+          const aiSection = model?.components.find(s => s.key === 'ai');
+          if (aiSection) {
+            aiSection.items.forEach(i => delete sel[i.id]);
+            sel['ai_no'] = true;
           }
         }
       } else {

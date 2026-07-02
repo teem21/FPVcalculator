@@ -52,12 +52,17 @@ export function ModelCard({
   const ver = model.versions.find(v => v.id === selections.version) || model.versions[0];
   const verPrice = tierPrice(ver.prices, tier);
 
+  const sel = selections as Record<string, unknown>;
   const cameraSection = model.components.find(s => s.key === 'camera');
-  const selectedCamera = cameraSection?.items.find(
-    it => !!(selections as Record<string, unknown>)[it.id]
-  );
-  const vtxHidden = selectedCamera?.includesVtx ?? false;
-  const aiBlocked = selectedCamera?.blocksAi ?? false;
+  const selectedCamera = cameraSection?.items.find(it => !!sel[it.id]);
+  const comboSection = model.components.find(s => s.key === 'cam_vtx');
+  const selectedCombo = comboSection?.items.find(it => !!sel[it.id]);
+  // A combo (camera + built-in VTX) replaces both the standalone camera and the
+  // separate VTX, so hide those two sections while one is selected.
+  const comboActive = !!selectedCombo && selectedCombo.id !== 'cam_vtx_none';
+  const cameraHidden = comboActive;
+  const vtxHidden = comboActive || (selectedCamera?.includesVtx ?? false);
+  const aiBlocked = (comboActive ? selectedCombo?.blocksAi : selectedCamera?.blocksAi) ?? false;
 
   const [versionOpen, setVersionOpen] = useState(false);
   const verPreview = verPrice != null ? `${ver.name} · ¥${verPrice.toLocaleString()}` : ver.name;
@@ -150,6 +155,7 @@ export function ModelCard({
           </div>
 
           {model.components.map(sec => {
+            if (sec.key === 'camera' && cameraHidden) return null;
             if (sec.key === 'vtx' && vtxHidden) return null;
             const disabledIds = sec.key === 'ai' && aiBlocked
               ? sec.items.filter(it => it.id !== 'ai_no').map(it => it.id)
