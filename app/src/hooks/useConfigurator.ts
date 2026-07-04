@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { Lang, Tier, UserConfig, SummaryGroup, ConfigSelections } from '@/types';
+import type { Lang, Tier, UserConfig, SummaryGroup, ConfigSelections, BuildRow } from '@/types';
 import { getModels, getGroundItems, getAntennaItems, getBasePrices, getSelectedFrameId, frameName } from '@/data/models';
 import { tierPrice, type PricingParams, DEFAULT_PRICING } from '@/data/pricing';
 import { ts } from '@/data/i18n';
@@ -205,6 +205,9 @@ export function useConfigurator() {
       const items: SummaryGroup['items'] = [];
       let cfgTotal = 0;
       let droneCount = 0;
+      let build: BuildRow[] | undefined;
+      let droneImg: string | undefined;
+      let droneTitle: string | undefined;
 
       models.forEach(model => {
         const qty = cfg.modelQtys[model.id] || 0;
@@ -234,6 +237,31 @@ export function useConfigurator() {
             items.push({ name: it.name, sub: it.sub, qty, unitPrice: up, price: tot, group: 'components' });
           });
         });
+
+        // Build sheet — one row per chosen option (frame, version, FC, camera, …).
+        const selRec = sel as Record<string, unknown>;
+        const selCombo = model.components.find(s => s.key === 'cam_vtx')?.items.find(i => selRec[i.id]);
+        const comboActive = !!selCombo && selCombo.id !== 'cam_vtx_none';
+        const selCam = model.components.find(s => s.key === 'camera')?.items.find(i => selRec[i.id]);
+        const camHasVtx = comboActive || (selCam?.includesVtx ?? false);
+        const NONE = new Set(['cam_vtx_none', 'tx_none', 'fib_no', 'fib_0', 'ai_no']);
+        const rows: BuildRow[] = [];
+        model.components.forEach(sec => {
+          const it = sec.items.find(i => selRec[i.id]);
+          if (!it || NONE.has(it.id)) return;
+          if (sec.key === 'camera' && comboActive) return;
+          if (sec.key === 'vtx' && camHasVtx) return;
+          if (sec.key === 'frame') {
+            droneImg = it.img;
+            rows.push({ label: ts(lang, sec.titleKey as never), value: it.name, sub: it.sub, price: bp > 0 ? bp : null, tbd: bp <= 0 });
+            rows.push({ label: ts(lang, 'versions'), value: ver.name, price: null, incl: true });
+            return;
+          }
+          const up = it.incl || it.tbd || !it.prices ? null : tierPrice(it.prices, tier);
+          rows.push({ label: ts(lang, sec.titleKey as never), value: it.name, sub: it.sub, price: up, incl: it.incl, tbd: it.tbd });
+        });
+        build = rows;
+        droneTitle = droneName;
       });
 
       groundItems.forEach(it => {
@@ -263,7 +291,7 @@ export function useConfigurator() {
       });
 
       if (items.length) {
-        groups.push({ groupLabel: `${ts(lang, 'cfg')} ${cfg.id}`, configId: cfg.id, items, total: cfgTotal, droneCount });
+        groups.push({ groupLabel: `${ts(lang, 'cfg')} ${cfg.id}`, configId: cfg.id, items, total: cfgTotal, droneCount, build, droneImg, droneTitle });
       }
     });
 

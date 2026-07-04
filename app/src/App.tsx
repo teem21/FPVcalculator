@@ -243,7 +243,7 @@ export default function App() {
         )}
 
         {view === 'configs' && (
-          <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-8">
+          <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_440px] xl:gap-8">
             <div className="min-w-0">{ConfigsMain}</div>
             <div className="hidden xl:block">
               <Sidebar {...sidebarProps} sidebarOpen={false} onClose={() => {}} inline />

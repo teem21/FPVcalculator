@@ -73,10 +73,24 @@ export interface SummaryItem {
   group: SummaryGroupKey;
 }
 
+/** One "category → chosen option" row of a drone build sheet. */
+export interface BuildRow {
+  label: string;
+  value: string;
+  sub?: string;
+  price: number | null;
+  incl?: boolean;
+  tbd?: boolean;
+}
+
 export interface SummaryGroup {
   groupLabel: string;
   configId: number;
   items: SummaryItem[];
   total: number;
   droneCount: number;
+  /** Drone build sheet (frame, FC, camera, …) for the panel display. */
+  build?: BuildRow[];
+  droneImg?: string;
+  droneTitle?: string;
 }

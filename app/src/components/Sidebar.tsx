@@ -3,6 +3,7 @@ import type { Lang } from '@/types';
 import type { SummaryGroup } from '@/types';
 import type { PricingParams } from '@/data/pricing';
 import { ts } from '@/data/i18n';
+import { Lightbox } from './Lightbox';
 
 interface Props {
   lang: Lang;
@@ -20,9 +21,18 @@ interface Props {
   inline?: boolean;
 }
 
+function priceLabel(lang: Lang, r: { price: number | null; incl?: boolean; tbd?: boolean }): string {
+  if (r.incl) return ts(lang, 'incl');
+  if (r.tbd) return ts(lang, 'tbd');
+  return r.price != null ? `¥${r.price.toLocaleString()}` : '';
+}
+
 function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: Lang; defaultOpen: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
+  const [zoom, setZoom] = useState(false);
   const dronesText = ts(lang, 'totalDrones').replace('{n}', String(group.droneCount));
+  const extras = group.items.filter(it => it.group === 'ground' || it.group === 'antennas');
+
   return (
     <div className="rounded-xl bg-surface-container-lowest border border-outline-variant overflow-hidden">
       <button
@@ -34,28 +44,80 @@ function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: 
           <span className="text-xs font-bold text-on-surface truncate">{group.groupLabel}</span>
           <span className="text-[10px] text-on-surface-variant uppercase tracking-wider mt-0.5">{dronesText}</span>
         </div>
-        <span className="text-xs font-bold text-primary shrink-0">¥{group.total.toLocaleString()}</span>
+        <span className="text-sm font-bold text-primary shrink-0">¥{group.total.toLocaleString()}</span>
         <span className="material-symbols-outlined text-on-surface-variant group-hover:text-primary">
           {open ? 'expand_less' : 'expand_more'}
         </span>
       </button>
       {open && (
-        <div className="border-t border-outline-variant p-3 space-y-2">
-          {group.items.map((it, i) => (
-            <div key={i} className="flex items-baseline justify-between gap-2 text-xs">
-              <span className="text-on-surface flex-1 min-w-0">
-                <span className="font-medium">{it.name}</span>
-                <span className="text-[10px] text-on-surface-variant ml-1">¥{it.unitPrice.toLocaleString()}</span>
-              </span>
-              <span className="text-on-surface-variant text-[11px] shrink-0">×{it.qty}</span>
-              <span className="font-bold text-on-surface text-[11px] shrink-0 w-20 text-right">¥{it.price.toLocaleString()}</span>
+        <div className="border-t border-outline-variant p-3 space-y-3">
+          {/* Selected drone photo */}
+          {group.build && (
+            group.droneImg ? (
+              <img
+                src={group.droneImg}
+                alt={group.droneTitle || ''}
+                onClick={() => setZoom(true)}
+                onError={e => { e.currentTarget.style.display = 'none'; }}
+                title={ts(lang, 'zoomHint')}
+                className="w-full h-44 object-cover object-top rounded-xl border border-outline-variant bg-white cursor-zoom-in hover:brightness-95"
+              />
+            ) : (
+              <div className="w-full h-28 rounded-xl bg-surface-container flex items-center justify-center">
+                <span className="material-symbols-outlined text-5xl text-on-surface-variant">flight</span>
+              </div>
+            )
+          )}
+          {group.droneTitle && (
+            <div className="text-sm font-headline font-bold text-on-surface leading-snug">{group.droneTitle}</div>
+          )}
+
+          {/* Build sheet — category → chosen option */}
+          {group.build && group.build.length > 0 && (
+            <div className="space-y-1.5">
+              {group.build.map((r, i) => {
+                const pl = priceLabel(lang, r);
+                return (
+                  <div key={i} className="rounded-lg border border-outline-variant bg-white px-3 py-2">
+                    <div className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{r.label}</div>
+                    <div className="flex items-baseline justify-between gap-2 mt-0.5">
+                      <span className="text-xs font-bold text-on-surface min-w-0">{r.value}</span>
+                      {pl && (
+                        <span className={'text-[11px] font-bold shrink-0 ' + (r.incl ? 'text-secondary' : r.tbd ? 'text-on-surface-variant italic' : 'text-on-surface')}>
+                          {pl}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          )}
+
+          {/* Ground / antenna add-ons */}
+          {extras.length > 0 && (
+            <div className="pt-1 space-y-2">
+              {extras.map((it, i) => (
+                <div key={i} className="flex items-baseline justify-between gap-2 text-xs">
+                  <span className="text-on-surface flex-1 min-w-0">
+                    <span className="font-medium">{it.name}</span>
+                    <span className="text-[10px] text-on-surface-variant ml-1">¥{it.unitPrice.toLocaleString()}</span>
+                  </span>
+                  <span className="text-on-surface-variant text-[11px] shrink-0">×{it.qty}</span>
+                  <span className="font-bold text-on-surface text-[11px] shrink-0 w-20 text-right">¥{it.price.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex items-center justify-between pt-2 border-t border-outline-variant text-xs">
             <span className="font-bold text-on-surface">{ts(lang, 'totalLbl')} {group.groupLabel}</span>
             <span className="font-bold text-primary">¥{group.total.toLocaleString()}</span>
           </div>
         </div>
+      )}
+      {zoom && group.droneImg && (
+        <Lightbox src={group.droneImg} alt={group.droneTitle || ''} onClose={() => setZoom(false)} />
       )}
     </div>
   );
@@ -85,7 +147,7 @@ function Panel({
       className={
         inline
           ? 'bg-surface-container-low border border-outline-variant rounded-xl flex flex-col max-h-[calc(100dvh-8rem)] overflow-hidden'
-          : 'bg-surface-container-low w-full sm:max-w-md rounded-t-xl sm:rounded-xl border border-outline-variant max-h-[90dvh] flex flex-col'
+          : 'bg-surface-container-low w-full sm:max-w-lg rounded-t-xl sm:rounded-xl border border-outline-variant max-h-[90dvh] flex flex-col'
       }
       onClick={inline ? undefined : (e => e.stopPropagation())}
     >
