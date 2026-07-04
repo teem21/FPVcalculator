@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { Lang, Tier, ComponentItem as CompItemType, TagType } from '@/types';
 import { tierPrice } from '@/data/pricing';
 import { ts } from '@/data/i18n';
+import { Lightbox } from './Lightbox';
 
 function Tag({ type }: { type: TagType }) {
   const cls =
@@ -26,6 +28,7 @@ interface Props {
 }
 
 export function ComponentItemRow({ item, tier, lang, type, selected, disabled, onClick }: Props) {
+  const [zoom, setZoom] = useState(false);
   const price = tierPrice(item.prices, tier);
   const priceText = item.incl
     ? ts(lang, 'incl')
@@ -54,8 +57,13 @@ export function ComponentItemRow({ item, tier, lang, type, selected, disabled, o
           alt={item.name}
           loading="lazy"
           onError={e => { e.currentTarget.style.display = 'none'; }}
-          className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0"
+          onClick={e => { e.stopPropagation(); setZoom(true); }}
+          title={ts(lang, 'zoomHint')}
+          className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0 cursor-zoom-in hover:brightness-95"
         />
+      )}
+      {zoom && item.img && (
+        <Lightbox src={item.img} alt={item.name} onClose={() => setZoom(false)} />
       )}
       <div className="flex-1 min-w-0 pr-3">
         <div className={'text-xs flex items-center flex-wrap gap-x-1 ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
