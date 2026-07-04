@@ -1,7 +1,7 @@
 import type { Lang } from '@/types';
 import { ts } from '@/data/i18n';
 
-export type View = 'overview' | 'configs' | 'order' | 'contact';
+export type View = 'overview' | 'configs' | 'parts' | 'order' | 'contact';
 
 interface Props {
   lang: Lang;
@@ -9,9 +9,10 @@ interface Props {
   onChange: (v: View) => void;
 }
 
-const tabs: Array<{ id: View; icon: string; labelKey: 'tabOverview' | 'tabConfigs' | 'tabOrder' | 'tabContact' }> = [
+const tabs: Array<{ id: View; icon: string; labelKey: 'tabOverview' | 'tabConfigs' | 'tabParts' | 'tabOrder' | 'tabContact' }> = [
   { id: 'overview', icon: 'analytics', labelKey: 'tabOverview' },
   { id: 'configs', icon: 'tune', labelKey: 'tabConfigs' },
+  { id: 'parts', icon: 'widgets', labelKey: 'tabParts' },
   { id: 'order', icon: 'shopping_cart', labelKey: 'tabOrder' },
   { id: 'contact', icon: 'chat_bubble', labelKey: 'tabContact' },
 ];

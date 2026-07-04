@@ -7,6 +7,7 @@ import { TierRow } from '@/components/TierRow';
 import { ConfigTabs } from '@/components/ConfigTabs';
 import { ModelCard } from '@/components/ModelCard';
 import { GroundSection } from '@/components/GroundSection';
+import { PartsView } from '@/components/PartsView';
 import { Sidebar } from '@/components/Sidebar';
 import { OrderView } from '@/components/OrderView';
 import { BottomToolbar, type View } from '@/components/BottomToolbar';
@@ -221,6 +222,22 @@ export default function App() {
                   Baigarin_Zhan
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {view === 'parts' && (
+          <div className="max-w-4xl mx-auto">
+            <PageHeader kicker="FPV CONFIGURATOR" title={ts(c.lang, 'partsTitle')} sub={ts(c.lang, 'partsSub')} />
+            <TierRow lang={c.lang} tier={c.tier} onTierChange={c.setTier} />
+            <div className="mt-4">
+              <PartsView
+                lang={c.lang}
+                tier={c.tier}
+                sections={c.models[0].components}
+                groundItems={c.groundItems}
+                antennaItems={c.antennaItems}
+              />
             </div>
           </div>
         )}
