@@ -368,14 +368,14 @@ function buildComponents(
   const fn = FRAME_NAMES[lang];
   sections.push({
     key: 'frame', titleKey: 'frame', type: 'radio', items: [
-      { id: 'fr7', name: fn.fr7, sub: n.f7sub, prices: null },
+      { id: 'fr7', name: fn.fr7, sub: n.f7sub, prices: null, img: '/products/evolse-7.png' },
       { id: 'fr10', name: fn.fr10, sub: n.f10sub, prices: null },
       { id: 'fr13', name: fn.fr13, sub: n.f13sub, prices: null },
       { id: 'fr15', name: fn.fr15, sub: n.f15sub, prices: null },
       { id: 'fr15h', name: fn.fr15h, sub: n.f15hsub, prices: null },
-      { id: 'fr15x6', name: fn.fr15x6, sub: n.f15x6sub, prices: null },
-      { id: 'fr17', name: fn.fr17, sub: n.f17sub, prices: null },
-      { id: 'fr22x6', name: fn.fr22x6, sub: n.f22x6sub, prices: null },
+      { id: 'fr15x6', name: fn.fr15x6, sub: n.f15x6sub, prices: null, img: '/products/evolse-15-hexa.png' },
+      { id: 'fr17', name: fn.fr17, sub: n.f17sub, prices: null, img: '/products/evolse-17.png' },
+      { id: 'fr22x6', name: fn.fr22x6, sub: n.f22x6sub, prices: null, img: '/products/s1200-22.png' },
     ],
   });
 
