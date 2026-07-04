@@ -64,7 +64,7 @@ type CompNameKey =
   | 'tx_none' | 'tx_nano'
   | 'fib_no' | 'gnd40' | 'gnd80'
   | 'fib_0' | 'fib_5' | 'fib_10' | 'fib_20' | 'fib_30'
-  | 'ai_no' | 'ai1' | 'ai2' | 'ai3' | 'ai4' | 'ai5'
+  | 'ai_no' | 'ai1' | 'ai2' | 'ai3'
   | 'rc' | 'goggb' | 'gogbc' | 'goggles_l' | 'chr6' | 'chr8'
   | 'cam_avatar' | 'gm3_v2_20_hd'
   | 'ant_mush' | 'ant_patch' | 'ant_moxon9' | 'ant_moxon24'
@@ -92,9 +92,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     tx_none: 'Не нужен', tx_nano: 'BAYCKRC NANO GEMINI ELRS',
     fib_no: 'Без наземной станции', gnd40: 'Наземная станция 40км', gnd80: 'Наземная станция 80км',
     fib_0: 'Без волокна (RF)', fib_5: '5 км', fib_10: '10 км', fib_20: '20 км', fib_30: '30 км',
-    ai_no: 'Без AI', ai1: 'Базовый — одна видеокамера', ai2: 'Расширенный — двойная видеокамера',
-    ai3: 'Тепловизор 384 — видео + тепло', ai4: 'Предтоп — двойная + тепловизор 384',
-    ai5: 'ТОП ★ — двойная + тепловизор 640',
+    ai_no: 'Без AI', ai1: 'Базовый — одна оптическая камера',
+    ai2: 'Расширенный — две оптические камеры: одна дневная, другая ночная + тепловизор',
+    ai3: 'Тепловизор 384 — видео + тепло',
     rc: 'Пульт RadioMaster TX12 Mark II', goggb: 'FPV-очки базовые 5.8G',
     gogbc: 'SKYZONE Cobra X V4',
     goggles_l: 'Goggles L',
@@ -131,9 +131,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     tx_none: 'Not needed', tx_nano: 'BAYCKRC NANO GEMINI ELRS',
     fib_no: 'No ground station', gnd40: 'Ground station 40km', gnd80: 'Ground station 80km',
     fib_0: 'No fiber (RF)', fib_5: '5 km', fib_10: '10 km', fib_20: '20 km', fib_30: '30 km',
-    ai_no: 'No AI', ai1: 'Basic — single camera', ai2: 'Advanced — dual camera',
-    ai3: 'Thermal 384 — video + thermal', ai4: 'Pre-top — dual + thermal 384',
-    ai5: 'TOP ★ — dual + thermal 640',
+    ai_no: 'No AI', ai1: 'Basic — one optical camera',
+    ai2: 'Advanced — two optical cameras: one day, one night + thermal imager',
+    ai3: 'Thermal 384 — video + thermal',
     rc: 'RadioMaster TX12 Mark II', goggb: 'Basic FPV goggles 5.8G',
     gogbc: 'SKYZONE Cobra X V4',
     goggles_l: 'Goggles L',
@@ -170,9 +170,9 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     tx_none: '不需要', tx_nano: 'BAYCKRC NANO GEMINI ELRS TX模块',
     fib_no: '无地面站', gnd40: '光纤地面站 40公里', gnd80: '光纤地面站 80公里',
     fib_0: '不需要光纤（RF版）', fib_5: '5公里', fib_10: '10公里', fib_20: '20公里', fib_30: '30公里',
-    ai_no: '不含AI', ai1: '基础款 — 单光学 500米', ai2: '增强款 — 双光学 1200米',
-    ai3: '热成像384 — 视频+热成像', ai4: '次顶配 — 双光学+热成像384',
-    ai5: '顶配★ — 双光学+热成像640',
+    ai_no: '不含AI', ai1: '基础款 — 一个光学摄像头',
+    ai2: '增强款 — 两个光学摄像头：一个白天，一个夜视 + 热成像',
+    ai3: '热成像384 — 视频+热成像',
     rc: 'RadioMaster TX12 Mark II遥控器', goggb: '基础款FPV眼镜 5.8G',
     gogbc: 'SKYZONE Cobra X V4眼镜',
     goggles_l: 'Goggles L 眼镜',
@@ -229,7 +229,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       fib_no: '', gnd40: '光纤地面端40km-加强版（含电池）', gnd80: '光纤地面端80km-加强版',
       fib_0: '', fib_5: fib(5), fib_10: fib(10), fib_20: fib(20), fib_30: fib(30),
       ai_no: '', ai1: 'авто 500м · 50 целей · 6T', ai2: 'авто 1200м · человек 500м · 50 целей · 6T',
-      ai3: 'одна камера + тепловизор 384', ai4: 'двойная + тепловизор 384', ai5: 'двойная + тепловизор 640 · максимум',
+      ai3: 'одна камера + тепловизор 384',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G стандартные очки',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
       goggles_l: 'FPV-очки',
@@ -274,7 +274,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       fib_no: '', gnd40: '光纤地面端40km-加强版（含电池）', gnd80: '光纤地面端80km-加强版',
       fib_0: '', fib_5: fib(5), fib_10: fib(10), fib_20: fib(20), fib_30: fib(30),
       ai_no: '', ai1: 'vehicle 500m · 50 targets · 6T', ai2: 'vehicle 1200m · person 500m · 50 targets · 6T',
-      ai3: 'single cam + thermal 384', ai4: 'dual cam + thermal 384', ai5: 'dual cam + thermal 640 · maximum',
+      ai3: 'single cam + thermal 384',
       rc: 'ELRS FCC EdgeTX', goggb: '5.8G standard goggles',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · Diversity · Steadyview`,
       goggles_l: 'FPV goggles',
@@ -319,7 +319,7 @@ function getCompSubs(lang: Lang, p: PricingParams): Record<CompNameKey, string> 
       fib_no: '', gnd40: '光纤地面端40km-加强版（含电池）', gnd80: '光纤地面端80km-加强版',
       fib_0: '', fib_5: fib(5), fib_10: fib(10), fib_20: fib(20), fib_30: fib(30),
       ai_no: '', ai1: '识别车辆500米 · 50目标 · 算力6T', ai2: '识别车辆1200米 · 人员500米 · 50目标 · 6T',
-      ai3: '单摄像头+热成像384', ai4: '双摄像头+热成像384', ai5: '双摄像头+热成像640 · 顶配',
+      ai3: '单摄像头+热成像384',
       rc: 'ELRS FCC EdgeTX', goggb: '基础款5.8G眼镜',
       gogbc: `$220 × ${r.toFixed(2)} ÷ ${k} = ¥${cobra} · DVR · 分集接收 · Steadyview`,
       goggles_l: 'FPV眼镜',
@@ -503,8 +503,6 @@ function buildComponents(
       { id: 'ai1', name: cn.ai1, sub: cs.ai1, prices: tp(1007, 908, 802), tag: 'ai' },
       { id: 'ai2', name: cn.ai2, sub: cs.ai2, prices: tp(1561, 1511, 1461), tag: 'ai' },
       { id: 'ai3', name: cn.ai3, sub: cs.ai3, prices: tp(2966, 2867, 2717), tag: 'ai' },
-      { id: 'ai4', name: cn.ai4, sub: cs.ai4, prices: tp(3973, 3774, 3619), tag: 'ai' },
-      { id: 'ai5', name: cn.ai5, sub: cs.ai5, prices: tp(4931, 4825, 4527), tag: 'top' },
       { id: 'ai_irai384', name: 'IR.AI 384', sub: 'thermal module 384 · 2400MHz', prices: tp(2400, 2400, 2400), tag: 'ai', img: '/products/irai-thermal.png' },
       { id: 'ai_irai640', name: 'IR.AI 640', sub: 'thermal module 640', prices: tp(2950, 2950, 2950), tag: 'ai', img: '/products/irai-thermal.png' },
     ],
