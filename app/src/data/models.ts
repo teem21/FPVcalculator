@@ -441,7 +441,7 @@ function buildComponents(
       { id: 'cam_vtx_none', name: cn.cam_vtx_none, sub: '', prices: null, incl: true, default: true },
       { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031), img: '/products/moonlight-kit.png', includesVtx: true },
       { id: 'cam_eclipse_009hd', name: 'Eclipse 009HD-4W', sub: 'HD camera · 5.8G 4W VTX built-in', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true },
-      { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true },
+      { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true, img: '/products/dji-o4-pro.png' },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },
       { id: 'q4max_opt_dg', name: cn.q4max_opt_dg, sub: cs.q4max_opt_dg, prices: tp(2850, 2850, 2850), includesVtx: true },
       { id: 'q4max_ir_d', name: cn.q4max_ir_d, sub: cs.q4max_ir_d, prices: null, tbd: true, includesVtx: true },
