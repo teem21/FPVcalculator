@@ -29,6 +29,7 @@ interface Props {
 
 export function ComponentItemRow({ item, tier, lang, type, selected, disabled, onClick }: Props) {
   const [zoom, setZoom] = useState(false);
+  const [specsOpen, setSpecsOpen] = useState(false);
   const price = tierPrice(item.prices, tier);
   const priceText = item.incl
     ? ts(lang, 'incl')
@@ -40,65 +41,89 @@ export function ComponentItemRow({ item, tier, lang, type, selected, disabled, o
 
   return (
     <div
-      onClick={disabled ? undefined : onClick}
-      title={disabled ? '⚠ Несовместимо с выбранной камерой' : undefined}
       className={
-        'p-3 rounded-lg flex items-center justify-between transition-colors cursor-pointer ' +
+        'rounded-lg transition-colors ' +
         (disabled
-          ? 'border border-outline-variant bg-surface-container-low opacity-50 cursor-not-allowed'
+          ? 'border border-outline-variant bg-surface-container-low opacity-50'
           : selected
             ? 'border-2 border-primary bg-primary/5'
             : 'border border-outline-variant bg-white hover:border-primary')
       }
     >
-      {item.img && (
-        <img
-          src={item.img}
-          alt={item.name}
-          loading="lazy"
-          onError={e => { e.currentTarget.style.display = 'none'; }}
-          onClick={e => { e.stopPropagation(); setZoom(true); }}
-          title={ts(lang, 'zoomHint')}
-          className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0 cursor-zoom-in hover:brightness-95"
-        />
-      )}
-      {zoom && item.img && (
-        <Lightbox src={item.img} alt={item.name} onClose={() => setZoom(false)} />
-      )}
-      <div className="flex-1 min-w-0 pr-3">
-        <div className={'text-xs flex items-center flex-wrap gap-x-1 ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
-          <span>{item.name}</span>
-          {item.default && (
-            <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary">
-              {ts(lang, 'defaultBadge')}
+      <div
+        onClick={disabled ? undefined : onClick}
+        title={disabled ? '⚠ Несовместимо с выбранной камерой' : undefined}
+        className={'p-3 flex items-center justify-between ' + (disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
+      >
+        {item.img && (
+          <img
+            src={item.img}
+            alt={item.name}
+            loading="lazy"
+            onError={e => { e.currentTarget.style.display = 'none'; }}
+            onClick={e => { e.stopPropagation(); setZoom(true); }}
+            title={ts(lang, 'zoomHint')}
+            className="w-11 h-11 rounded-md object-cover border border-outline-variant bg-white mr-3 shrink-0 cursor-zoom-in hover:brightness-95"
+          />
+        )}
+        {zoom && item.img && (
+          <Lightbox src={item.img} alt={item.name} onClose={() => setZoom(false)} />
+        )}
+        <div className="flex-1 min-w-0 pr-3">
+          <div className={'text-xs flex items-center flex-wrap gap-x-1 ' + (selected ? 'font-bold text-on-surface' : 'font-medium text-on-surface')}>
+            <span>{item.name}</span>
+            {item.default && (
+              <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary">
+                {ts(lang, 'defaultBadge')}
+              </span>
+            )}
+            {item.tag && <Tag type={item.tag} />}
+          </div>
+          {item.sub && (
+            <div className="text-[10px] text-on-surface-variant mt-0.5">{item.sub}</div>
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {priceText && (
+            <span
+              className={
+                'text-[10px] font-bold ' +
+                (item.incl ? 'text-secondary' : item.tbd ? 'text-on-surface-variant italic' : selected ? 'text-primary' : 'text-on-surface-variant')
+              }
+            >
+              {priceText}
             </span>
           )}
-          {item.tag && <Tag type={item.tag} />}
-        </div>
-        {item.sub && (
-          <div className="text-[10px] text-on-surface-variant mt-0.5">{item.sub}</div>
-        )}
-      </div>
-      <div className="flex items-center gap-3 shrink-0">
-        {priceText && (
+          {item.specs && (
+            <button
+              type="button"
+              onClick={e => { e.stopPropagation(); setSpecsOpen(o => !o); }}
+              aria-label={ts(lang, 'specsHint')}
+              title={ts(lang, 'specsHint')}
+              className="material-symbols-outlined text-lg text-on-surface-variant hover:text-primary"
+            >
+              {specsOpen ? 'expand_less' : 'info'}
+            </button>
+          )}
           <span
-            className={
-              'text-[10px] font-bold ' +
-              (item.incl ? 'text-secondary' : item.tbd ? 'text-on-surface-variant italic' : selected ? 'text-primary' : 'text-on-surface-variant')
-            }
+            className="material-symbols-outlined text-lg"
+            style={selected ? { fontVariationSettings: "'FILL' 1", color: '#004ac6' } : { color: '#737686' }}
           >
-            {priceText}
+            {type === 'check'
+              ? (selected ? 'check_box' : 'check_box_outline_blank')
+              : (selected ? 'radio_button_checked' : 'radio_button_unchecked')}
           </span>
-        )}
-        <span
-          className="material-symbols-outlined text-lg"
-          style={selected ? { fontVariationSettings: "'FILL' 1", color: '#004ac6' } : { color: '#737686' }}
-        >
-          {type === 'check'
-            ? (selected ? 'check_box' : 'check_box_outline_blank')
-            : (selected ? 'radio_button_checked' : 'radio_button_unchecked')}
-        </span>
+        </div>
       </div>
+      {specsOpen && item.specs && (
+        <div className="px-3 pb-3">
+          <div className="rounded-md bg-surface-container-low border border-outline-variant/60 p-2.5 space-y-0.5">
+            {item.specs.split('\n').map((line, i) => (
+              <div key={i} className="text-[10px] text-on-surface-variant leading-snug">{line}</div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

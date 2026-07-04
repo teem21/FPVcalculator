@@ -96,7 +96,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai2: 'Расширенный — две оптические камеры: одна дневная, другая ночная + тепловизор',
     ai3: 'Тепловизор 384 — видео + тепло',
     rc: 'Пульт RadioMaster TX12 Mark II', goggb: 'FPV-очки базовые 5.8G',
-    gogbc: 'SKYZONE Cobra X V4',
+    gogbc: 'SKYZONE Cobra X V4 5.8G',
     goggles_l: 'Goggles L',
     cam_avatar: 'Avatar HD Moonlight Kit',
     gm3_v2_20_hd: 'GM3 V2-20-HD',
@@ -135,7 +135,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai2: 'Advanced — two optical cameras: one day, one night + thermal imager',
     ai3: 'Thermal 384 — video + thermal',
     rc: 'RadioMaster TX12 Mark II', goggb: 'Basic FPV goggles 5.8G',
-    gogbc: 'SKYZONE Cobra X V4',
+    gogbc: 'SKYZONE Cobra X V4 5.8G',
     goggles_l: 'Goggles L',
     cam_avatar: 'Avatar HD Moonlight Kit',
     gm3_v2_20_hd: 'GM3 V2-20-HD',
@@ -174,7 +174,7 @@ const compNames: Record<Lang, Record<CompNameKey, string>> = {
     ai2: '增强款 — 两个光学摄像头：一个白天，一个夜视 + 热成像',
     ai3: '热成像384 — 视频+热成像',
     rc: 'RadioMaster TX12 Mark II遥控器', goggb: '基础款FPV眼镜 5.8G',
-    gogbc: 'SKYZONE Cobra X V4眼镜',
+    gogbc: 'SKYZONE Cobra X V4 5.8G 眼镜',
     goggles_l: 'Goggles L 眼镜',
     cam_avatar: 'Avatar HD Moonlight Kit',
     gm3_v2_20_hd: 'GM3 V2-20-HD',
@@ -429,7 +429,18 @@ function buildComponents(
       { id: 'cam_n2', name: cn.cam_n2, sub: cs.cam_n2, prices: tp(160, 135, 120) },
       { id: 'cam_n2p', name: cn.cam_n2p, sub: cs.cam_n2p, prices: tp(180, 150, 135) },
       { id: 'cam_hik_ir', name: cn.cam_hik_ir, sub: cs.cam_hik_ir, prices: tp(hikIrPrice, hikIrPrice, hikIrPrice) },
-      { id: 'cam_eclipse_009ca', name: 'Eclipse 009CA V.1', sub: 'FPV camera', prices: tp(eclipse009caPrice, eclipse009caPrice, eclipse009caPrice), img: '/products/eclipse-009ca-v1.png' },
+      {
+        id: 'cam_ratel2', name: 'Caddx Ratel 2', sub: 'аналоговая · 1200 TVL · Starlight', prices: null, tbd: true,
+        specs: 'Сенсор: Starlight 1/1.8″ · 1200 TVL\nОбъектив: 2.1 мм · FOV 165°\nФормат: NTSC/PAL · 4:3/16:9 (переключаемые)\nМин. освещённость: 0.0001 люкс · Super WDR · 3DNR\nПитание: 5–40 В · 5.9 г · 19×19×20 мм',
+      },
+      {
+        id: 'cam_nebula_pro', name: 'Caddx Nebula Pro', sub: 'цифровая · для Vista / DJI Air Unit', prices: null, tbd: true,
+        specs: 'Тип: цифровая (Caddx Vista / DJI Air Unit)\nСенсор: 1/3″ CMOS · 720p/60fps\nФормат: 4:3/16:9 (переключаемые)\nРазмер: 19×19 мм · 6 г',
+      },
+      {
+        id: 'cam_eclipse_009ca', name: 'Caddx Eclipse 009CA V.1', sub: 'FPV камера', prices: tp(eclipse009caPrice, eclipse009caPrice, eclipse009caPrice), img: '/products/eclipse-009ca-v1.png',
+        specs: 'Caddx Eclipse · серия ночных/тепловизионных камер\nВыход: аналог CVBS · задержка ~20–22 мс\nПитание: 4.5–24 В · рабочая t°: −20…+60 °C',
+      },
     ],
   });
 
@@ -439,9 +450,22 @@ function buildComponents(
   sections.push({
     key: 'cam_vtx', titleKey: 'cam_vtx', type: 'radio', items: [
       { id: 'cam_vtx_none', name: cn.cam_vtx_none, sub: '', prices: null, incl: true, default: true },
-      { id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031), img: '/products/moonlight-kit.png', includesVtx: true },
-      { id: 'cam_eclipse_009hd', name: 'Eclipse 009HD-4W', sub: 'HD camera · 5.8G 4W VTX built-in', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true },
-      { id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true, img: '/products/dji-o4-pro.png' },
+      {
+        id: 'cam_avatar', name: cn.cam_avatar, sub: cs.cam_avatar, prices: tp(1031, 1031, 1031), img: '/products/moonlight-kit.png', includesVtx: true,
+        specs: 'Walksnail Avatar HD · цифровая система камера + VTX\nВидео: 1080p/100fps · кодек H.265\nЗадержка: ~22 мс · дальность до 10 км\nНочной режим (Moonlight kit)',
+      },
+      {
+        id: 'cam_ascent', name: 'Caddx Ascent', sub: 'цифровая система камера + VTX 5.8G', prices: null, tbd: true, includesVtx: true,
+        specs: 'Walksnail Ascent · цифровая 5.8 ГГц (2-сторонняя)\nСенсор: 1/3″ Starvis II · FOV 160°\nВидео: 1080p/60 · 720p/100\nБитрейт: до 25 Мбит/с · задержка ~35 мс\nДальность: до 3 км',
+      },
+      {
+        id: 'cam_eclipse_009hd', name: 'Caddx Eclipse 009HD-4W', sub: 'HD камера · встроенный VTX 5.8G 4W', prices: tp(eclipse009hdPrice, eclipse009hdPrice, eclipse009hdPrice), img: '/products/eclipse-009hd-4w.png', includesVtx: true,
+        specs: 'Caddx Eclipse 009HD · HD камера + встроенный VTX\nПитание: 9–24 В (all-in-one)\nВыход: цифровой · рабочая t°: −20…+60 °C',
+      },
+      {
+        id: 'cam_dji_o4', name: cn.cam_dji_o4, sub: cs.cam_dji_o4, prices: tp(djiPrice, djiPrice, djiPrice), includesVtx: true, blocksAi: true, img: '/products/dji-o4-pro.png',
+        specs: 'Сенсор: 1/1.3″ · FOV 155° · f/2.8\nВидео: 4K до 120 к/с · кодек H.265 · до 130 Мбит/с\nВ очки: 1080p до 100 к/с · задержка от 15 мс\nДальность: до 15 км (FCC) · 5.1/5.8 ГГц · 2×2 MIMO\nВес: 32 г (с камерой) · память 4 ГБ + microSD до 512 ГБ',
+      },
       { id: 'q4max_opt_d', name: cn.q4max_opt_d, sub: cs.q4max_opt_d, prices: tp(2150, 2150, 2150), includesVtx: true },
       { id: 'q4max_opt_dg', name: cn.q4max_opt_dg, sub: cs.q4max_opt_dg, prices: tp(2850, 2850, 2850), includesVtx: true },
       { id: 'q4max_ir_d', name: cn.q4max_ir_d, sub: cs.q4max_ir_d, prices: null, tbd: true, includesVtx: true },
@@ -520,7 +544,14 @@ export function getGroundItems(lang: Lang, pricing: PricingParams): ComponentIte
   return [
     { id: 'rc', name: cn.rc, sub: cs.rc, prices: tp(653, 603, 585) },
     { id: 'goggb', name: cn.goggb, sub: cs.goggb, prices: tp(423, 404, 379) },
-    { id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2' },
+    {
+      id: 'gogbc', name: cn.gogbc, sub: cs.gogbc, prices: tp(cobraPrice, cobraPrice, cobraPrice), tag: 'v2',
+      specs: 'Skyzone Cobra X V4 · FPV-очки (box)\nЭкран: 1280×720 LCD · 4:3/16:9 · FOV 50°\nПриёмник: 5.8 ГГц · 48 каналов · SteadyView diversity\nDVR: H.264 · 60 fps · microSD до 128 ГБ\nПитание: 18650 / 6.5–25.2 В · 332 г',
+    },
+    {
+      id: 'gog_avatar', name: 'Walksnail Avatar HD Goggles X', sub: 'цифровые HD-очки · OLED 1080p', prices: null, tbd: true,
+      specs: 'Walksnail Avatar HD Goggles X · цифровые\nЭкран: 2× OLED 1920×1080 · 100 Гц · FOV 50°\nВидео: 1080p/100fps · H.265 · задержка ~22 мс\nДальность: до 10 км · встроенный гироскоп\nВходы: HDMI / AV · питание 7–26 В · 290 г',
+    },
     { id: 'goggles_l', name: cn.goggles_l, sub: cs.goggles_l, prices: tp(1460, 1460, 1460) },
     { id: 'gm3_v2_20_hd', name: cn.gm3_v2_20_hd, sub: cs.gm3_v2_20_hd, prices: tp(447, 447, 447) },
     { id: 'chr6', name: cn.chr6, sub: cs.chr6, prices: tp(354, 305, 280) },

@@ -17,6 +17,7 @@ const SKIP = new Set(['cam_vtx_none', 'tx_none', 'fib_no', 'fib_0', 'ai_no']);
 
 function PartRow({ item, tier, lang }: { item: ComponentItem; tier: Tier; lang: Lang }) {
   const [zoom, setZoom] = useState(false);
+  const [specsOpen, setSpecsOpen] = useState(false);
   const price = tierPrice(item.prices, tier);
   const priceText = item.incl
     ? ts(lang, 'incl')
@@ -27,26 +28,48 @@ function PartRow({ item, tier, lang }: { item: ComponentItem; tier: Tier; lang: 
         : '';
 
   return (
-    <div className="p-3 rounded-lg border border-outline-variant bg-white flex items-center gap-3">
-      {item.img && (
-        <img
-          src={item.img}
-          alt={item.name}
-          loading="lazy"
-          onError={e => { e.currentTarget.style.display = 'none'; }}
-          onClick={() => setZoom(true)}
-          title={ts(lang, 'zoomHint')}
-          className="w-12 h-12 rounded-md object-cover border border-outline-variant bg-white shrink-0 cursor-zoom-in hover:brightness-95"
-        />
-      )}
-      <div className="flex-1 min-w-0">
-        <div className="text-xs font-bold text-on-surface">{item.name}</div>
-        {item.sub && <div className="text-[10px] text-on-surface-variant mt-0.5 leading-snug">{item.sub}</div>}
+    <div className="rounded-lg border border-outline-variant bg-white">
+      <div className="p-3 flex items-center gap-3">
+        {item.img && (
+          <img
+            src={item.img}
+            alt={item.name}
+            loading="lazy"
+            onError={e => { e.currentTarget.style.display = 'none'; }}
+            onClick={() => setZoom(true)}
+            title={ts(lang, 'zoomHint')}
+            className="w-12 h-12 rounded-md object-cover border border-outline-variant bg-white shrink-0 cursor-zoom-in hover:brightness-95"
+          />
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="text-xs font-bold text-on-surface">{item.name}</div>
+          {item.sub && <div className="text-[10px] text-on-surface-variant mt-0.5 leading-snug">{item.sub}</div>}
+        </div>
+        {priceText && (
+          <span className={'text-xs font-bold shrink-0 tabular-nums ' + (item.incl ? 'text-secondary' : item.tbd ? 'text-on-surface-variant italic' : 'text-primary')}>
+            {priceText}
+          </span>
+        )}
+        {item.specs && (
+          <button
+            type="button"
+            onClick={() => setSpecsOpen(o => !o)}
+            aria-label={ts(lang, 'specsHint')}
+            title={ts(lang, 'specsHint')}
+            className="material-symbols-outlined text-lg text-on-surface-variant hover:text-primary shrink-0"
+          >
+            {specsOpen ? 'expand_less' : 'info'}
+          </button>
+        )}
       </div>
-      {priceText && (
-        <span className={'text-xs font-bold shrink-0 tabular-nums ' + (item.incl ? 'text-secondary' : item.tbd ? 'text-on-surface-variant italic' : 'text-primary')}>
-          {priceText}
-        </span>
+      {specsOpen && item.specs && (
+        <div className="px-3 pb-3">
+          <div className="rounded-md bg-surface-container-low border border-outline-variant/60 p-2.5 space-y-0.5">
+            {item.specs.split('\n').map((line, i) => (
+              <div key={i} className="text-[10px] text-on-surface-variant leading-snug">{line}</div>
+            ))}
+          </div>
+        </div>
       )}
       {zoom && item.img && (
         <Lightbox src={item.img} alt={item.name} onClose={() => setZoom(false)} />

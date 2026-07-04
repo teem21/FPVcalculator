@@ -21,6 +21,8 @@ export interface ComponentItem {
   dynamic?: boolean;
   /** Optional product photo shown as a thumbnail (path under /public). */
   img?: string;
+  /** Optional detailed spec sheet, revealed by an expander. Lines split on "\n". */
+  specs?: string;
   /** When this camera is selected, the VTX section is hidden (camera has built-in TX) */
   includesVtx?: boolean;
   /** When this camera is selected, AI modules are incompatible */
