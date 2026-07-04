@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Lang, Tier, ComponentSection, ComponentItem } from '@/types';
 import { tierPrice } from '@/data/pricing';
-import { ts } from '@/data/i18n';
+import { ts, ta } from '@/data/i18n';
 import { Lightbox } from './Lightbox';
 
 interface Props {
@@ -17,7 +17,7 @@ const SKIP = new Set(['cam_vtx_none', 'tx_none', 'fib_no', 'fib_0', 'ai_no']);
 
 function PartRow({ item, tier, lang }: { item: ComponentItem; tier: Tier; lang: Lang }) {
   const [zoom, setZoom] = useState(false);
-  const [specsOpen, setSpecsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const price = tierPrice(item.prices, tier);
   const priceText = item.incl
     ? ts(lang, 'incl')
@@ -26,17 +26,22 @@ function PartRow({ item, tier, lang }: { item: ComponentItem; tier: Tier; lang: 
       : price != null
         ? `¥${price.toLocaleString()}`
         : '';
+  const tierLabels = ta(lang, 'tiers');
 
   return (
-    <div className="rounded-lg border border-outline-variant bg-white">
-      <div className="p-3 flex items-center gap-3">
+    <div className={'rounded-lg border bg-white transition-colors ' + (open ? 'border-primary' : 'border-outline-variant hover:border-primary')}>
+      {/* Whole card toggles the description */}
+      <div
+        onClick={() => setOpen(o => !o)}
+        className="p-3 flex items-center gap-3 cursor-pointer"
+      >
         {item.img && (
           <img
             src={item.img}
             alt={item.name}
             loading="lazy"
             onError={e => { e.currentTarget.style.display = 'none'; }}
-            onClick={() => setZoom(true)}
+            onClick={e => { e.stopPropagation(); setZoom(true); }}
             title={ts(lang, 'zoomHint')}
             className="w-12 h-12 rounded-md object-cover border border-outline-variant bg-white shrink-0 cursor-zoom-in hover:brightness-95"
           />
@@ -50,24 +55,32 @@ function PartRow({ item, tier, lang }: { item: ComponentItem; tier: Tier; lang: 
             {priceText}
           </span>
         )}
-        {item.specs && (
-          <button
-            type="button"
-            onClick={() => setSpecsOpen(o => !o)}
-            aria-label={ts(lang, 'specsHint')}
-            title={ts(lang, 'specsHint')}
-            className="material-symbols-outlined text-lg text-on-surface-variant hover:text-primary shrink-0"
-          >
-            {specsOpen ? 'expand_less' : 'info'}
-          </button>
-        )}
+        <span className="material-symbols-outlined text-lg text-on-surface-variant shrink-0">
+          {open ? 'expand_less' : 'expand_more'}
+        </span>
       </div>
-      {specsOpen && item.specs && (
-        <div className="px-3 pb-3">
-          <div className="rounded-md bg-surface-container-low border border-outline-variant/60 p-2.5 space-y-0.5">
-            {item.specs.split('\n').map((line, i) => (
-              <div key={i} className="text-[10px] text-on-surface-variant leading-snug">{line}</div>
-            ))}
+
+      {open && (
+        <div className="px-3 pb-3 space-y-2">
+          {item.specs && (
+            <div className="rounded-md bg-surface-container-low border border-outline-variant/60 p-2.5 space-y-0.5">
+              {item.specs.split('\n').map((line, i) => (
+                <div key={i} className="text-[10px] text-on-surface-variant leading-snug">{line}</div>
+              ))}
+            </div>
+          )}
+          {/* Price by volume tier */}
+          <div className="rounded-md border border-outline-variant/60 divide-y divide-outline-variant/50">
+            {tierLabels.map((label, ti) => {
+              const p = tierPrice(item.prices, ti as Tier);
+              const txt = item.incl ? ts(lang, 'incl') : item.tbd ? ts(lang, 'tbd') : p != null ? `¥${p.toLocaleString()}` : '—';
+              return (
+                <div key={ti} className={'flex items-center justify-between px-2.5 py-1.5 ' + (ti === tier ? 'bg-primary/5' : '')}>
+                  <span className="text-[10px] uppercase tracking-wider text-on-surface-variant">{label}</span>
+                  <span className={'text-[11px] font-bold tabular-nums ' + (item.incl ? 'text-secondary' : item.tbd ? 'text-on-surface-variant italic' : 'text-on-surface')}>{txt}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
