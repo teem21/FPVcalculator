@@ -463,8 +463,7 @@ function buildComponents(
   sections.push({
     key: 'rx', titleKey: 'rx', type: 'radio', items: [
       { id: 'rx_std', name: cn.rx_std, sub: cs.rx_std, prices: null, incl: true, default: true },
-      { id: 'rx_gem', name: cn.rx_gem, sub: cs.rx_gem, prices: tp(geminiPrice, geminiPrice, geminiPrice), tag: 'v2' },
-      { id: 'rx_gemini_c3', name: 'Gemini C3 RX', sub: '900/2400MHz receiver', prices: tp(135, 135, 135), img: '/products/gemini-c3-rx.png' },
+      { id: 'rx_gem', name: cn.rx_gem, sub: cs.rx_gem, prices: tp(geminiPrice, geminiPrice, geminiPrice), tag: 'v2', img: '/products/gemini-c3-rx.png' },
     ],
   });
 
