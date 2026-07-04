@@ -72,22 +72,22 @@ function ConfigBlock({ group, lang, defaultOpen }: { group: SummaryGroup; lang: 
             <div className="text-sm font-headline font-bold text-on-surface leading-snug">{group.droneTitle}</div>
           )}
 
-          {/* Build sheet — category → chosen option */}
+          {/* Build sheet — compact category → chosen option table */}
           {group.build && group.build.length > 0 && (
-            <div className="space-y-1.5">
+            <div className="divide-y divide-outline-variant/50">
               {group.build.map((r, i) => {
                 const pl = priceLabel(lang, r);
                 return (
-                  <div key={i} className="rounded-lg border border-outline-variant bg-white px-3 py-2">
-                    <div className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">{r.label}</div>
-                    <div className="flex items-baseline justify-between gap-2 mt-0.5">
-                      <span className="text-xs font-bold text-on-surface min-w-0">{r.value}</span>
-                      {pl && (
-                        <span className={'text-[11px] font-bold shrink-0 ' + (r.incl ? 'text-secondary' : r.tbd ? 'text-on-surface-variant italic' : 'text-on-surface')}>
-                          {pl}
-                        </span>
-                      )}
+                  <div key={i} className="py-1.5 flex items-baseline justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-bold text-on-surface-variant tracking-wider">{r.label}</span>
+                      <div className="text-xs font-semibold text-on-surface leading-tight">{r.value}</div>
                     </div>
+                    {pl && (
+                      <span className={'text-[11px] font-bold shrink-0 tabular-nums ' + (r.incl ? 'text-secondary' : r.tbd ? 'text-on-surface-variant italic' : 'text-on-surface')}>
+                        {pl}
+                      </span>
+                    )}
                   </div>
                 );
               })}
